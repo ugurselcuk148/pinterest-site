@@ -2,12 +2,27 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Tumblr Yetkilendirme</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tumblr OAuth Callback</title>
 </head>
 <body>
 <h1>Tumblr Yetkilendirme</h1>
-<p>Yetkilendirme yanıtı alındı.</p>
-<p>Bu sayfa Tumblr OAuth dönüş adresi olarak kullanılmaktadır.</p>
-<p>Sayfa açık kaldığı sürece OAuth bilgileri URL'de tutulur.</p>
+<p id="status">Yetkilendirme yanıtı alındı.</p>
+
+<p><strong>oauth_token:</strong></p>
+<pre id="token"></pre>
+
+<p><strong>oauth_verifier:</strong></p>
+<pre id="verifier"></pre>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+
+document.getElementById("token").textContent =
+    params.get("oauth_token") || "Bulunamadı";
+
+document.getElementById("verifier").textContent =
+    params.get("oauth_verifier") || "Bulunamadı";
+</script>
 </body>
 </html>
