@@ -1,13 +1,335 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="utf-8">
-<title>Gece Mavi Müzik</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Şarkı Fabrikası | Gece Mavi Müzik</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #07152f, #102b5c, #050b18);
+      color: white;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .hero {
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 52px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 42px;
+      margin: 10px 0;
+    }
+
+    .subtitle {
+      font-size: 20px;
+      color: #cbd9ff;
+      line-height: 1.6;
+    }
+
+    .price {
+      display: inline-block;
+      margin: 20px 0;
+      padding: 12px 22px;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.12);
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .box {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 28px;
+      margin-top: 25px;
+    }
+
+    .box h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    .steps {
+      text-align: left;
+      line-height: 2;
+      color: #dce6ff;
+    }
+
+    label {
+      display: block;
+      margin-top: 18px;
+      margin-bottom: 7px;
+      font-weight: bold;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 13px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 16px;
+      outline: none;
+    }
+
+    select option {
+      color: black;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #b8c4df;
+    }
+
+    .submit-button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 16px;
+      border: none;
+      border-radius: 30px;
+      background: white;
+      color: #07152f;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .submit-button:hover {
+      opacity: 0.9;
+    }
+
+    .note {
+      margin-top: 12px;
+      text-align: center;
+      color: #aebddd;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 35px;
+      color: #9fb0d5;
+      font-size: 14px;
+    }
+  </style>
 </head>
+
 <body>
-<h1>Gece Mavi Müzik</h1>
-<p>Gece Mavi Müzik, kullanıcıların müzik videolarını sosyal platformlarda paylaşmasını sağlayan bir web uygulamasıdır.</p>
-<p><a href="privacy.html">Gizlilik Politikası</a></p>
-<p><a href="terms.html">Kullanım Koşulları</a></p>
+
+  <div class="container">
+
+    <div class="hero">
+      <div class="logo">🎵🌙</div>
+
+      <h1>Şarkı Fabrikası</h1>
+
+      <p class="subtitle">
+        Hikâyeni anlat,<br>
+        onu sana özel bir şarkıya dönüştürelim. 💙
+      </p>
+
+      <div class="price">
+        Başlangıç fiyatı: 100 TL
+      </div>
+    </div>
+
+
+    <div class="box">
+      <h2>🎶 Şarkını Tasarla</h2>
+
+      <div class="steps">
+        🎤 Hikâyeni anlat<br>
+        ❤️ Duygunu seç<br>
+        🎶 Müzik tarzını belirle<br>
+        💙 Biz onu şarkıya dönüştürelim
+      </div>
+    </div>
+
+
+    <div class="box">
+
+      <h2>💙 Şarkı Bilgileri</h2>
+
+      <form>
+
+        <label for="recipient">
+          Şarkı kimin için?
+        </label>
+
+        <select id="recipient" name="recipient" required>
+          <option value="">Seçiniz</option>
+          <option>Sevgilim</option>
+          <option>Eşim</option>
+          <option>Anne / Baba</option>
+          <option>Çocuğum</option>
+          <option>Arkadaşım</option>
+          <option>Doğum günü</option>
+          <option>Evlilik teklifi</option>
+          <option>Yıldönümü</option>
+          <option>Özür / Barışma</option>
+          <option>Özlem / Hasret</option>
+          <option>Diğer</option>
+        </select>
+
+
+        <label for="name">
+          Şarkıda kimin adı geçsin?
+        </label>
+
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Örn: Zeynep"
+        >
+
+
+        <label for="story">
+          Hikâyenizi anlatın ❤️
+        </label>
+
+        <textarea
+          id="story"
+          name="story"
+          placeholder="Nasıl tanıştınız? Neler yaşadınız? Bu şarkıda hangi anınız olsun?"
+          required
+        ></textarea>
+
+
+        <label for="emotion">
+          Şarkının duygusu
+        </label>
+
+        <select id="emotion" name="emotion" required>
+          <option value="">Seçiniz</option>
+          <option>Aşk</option>
+          <option>Romantik</option>
+          <option>Özlem</option>
+          <option>Hüzünlü</option>
+          <option>Duygusal</option>
+          <option>Tutkulu</option>
+          <option>Neşeli</option>
+          <option>Umutlu</option>
+          <option>Eğlenceli</option>
+        </select>
+
+
+        <label for="style">
+          Müzik tarzı 🎶
+        </label>
+
+        <select id="style" name="style" required>
+          <option value="">Seçiniz</option>
+          <option>Slow / Romantik</option>
+          <option>Akustik</option>
+          <option>Pop</option>
+          <option>Arabesk</option>
+          <option>R&B</option>
+          <option>Rap</option>
+          <option>Duygusal</option>
+          <option>Hareketli</option>
+          <option>Sinematik</option>
+          <option>Emin değilim</option>
+        </select>
+
+
+        <label for="special">
+          Şarkıda mutlaka geçmesini istediğiniz sözler
+        </label>
+
+        <textarea
+          id="special"
+          name="special"
+          placeholder="Özel bir cümle, lakap, tarih veya söz varsa buraya yazabilirsiniz."
+        ></textarea>
+
+
+        <label for="message">
+          Şarkının sonunda özel mesaj
+        </label>
+
+        <input
+          type="text"
+          id="message"
+          name="message"
+          placeholder="Örn: Seni her zaman seveceğim..."
+        >
+
+
+        <label for="email">
+          E-posta adresiniz
+        </label>
+
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="ornek@email.com"
+          required
+        >
+
+
+        <label for="whatsapp">
+          WhatsApp numaranız
+        </label>
+
+        <input
+          type="tel"
+          id="whatsapp"
+          name="whatsapp"
+          placeholder="05xx xxx xx xx"
+        >
+
+
+        <button
+          type="submit"
+          class="submit-button"
+        >
+          🎵 Şarkımı Oluştur
+        </button>
+
+        <p class="note">
+          Formu gönderdikten sonra sipariş ve ödeme adımlarını
+          ayrıca netleştireceğiz.
+        </p>
+
+      </form>
+
+    </div>
+
+
+    <div class="footer">
+      © 2026 Gece Mavi Müzik
+    </div>
+
+  </div>
+
 </body>
 </html>
