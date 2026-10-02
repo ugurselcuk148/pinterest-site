@@ -1,335 +1,630 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Şarkı Fabrikası | Gece Mavi Müzik</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BİŞARKI | Sana Özel Şarkılar</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #07152f, #102b5c, #050b18);
-      color: white;
-      min-height: 100vh;
-    }
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #061326;
+  color: #fff;
+}
 
-    .container {
-      max-width: 700px;
-      margin: auto;
-      padding: 40px 20px;
-    }
+.container {
+  width: min(94%, 720px);
+  margin: auto;
+}
 
-    .hero {
-      text-align: center;
-    }
+.hero {
+  text-align: center;
+  padding: 34px 10px 24px;
+}
 
-    .logo {
-      font-size: 52px;
-      margin-bottom: 10px;
-    }
+.logo {
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #67b7ff;
+}
 
-    h1 {
-      font-size: 42px;
-      margin: 10px 0;
-    }
+.hero h1 {
+  font-size: 27px;
+  margin: 14px 0 10px;
+}
 
-    .subtitle {
-      font-size: 20px;
-      color: #cbd9ff;
-      line-height: 1.6;
-    }
+.hero p {
+  color: #b9c9dc;
+  line-height: 1.6;
+  margin: 0;
+}
 
-    .price {
-      display: inline-block;
-      margin: 20px 0;
-      padding: 12px 22px;
-      border-radius: 30px;
-      background: rgba(255,255,255,0.12);
-      font-size: 18px;
-      font-weight: bold;
-    }
+.price {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 10px 18px;
+  border-radius: 30px;
+  background: #0c2b50;
+  color: #7fc4ff;
+  font-weight: bold;
+}
 
-    .box {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 20px;
-      padding: 28px;
-      margin-top: 25px;
-    }
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 40px;
+}
 
-    .box h2 {
-      margin-top: 0;
-      text-align: center;
-    }
+.tab {
+  background: #0a1d35;
+  border: 1px solid #17385d;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0,0,0,.22);
+}
 
-    .steps {
-      text-align: left;
-      line-height: 2;
-      color: #dce6ff;
-    }
+.tab-header {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: white;
+  padding: 19px;
+  text-align: left;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-    label {
-      display: block;
-      margin-top: 18px;
-      margin-bottom: 7px;
-      font-weight: bold;
-    }
+.tab-header span:last-child {
+  color: #68b9ff;
+  font-size: 24px;
+}
 
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 13px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.1);
-      color: white;
-      font-size: 16px;
-      outline: none;
-    }
+.tab-content {
+  display: none;
+  padding: 0 18px 22px;
+}
 
-    select option {
-      color: black;
-    }
+.tab.open .tab-content {
+  display: block;
+}
 
-    textarea {
-      min-height: 130px;
-      resize: vertical;
-    }
+.tab.open .tab-header span:last-child {
+  transform: rotate(45deg);
+}
 
-    input::placeholder,
-    textarea::placeholder {
-      color: #b8c4df;
-    }
+.info {
+  background: #0d2949;
+  border-radius: 13px;
+  padding: 14px;
+  margin-bottom: 18px;
+  color: #c7d8eb;
+  line-height: 1.55;
+  font-size: 14px;
+}
 
-    .submit-button {
-      width: 100%;
-      margin-top: 25px;
-      padding: 16px;
-      border: none;
-      border-radius: 30px;
-      background: white;
-      color: #07152f;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+label {
+  display: block;
+  margin: 15px 0 7px;
+  color: #dbeaff;
+  font-weight: bold;
+  font-size: 14px;
+}
 
-    .submit-button:hover {
-      opacity: 0.9;
-    }
+input,
+textarea,
+select {
+  width: 100%;
+  border: 1px solid #244d77;
+  background: #07182c;
+  color: white;
+  border-radius: 11px;
+  padding: 13px;
+  font-size: 15px;
+  outline: none;
+}
 
-    .note {
-      margin-top: 12px;
-      text-align: center;
-      color: #aebddd;
-      font-size: 13px;
-      line-height: 1.5;
-    }
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #4da9ff;
+}
 
-    .footer {
-      text-align: center;
-      margin-top: 35px;
-      color: #9fb0d5;
-      font-size: 14px;
-    }
-  </style>
+textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+select option {
+  background: #07182c;
+}
+
+input[type="file"] {
+  padding: 10px;
+}
+
+.file-name {
+  margin-top: 7px;
+  color: #7fc4ff;
+  font-size: 13px;
+}
+
+.btn {
+  width: 100%;
+  margin-top: 20px;
+  border: 0;
+  border-radius: 13px;
+  padding: 15px;
+  background: linear-gradient(135deg, #1688e8, #4db8ff);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn:active {
+  transform: scale(.99);
+}
+
+.note {
+  margin-top: 13px;
+  font-size: 12px;
+  color: #91a7c0;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.success {
+  display: none;
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #103b32;
+  border: 1px solid #1f806b;
+  color: #b9ffe9;
+  line-height: 1.5;
+}
+
+footer {
+  text-align: center;
+  padding: 25px 10px 40px;
+  color: #71869e;
+  font-size: 13px;
+}
+
+.special-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 10px 0 18px;
+}
+
+.special-item {
+  background: #0b2441;
+  border: 1px solid #1b436a;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 13px;
+  color: #d9eaff;
+}
+
+@media(max-width:480px) {
+  .special-list {
+    grid-template-columns: 1fr;
+  }
+
+  .hero h1 {
+    font-size: 24px;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <div class="container">
+<div class="container">
 
-    <div class="hero">
-      <div class="logo">🎵🌙</div>
+  <header class="hero">
+    <div class="logo">BİŞARKI</div>
+    <h1>Hikâyeni bir şarkıya dönüştürelim. 💙</h1>
+    <p>
+      Sevdiğin kişiye, özel bir güne veya hayatındaki unutulmaz bir ana
+      özel şarkını birlikte hazırlayalım.
+    </p>
+    <div class="price">🎵 MP3 100 TL'den başlayan fiyatlarla</div>
+  </header>
 
-      <h1>Şarkı Fabrikası</h1>
+  <main class="tabs">
 
-      <p class="subtitle">
-        Hikâyeni anlat,<br>
-        onu sana özel bir şarkıya dönüştürelim. 💙
-      </p>
+    <!-- MP3 -->
+    <section class="tab open">
 
-      <div class="price">
-        Başlangıç fiyatı: 100 TL
+      <button class="tab-header" type="button">
+        <span>🎵 MP3 ŞARKI</span>
+        <span>+</span>
+      </button>
+
+      <div class="tab-content">
+
+        <div class="info">
+          <strong>Sana özel bir şarkı</strong><br>
+          Hikâyeni anlat, duygunu seç ve sana özel şarkı fikrini oluşturalım.
+          MP3 olarak teslim edilir.
+          <br><br>
+          💙 <strong>100 TL'den başlayan fiyat</strong>
+        </div>
+
+        <form class="order-form" data-type="MP3 Şarkı">
+
+          <input type="hidden" name="urun" value="MP3 Şarkı">
+
+          <label>Şarkı kimin için?</label>
+          <input type="text" name="sarki_kimin_icin" required
+                 placeholder="Örn: Sevgilim, eşim, annem...">
+
+          <label>Şarkıda kimin adı geçsin?</label>
+          <input type="text" name="isim"
+                 placeholder="Örn: Ayşe">
+
+          <label>Hikâyenizi anlatın ❤️</label>
+          <textarea name="hikaye" required
+                    placeholder="Tanışmanız, yaşadığınız güzel bir anı, duygularınız..."></textarea>
+
+          <label>Şarkının duygusu</label>
+          <select name="duygu" required>
+            <option value="">Seçiniz</option>
+            <option>Aşk ve romantik</option>
+            <option>Hüzünlü</option>
+            <option>Özlem</option>
+            <option>Mutlu</option>
+            <option>Enerjik</option>
+            <option>Duygusal</option>
+            <option>Neşeli</option>
+          </select>
+
+          <label>Müzik tarzı 🎶</label>
+          <select name="tarz" required>
+            <option value="">Seçiniz</option>
+            <option>Pop</option>
+            <option>Slow</option>
+            <option>Arabesk</option>
+            <option>Türkçe Rock</option>
+            <option>Akustik</option>
+            <option>Rap</option>
+            <option>Fantezi</option>
+            <option>Karışık / BİŞARKI seçsin</option>
+          </select>
+
+          <label>Şarkıda mutlaka geçmesini istediğiniz sözler</label>
+          <textarea name="ozel_sozler"
+                    placeholder="Varsa özel kelime, cümle veya isimleri yazabilirsiniz."></textarea>
+
+          <label>Şarkının sonunda özel mesaj</label>
+          <textarea name="son_mesaj"
+                    placeholder="Örn: Seni her zaman seveceğim..."></textarea>
+
+          <label>E-posta adresiniz</label>
+          <input type="email" name="email" required
+                 placeholder="ornek@email.com">
+
+          <label>WhatsApp numaranız</label>
+          <input type="tel" name="whatsapp" required
+                 placeholder="05xx xxx xx xx">
+
+          <button class="btn" type="submit">
+            🎵 MP3 Talebimi Hazırla
+          </button>
+
+          <div class="success"></div>
+
+          <div class="note">
+            Form şu anda tasarım/prototip aşamasındadır.
+            Gerçek ödeme ve otomatik sipariş sistemi henüz bağlanmadı.
+          </div>
+
+        </form>
       </div>
-    </div>
+    </section>
 
 
-    <div class="box">
-      <h2>🎶 Şarkını Tasarla</h2>
+    <!-- MP4 -->
+    <section class="tab">
 
-      <div class="steps">
-        🎤 Hikâyeni anlat<br>
-        ❤️ Duygunu seç<br>
-        🎶 Müzik tarzını belirle<br>
-        💙 Biz onu şarkıya dönüştürelim
+      <button class="tab-header" type="button">
+        <span>🎬 MP4 KLİP</span>
+        <span>+</span>
+      </button>
+
+      <div class="tab-content">
+
+        <div class="info">
+          <strong>Şarkına özel klip</strong><br>
+          Sana özel şarkının yanında fotoğraf ve görsellerle hazırlanmış
+          bir MP4 klip seçeneği oluşturabiliriz.
+          <br><br>
+          🎬 <strong>Fiyat seçilen seçeneklere göre belirlenir.</strong>
+        </div>
+
+        <form class="order-form" data-type="MP4 Klip">
+
+          <input type="hidden" name="urun" value="MP4 Klip">
+
+          <label>Şarkı kimin için?</label>
+          <input type="text" name="sarki_kimin_icin" required
+                 placeholder="Örn: Sevgilim, eşim, annem...">
+
+          <label>Şarkıda kimin adı geçsin?</label>
+          <input type="text" name="isim"
+                 placeholder="Örn: Mehmet">
+
+          <label>Hikâyenizi anlatın ❤️</label>
+          <textarea name="hikaye" required
+                    placeholder="Klipte kullanılabilecek anılarınızı anlatın..."></textarea>
+
+          <label>Şarkının duygusu</label>
+          <select name="duygu" required>
+            <option value="">Seçiniz</option>
+            <option>Aşk ve romantik</option>
+            <option>Hüzünlü</option>
+            <option>Özlem</option>
+            <option>Mutlu</option>
+            <option>Enerjik</option>
+            <option>Duygusal</option>
+            <option>Neşeli</option>
+          </select>
+
+          <label>Müzik tarzı 🎶</label>
+          <select name="tarz" required>
+            <option value="">Seçiniz</option>
+            <option>Pop</option>
+            <option>Slow</option>
+            <option>Arabesk</option>
+            <option>Türkçe Rock</option>
+            <option>Akustik</option>
+            <option>Rap</option>
+            <option>Fantezi</option>
+            <option>Karışık / BİŞARKI seçsin</option>
+          </select>
+
+          <label>Fotoğraf / görsel yükle</label>
+          <input id="mp4-file" type="file" name="gorsel"
+                 accept="image/png,image/jpeg,image/webp">
+
+          <div class="file-name" id="file-name">
+            İstersen klip için bir fotoğraf seçebilirsin.
+          </div>
+
+          <label>Şarkıda mutlaka geçmesini istediğiniz sözler</label>
+          <textarea name="ozel_sozler"
+                    placeholder="Varsa özel sözlerinizi yazın."></textarea>
+
+          <label>Şarkının sonunda özel mesaj</label>
+          <textarea name="son_mesaj"
+                    placeholder="Özel mesajınız..."></textarea>
+
+          <label>E-posta adresiniz</label>
+          <input type="email" name="email" required
+                 placeholder="ornek@email.com">
+
+          <label>WhatsApp numaranız</label>
+          <input type="tel" name="whatsapp" required
+                 placeholder="05xx xxx xx xx">
+
+          <button class="btn" type="submit">
+            🎬 MP4 Klip Talebimi Hazırla
+          </button>
+
+          <div class="success"></div>
+
+          <div class="note">
+            Fotoğraf yükleme alanı hazırdır. Gerçek dosya aktarımı ve ödeme
+            sistemi henüz bağlanmamıştır.
+          </div>
+
+        </form>
       </div>
-    </div>
+    </section>
 
 
-    <div class="box">
+    <!-- ÖZEL GÜNLER -->
+    <section class="tab">
 
-      <h2>💙 Şarkı Bilgileri</h2>
+      <button class="tab-header" type="button">
+        <span>💙 ÖZEL GÜNLER</span>
+        <span>+</span>
+      </button>
 
-      <form>
+      <div class="tab-content">
 
-        <label for="recipient">
-          Şarkı kimin için?
-        </label>
+        <div class="info">
+          <strong>Özel gününü unutulmaz yapalım. ✨</strong><br>
+          Doğum günü, yıldönümü, evlilik teklifi veya başka bir özel gün
+          için tamamen kişiye özel bir şarkı hazırlama talebi oluştur.
+        </div>
 
-        <select id="recipient" name="recipient" required>
-          <option value="">Seçiniz</option>
-          <option>Sevgilim</option>
-          <option>Eşim</option>
-          <option>Anne / Baba</option>
-          <option>Çocuğum</option>
-          <option>Arkadaşım</option>
-          <option>Doğum günü</option>
-          <option>Evlilik teklifi</option>
-          <option>Yıldönümü</option>
-          <option>Özür / Barışma</option>
-          <option>Özlem / Hasret</option>
-          <option>Diğer</option>
-        </select>
+        <div class="special-list">
+          <div class="special-item">🎂 Doğum Günü</div>
+          <div class="special-item">💕 Sevgililer Günü</div>
+          <div class="special-item">💍 Yıldönümü</div>
+          <div class="special-item">💐 Anneler Günü</div>
+          <div class="special-item">👨‍👧 Babalar Günü</div>
+          <div class="special-item">💍 Evlilik Teklifi</div>
+          <div class="special-item">💒 Düğün</div>
+          <div class="special-item">👶 Bebek / Doğum</div>
+          <div class="special-item">🎓 Mezuniyet</div>
+          <div class="special-item">❤️ Sevgilime Özel</div>
+          <div class="special-item">✨ Diğer</div>
+        </div>
 
+        <form class="order-form" data-type="Özel Gün">
 
-        <label for="name">
-          Şarkıda kimin adı geçsin?
-        </label>
+          <input type="hidden" name="urun" value="Özel Gün">
 
-        <input
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Örn: Zeynep"
-        >
+          <label>Özel günün türü</label>
+          <select name="ozel_gun" required>
+            <option value="">Seçiniz</option>
+            <option>🎂 Doğum Günü</option>
+            <option>💕 Sevgililer Günü</option>
+            <option>💍 Yıldönümü</option>
+            <option>💐 Anneler Günü</option>
+            <option>👨‍👧 Babalar Günü</option>
+            <option>💍 Evlilik Teklifi</option>
+            <option>💒 Düğün</option>
+            <option>👶 Bebek / Doğum</option>
+            <option>🎓 Mezuniyet</option>
+            <option>❤️ Sevgilime Özel</option>
+            <option>✨ Diğer</option>
+          </select>
 
+          <label>Şarkı kimin için?</label>
+          <input type="text" name="sarki_kimin_icin" required
+                 placeholder="Örn: Eşim, sevgilim, annem...">
 
-        <label for="story">
-          Hikâyenizi anlatın ❤️
-        </label>
+          <label>Şarkıda kimin adı geçsin?</label>
+          <input type="text" name="isim"
+                 placeholder="Örn: Elif">
 
-        <textarea
-          id="story"
-          name="story"
-          placeholder="Nasıl tanıştınız? Neler yaşadınız? Bu şarkıda hangi anınız olsun?"
-          required
-        ></textarea>
+          <label>Özel gününüzü anlatın ❤️</label>
+          <textarea name="hikaye" required
+                    placeholder="Bu özel günün hikâyesini anlatın..."></textarea>
 
+          <label>Şarkının duygusu</label>
+          <select name="duygu" required>
+            <option value="">Seçiniz</option>
+            <option>Aşk ve romantik</option>
+            <option>Duygusal</option>
+            <option>Mutlu</option>
+            <option>Neşeli</option>
+            <option>Hüzünlü</option>
+            <option>Enerjik</option>
+            <option>Özlem</option>
+          </select>
 
-        <label for="emotion">
-          Şarkının duygusu
-        </label>
+          <label>Müzik tarzı 🎶</label>
+          <select name="tarz" required>
+            <option value="">Seçiniz</option>
+            <option>Pop</option>
+            <option>Slow</option>
+            <option>Arabesk</option>
+            <option>Akustik</option>
+            <option>Türkçe Rock</option>
+            <option>Rap</option>
+            <option>Fantezi</option>
+            <option>Karışık / BİŞARKI seçsin</option>
+          </select>
 
-        <select id="emotion" name="emotion" required>
-          <option value="">Seçiniz</option>
-          <option>Aşk</option>
-          <option>Romantik</option>
-          <option>Özlem</option>
-          <option>Hüzünlü</option>
-          <option>Duygusal</option>
-          <option>Tutkulu</option>
-          <option>Neşeli</option>
-          <option>Umutlu</option>
-          <option>Eğlenceli</option>
-        </select>
+          <label>Şarkıda mutlaka geçmesini istediğiniz sözler</label>
+          <textarea name="ozel_sozler"
+                    placeholder="Özel isimler, sözler veya cümleler..."></textarea>
 
+          <label>Şarkının sonunda özel mesaj</label>
+          <textarea name="son_mesaj"
+                    placeholder="Şarkının sonunda söylenmesini istediğiniz mesaj..."></textarea>
 
-        <label for="style">
-          Müzik tarzı 🎶
-        </label>
+          <label>E-posta adresiniz</label>
+          <input type="email" name="email" required
+                 placeholder="ornek@email.com">
 
-        <select id="style" name="style" required>
-          <option value="">Seçiniz</option>
-          <option>Slow / Romantik</option>
-          <option>Akustik</option>
-          <option>Pop</option>
-          <option>Arabesk</option>
-          <option>R&B</option>
-          <option>Rap</option>
-          <option>Duygusal</option>
-          <option>Hareketli</option>
-          <option>Sinematik</option>
-          <option>Emin değilim</option>
-        </select>
+          <label>WhatsApp numaranız</label>
+          <input type="tel" name="whatsapp" required
+                 placeholder="05xx xxx xx xx">
 
+          <button class="btn" type="submit">
+            💙 Özel Gün Talebimi Hazırla
+          </button>
 
-        <label for="special">
-          Şarkıda mutlaka geçmesini istediğiniz sözler
-        </label>
+          <div class="success"></div>
 
-        <textarea
-          id="special"
-          name="special"
-          placeholder="Özel bir cümle, lakap, tarih veya söz varsa buraya yazabilirsiniz."
-        ></textarea>
+          <div class="note">
+            Bu form şu anda talep tasarımı içindir.
+            Gerçek sipariş/ödeme bağlantısı daha sonra ikas sistemine bağlanabilir.
+          </div>
 
+        </form>
+      </div>
+    </section>
 
-        <label for="message">
-          Şarkının sonunda özel mesaj
-        </label>
+  </main>
 
-        <input
-          type="text"
-          id="message"
-          name="message"
-          placeholder="Örn: Seni her zaman seveceğim..."
-        >
+  <footer>
+    © 2026 BİŞARKI
+    <br>
+    Hikâyen varsa, bir şarkın var. 🎵💙
+  </footer>
 
+</div>
 
-        <label for="email">
-          E-posta adresiniz
-        </label>
+<script>
+const tabs = document.querySelectorAll(".tab");
 
-        <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="ornek@email.com"
-          required
-        >
+tabs.forEach(tab => {
+  const header = tab.querySelector(".tab-header");
 
+  header.addEventListener("click", () => {
+    const wasOpen = tab.classList.contains("open");
 
-        <label for="whatsapp">
-          WhatsApp numaranız
-        </label>
+    tabs.forEach(item => item.classList.remove("open"));
 
-        <input
-          type="tel"
-          id="whatsapp"
-          name="whatsapp"
-          placeholder="05xx xxx xx xx"
-        >
-
-
-        <button
-          type="submit"
-          class="submit-button"
-        >
-          🎵 Şarkımı Oluştur
-        </button>
-
-        <p class="note">
-          Formu gönderdikten sonra sipariş ve ödeme adımlarını
-          ayrıca netleştireceğiz.
-        </p>
-
-      </form>
-
-    </div>
+    if (!wasOpen) {
+      tab.classList.add("open");
+    }
+  });
+});
 
 
-    <div class="footer">
-      © 2026 Gece Mavi Müzik
-    </div>
+const fileInput = document.getElementById("mp4-file");
+const fileName = document.getElementById("file-name");
 
-  </div>
+if (fileInput) {
+  fileInput.addEventListener("change", () => {
+    if (fileInput.files.length > 0) {
+      fileName.textContent = "Seçilen dosya: " + fileInput.files[0].name;
+    } else {
+      fileName.textContent =
+        "İstersen klip için bir fotoğraf seçebilirsin.";
+    }
+  });
+}
+
+
+document.querySelectorAll(".order-form").forEach(form => {
+
+  form.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const type = form.dataset.type;
+    const success = form.querySelector(".success");
+
+    success.style.display = "block";
+    success.innerHTML =
+      "💙 <strong>" + type + "</strong> talebiniz form üzerinde hazırlandı.<br><br>" +
+      "Gerçek sipariş ve ödeme bağlantısı henüz etkin değil. " +
+      "Bir sonraki aşamada bu formu ikas sipariş sistemine bağlayabiliriz.";
+
+    success.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  });
+
+});
+</script>
 
 </body>
 </html>
