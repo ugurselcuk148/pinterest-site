@@ -28,6 +28,54 @@
   background: #07182c;
 }
 
+/* BİŞARKI kullanıcı metadata alanları */
+.bisarki-metadata {
+  margin: 16px auto 8px;
+  padding: 12px;
+  border: 1px solid #17385d;
+  border-radius: 14px;
+  background: rgba(7, 24, 44, .72);
+  text-align: left;
+}
+
+.bisarki-metadata-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.bisarki-meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.bisarki-meta-field label {
+  color: #b9c9dc;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.bisarki-meta-field select {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #17385d;
+  border-radius: 10px;
+  background: #07182c;
+  color: #fff;
+}
+
+.bisarki-meta-field select[multiple] {
+  min-height: 76px;
+}
+
+@media(max-width:480px) {
+  .bisarki-metadata-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -316,8 +364,85 @@ footer {
       <option value="it">🇮🇹 Italiano</option>
     </select>
   </div>
-    <h1>Hikâyeni bir şarkıya dönüştürelim. 💙</h1>
-    <p>
+
+  <div class="bisarki-metadata" id="bisarki-metadata">
+    <div class="bisarki-metadata-grid">
+
+      <div class="bisarki-meta-field">
+        <label for="bisarki-location" id="bisarki-location-label">📍 Lokasyon</label>
+        <select id="bisarki-location">
+          <option value="TR">🇹🇷 Türkiye</option>
+          <option value="US">🇺🇸 Amerika Birleşik Devletleri</option>
+          <option value="GB">🇬🇧 Birleşik Krallık</option>
+          <option value="CN">🇨🇳 Çin</option>
+          <option value="IN">🇮🇳 Hindistan</option>
+          <option value="RU">🇷🇺 Rusya</option>
+          <option value="SA">🇸🇦 Suudi Arabistan</option>
+          <option value="DE">🇩🇪 Almanya</option>
+          <option value="FR">🇫🇷 Fransa</option>
+          <option value="ES">🇪🇸 İspanya</option>
+          <option value="IT">🇮🇹 İtalya</option>
+        </select>
+      </div>
+
+      <div class="bisarki-meta-field">
+        <label for="bisarki-speaking-language" id="bisarki-speaking-label">💬 Konuşma Dili</label>
+        <select id="bisarki-speaking-language" multiple>
+          <option value="tr">Türkçe</option>
+          <option value="en">English</option>
+          <option value="zh">中文</option>
+          <option value="hi">हिन्दी</option>
+          <option value="ru">Русский</option>
+          <option value="ar">العربية</option>
+          <option value="de">Deutsch</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+          <option value="it">Italiano</option>
+        </select>
+      </div>
+
+      <div class="bisarki-meta-field">
+        <label for="bisarki-writing-language" id="bisarki-writing-label">✍️ Yazışma Dili</label>
+        <select id="bisarki-writing-language" multiple>
+          <option value="tr">Türkçe</option>
+          <option value="en">English</option>
+          <option value="zh">中文</option>
+          <option value="hi">हिन्दी</option>
+          <option value="ru">Русский</option>
+          <option value="ar">العربية</option>
+          <option value="de">Deutsch</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+          <option value="it">Italiano</option>
+        </select>
+      </div>
+
+      <div class="bisarki-meta-field">
+        <label for="bisarki-song-language-top" id="bisarki-song-label">🎵 Şarkı Dili</label>
+        <select id="bisarki-song-language-top">
+          <option value="tr">Türkçe</option>
+          <option value="en">English</option>
+          <option value="zh">中文</option>
+          <option value="hi">हिन्दी</option>
+          <option value="ru">Русский</option>
+          <option value="ar">العربية</option>
+          <option value="de">Deutsch</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+          <option value="it">Italiano</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div id="bisarki-location-info"
+         style="margin-top:8px;font-size:11px;color:#8fa7c0;">
+      Ülke veya bölgenizi seçin.
+    </div>
+  </div>
+  </div>
+    <h1 id="bisarki-hero-title">Hikâyeni bir şarkıya dönüştürelim. 💙</h1>
+    <p id="bisarki-hero-text">
       Sevdiğin kişiye, özel bir güne veya hayatındaki unutulmaz bir ana
       özel şarkını birlikte hazırlayalım.
     </p>
@@ -659,6 +784,10 @@ const translations = {
 
   tr: {
     language: "🌍 Dil / Language",
+    location: "📍 Lokasyon",
+    locationInfo: "Ülke veya bölgenizi seçin.",
+    speakingLanguage: "💬 Konuşma Dili",
+    writingLanguage: "✍️ Yazışma Dili",
     heroTitle: "Sana Özel Şarkılar",
     heroText: "Hikâyeni anlat, biz onu şarkıya dönüştürelim.",
     mp3: "MP3 ŞARKI",
@@ -688,6 +817,10 @@ const translations = {
 
   en: {
     language: "🌍 Language",
+    location: "📍 Location",
+    locationInfo: "Choose your country or region.",
+    speakingLanguage: "💬 Speaking Language",
+    writingLanguage: "✍️ Writing Language",
     heroTitle: "Songs Made Just for You",
     heroText: "Tell your story, and we'll turn it into a song.",
     mp3: "MP3 SONG",
@@ -717,6 +850,10 @@ const translations = {
 
   zh: {
     language: "🌍 语言 / Language",
+    location: "📍 地区",
+    locationInfo: "请选择您的国家或地区。",
+    speakingLanguage: "💬 口语语言",
+    writingLanguage: "✍️ 书写语言",
     heroTitle: "为你专属创作的歌曲",
     heroText: "告诉我们你的故事，我们将把它变成一首歌曲。",
     mp3: "MP3 歌曲",
@@ -746,6 +883,10 @@ const translations = {
 
   hi: {
     language: "🌍 भाषा / Language",
+    location: "📍 स्थान",
+    locationInfo: "अपना देश या क्षेत्र चुनें।",
+    speakingLanguage: "💬 बोलने की भाषा",
+    writingLanguage: "✍️ लिखने की भाषा",
     heroTitle: "आपके लिए विशेष गीत",
     heroText: "अपनी कहानी बताइए, हम उसे एक गीत में बदल देंगे।",
     mp3: "MP3 गीत",
@@ -775,6 +916,10 @@ const translations = {
 
   ru: {
     language: "🌍 Язык / Language",
+    location: "📍 Местоположение",
+    locationInfo: "Выберите страну или регион.",
+    speakingLanguage: "💬 Язык общения",
+    writingLanguage: "✍️ Язык переписки",
     heroTitle: "Песни, созданные специально для вас",
     heroText: "Расскажите свою историю, и мы превратим её в песню.",
     mp3: "MP3 ПЕСНЯ",
@@ -804,6 +949,10 @@ const translations = {
 
   ar: {
     language: "🌍 اللغة / Language",
+    location: "📍 الموقع",
+    locationInfo: "اختر بلدك أو منطقتك.",
+    speakingLanguage: "💬 لغة التحدث",
+    writingLanguage: "✍️ لغة الكتابة",
     heroTitle: "أغانٍ مخصصة لك",
     heroText: "احكِ قصتك وسنحوّلها إلى أغنية.",
     mp3: "أغنية MP3",
@@ -833,6 +982,10 @@ const translations = {
 
   de: {
     language: "🌍 Sprache / Language",
+    location: "📍 Standort",
+    locationInfo: "Wählen Sie Ihr Land oder Ihre Region.",
+    speakingLanguage: "💬 Gesprochene Sprache",
+    writingLanguage: "✍️ Schriftsprache",
     heroTitle: "Songs nur für dich",
     heroText: "Erzähle deine Geschichte und wir machen daraus ein Lied.",
     mp3: "MP3 SONG",
@@ -862,6 +1015,10 @@ const translations = {
 
   fr: {
     language: "🌍 Langue / Language",
+    location: "📍 Localisation",
+    locationInfo: "Choisissez votre pays ou votre région.",
+    speakingLanguage: "💬 Langue parlée",
+    writingLanguage: "✍️ Langue écrite",
     heroTitle: "Des chansons créées pour vous",
     heroText: "Racontez votre histoire et nous la transformerons en chanson.",
     mp3: "CHANSON MP3",
@@ -891,6 +1048,10 @@ const translations = {
 
   es: {
     language: "🌍 Idioma / Language",
+    location: "📍 Ubicación",
+    locationInfo: "Elige tu país o región.",
+    speakingLanguage: "💬 Idioma hablado",
+    writingLanguage: "✍️ Idioma escrito",
     heroTitle: "Canciones hechas especialmente para ti",
     heroText: "Cuéntanos tu historia y la convertiremos en una canción.",
     mp3: "CANCIÓN MP3",
@@ -920,6 +1081,10 @@ const translations = {
 
   it: {
     language: "🌍 Lingua / Language",
+    location: "📍 Posizione",
+    locationInfo: "Scegli il tuo paese o la tua regione.",
+    speakingLanguage: "💬 Lingua parlata",
+    writingLanguage: "✍️ Lingua scritta",
     heroTitle: "Canzoni create appositamente per te",
     heroText: "Raccontaci la tua storia e la trasformeremo in una canzone.",
     mp3: "CANZONE MP3",
@@ -1028,14 +1193,14 @@ function applyTranslations(language) {
   }
 
   const heroTitle =
-    document.querySelector("header h1, .hero h1, .hero-title");
+    document.getElementById("bisarki-hero-title");
 
   if (heroTitle) {
     heroTitle.textContent = t.heroTitle;
   }
 
   const heroText =
-    document.querySelector("header p, .hero p, .hero-text");
+    document.getElementById("bisarki-hero-text");
 
   if (heroText) {
     heroText.textContent = t.heroText;
@@ -2258,7 +2423,11 @@ function addBisarkiCurrencyConverter() {
   const languageBox = document.querySelector(".language-box");
   const hero = document.querySelector(".hero");
 
-  if (languageBox) {
+  const metadata = document.getElementById("bisarki-metadata");
+
+  if (metadata) {
+    metadata.insertAdjacentElement("afterend", box);
+  } else if (languageBox) {
     languageBox.insertAdjacentElement("afterend", box);
   } else if (hero) {
     hero.appendChild(box);
@@ -2543,6 +2712,330 @@ applyFormTranslations = function(language) {
 };
 
 applyBisarkiCurrencyUiTranslations(
+  localStorage.getItem("bisarkiPageLanguage") || "tr"
+);
+
+
+/* 🌍 BİŞARKI kullanıcı metadata davranışları */
+const bisarkiMetadataLanguages = {
+  tr: ["Türkçe","English","中文","हिन्दी","Русский","العربية","Deutsch","Français","Español","Italiano"],
+  en: ["Turkish","English","Chinese","Hindi","Russian","Arabic","German","French","Spanish","Italian"],
+  zh: ["土耳其语","英语","中文","印地语","俄语","阿拉伯语","德语","法语","西班牙语","意大利语"],
+  hi: ["तुर्की","अंग्रेज़ी","चीनी","हिन्दी","रूसी","अरबी","जर्मन","फ़्रेंच","स्पेनिश","इतालवी"],
+  ru: ["Турецкий","Английский","Китайский","Хинди","Русский","Арабский","Немецкий","Французский","Испанский","Итальянский"],
+  ar: ["التركية","الإنجليزية","الصينية","الهندية","الروسية","العربية","الألمانية","الفرنسية","الإسبانية","الإيطالية"],
+  de: ["Türkisch","Englisch","Chinesisch","Hindi","Russisch","Arabisch","Deutsch","Französisch","Spanisch","Italienisch"],
+  fr: ["Turc","Anglais","Chinois","Hindi","Russe","Arabe","Allemand","Français","Espagnol","Italien"],
+  es: ["Turco","Inglés","Chino","Hindi","Ruso","Árabe","Alemán","Francés","Español","Italiano"],
+  it: ["Turco","Inglese","Cinese","Hindi","Russo","Arabo","Tedesco","Francese","Spagnolo","Italiano"]
+};
+
+const bisarkiSongMetadataLanguages = {
+  tr: ["Türkçe","İngilizce","Çince","Hintçe","Rusça","Arapça","Almanca","Fransızca","İspanyolca","İtalyanca"],
+  en: ["Turkish","English","Chinese","Hindi","Russian","Arabic","German","French","Spanish","Italian"],
+  zh: ["土耳其语","英语","中文","印地语","俄语","阿拉伯语","德语","法语","西班牙语","意大利语"],
+  hi: ["तुर्की","अंग्रेज़ी","चीनी","हिन्दी","रूसी","अरबी","जर्मन","फ़्रेंच","स्पेनिश","इतालवी"],
+  ru: ["Турецкий","Английский","Китайский","Хинди","Русский","Арабский","Немецкий","Французский","Испанский","Итальянский"],
+  ar: ["التركية","الإنجليزية","الصينية","الهندية","الروسية","العربية","الألمانية","الفرنسية","الإسبانية","الإيطالية"],
+  de: ["Türkisch","Englisch","Chinesisch","Hindi","Russisch","Arabisch","Deutsch","Französisch","Spanisch","Italienisch"],
+  fr: ["Turc","Anglais","Chinois","Hindi","Russe","Arabe","Allemand","Français","Espagnol","Italien"],
+  es: ["Turco","Inglés","Chino","Hindi","Ruso","Árabe","Alemán","Francés","Español","Italiano"],
+  it: ["Turco","Inglese","Cinese","Hindi","Russo","Arabo","Tedesco","Francese","Spagnolo","Italiano"]
+};
+
+const bisarkiLocationNames = {
+  tr: {
+    TR:"🇹🇷 Türkiye", US:"🇺🇸 Amerika Birleşik Devletleri", GB:"🇬🇧 Birleşik Krallık",
+    CN:"🇨🇳 Çin", IN:"🇮🇳 Hindistan", RU:"🇷🇺 Rusya", SA:"🇸🇦 Suudi Arabistan",
+    DE:"🇩🇪 Almanya", FR:"🇫🇷 Fransa", ES:"🇪🇸 İspanya", IT:"🇮🇹 İtalya"
+  },
+  en: {
+    TR:"🇹🇷 Türkiye", US:"🇺🇸 United States", GB:"🇬🇧 United Kingdom",
+    CN:"🇨🇳 China", IN:"🇮🇳 India", RU:"🇷🇺 Russia", SA:"🇸🇦 Saudi Arabia",
+    DE:"🇩🇪 Germany", FR:"🇫🇷 France", ES:"🇪🇸 Spain", IT:"🇮🇹 Italy"
+  }
+};
+
+function bisarkiDetectLocation() {
+  const saved = localStorage.getItem("bisarkiLocation");
+  if (saved) return saved;
+
+  const locale = (
+    navigator.language ||
+    (navigator.languages && navigator.languages[0]) ||
+    ""
+  ).toUpperCase();
+
+  const match = locale.match(/-([A-Z]{2})$/);
+  const country = match ? match[1] : "";
+
+  const allowed = ["TR","US","GB","CN","IN","RU","SA","DE","FR","ES","IT"];
+
+  if (allowed.includes(country)) return country;
+
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+
+  const timezoneMap = {
+    "Europe/Istanbul":"TR",
+    "America/New_York":"US",
+    "America/Los_Angeles":"US",
+    "Europe/London":"GB",
+    "Asia/Shanghai":"CN",
+    "Asia/Kolkata":"IN",
+    "Europe/Moscow":"RU",
+    "Asia/Riyadh":"SA",
+    "Europe/Berlin":"DE",
+    "Europe/Paris":"FR",
+    "Europe/Madrid":"ES",
+    "Europe/Rome":"IT"
+  };
+
+  return timezoneMap[timezone] || "TR";
+}
+
+function bisarkiSaveMultiSelect(id, key) {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  el.addEventListener("change", function() {
+    const values = Array.from(this.selectedOptions).map(o => o.value);
+    localStorage.setItem(key, JSON.stringify(values));
+  });
+}
+
+function bisarkiLoadMultiSelect(id, key, defaultValue) {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  let values = [];
+
+  try {
+    values = JSON.parse(localStorage.getItem(key) || "[]");
+  } catch (_) {
+    values = [];
+  }
+
+  if (!Array.isArray(values) || !values.length) {
+    values = defaultValue;
+  }
+
+  Array.from(el.options).forEach(option => {
+    option.selected = values.includes(option.value);
+  });
+}
+
+function bisarkiSyncSongLanguage(value) {
+  if (!supportedLanguages.includes(value)) value = "tr";
+
+  localStorage.setItem("bisarkiSongLanguage", value);
+
+  const top = document.getElementById("bisarki-song-language-top");
+  if (top) top.value = value;
+
+  document.querySelectorAll('[name="song_language"]').forEach(select => {
+    if (select.value !== value) select.value = value;
+  });
+}
+
+function bisarkiInitMetadata() {
+  const location = document.getElementById("bisarki-location");
+  const speaking = document.getElementById("bisarki-speaking-language");
+  const writing = document.getElementById("bisarki-writing-language");
+  const songTop = document.getElementById("bisarki-song-language-top");
+  const locationInfo = document.getElementById("bisarki-location-info");
+
+  if (location) {
+    const detected = bisarkiDetectLocation();
+    location.value = detected;
+
+    localStorage.setItem("bisarkiLocation", detected);
+
+    location.addEventListener("change", function() {
+      localStorage.setItem("bisarkiLocation", this.value);
+      bisarkiUpdateLocationInfo();
+    });
+  }
+
+  bisarkiLoadMultiSelect(
+    "bisarki-speaking-language",
+    "bisarkiSpeakingLanguages",
+    ["tr"]
+  );
+
+  bisarkiLoadMultiSelect(
+    "bisarki-writing-language",
+    "bisarkiWritingLanguages",
+    ["tr"]
+  );
+
+  bisarkiSaveMultiSelect(
+    "bisarki-speaking-language",
+    "bisarkiSpeakingLanguages"
+  );
+
+  bisarkiSaveMultiSelect(
+    "bisarki-writing-language",
+    "bisarkiWritingLanguages"
+  );
+
+  const savedSongLanguage =
+    localStorage.getItem("bisarkiSongLanguage") || "tr";
+
+  if (songTop) {
+    songTop.value = supportedLanguages.includes(savedSongLanguage)
+      ? savedSongLanguage
+      : "tr";
+
+    songTop.addEventListener("change", function() {
+      bisarkiSyncSongLanguage(this.value);
+    });
+  }
+
+  document.querySelectorAll('[name="song_language"]').forEach(select => {
+    select.addEventListener("change", function() {
+      bisarkiSyncSongLanguage(this.value);
+    });
+  });
+
+  bisarkiSyncSongLanguage(savedSongLanguage);
+
+  bisarkiUpdateLocationInfo();
+
+  if (locationInfo) {
+    locationInfo.dataset.ready = "true";
+  }
+}
+
+function bisarkiUpdateLocationInfo() {
+  const location = document.getElementById("bisarki-location");
+  const info = document.getElementById("bisarki-location-info");
+
+  if (!location || !info) return;
+
+  const language =
+    localStorage.getItem("bisarkiPageLanguage") || "tr";
+
+  const names =
+    bisarkiLocationNames[language] ||
+    bisarkiLocationNames.tr;
+
+  info.textContent =
+    names[location.value] ||
+    names.TR ||
+    "Ülke veya bölgenizi seçin.";
+}
+
+function bisarkiApplyMetadataLanguage(language) {
+  const t = translations[language] || translations.tr;
+  const meta = document.getElementById("bisarki-metadata");
+
+  if (!meta) return;
+
+  const locationLabel =
+    document.getElementById("bisarki-location-label");
+  const speakingLabel =
+    document.getElementById("bisarki-speaking-label");
+  const writingLabel =
+    document.getElementById("bisarki-writing-label");
+  const songLabel =
+    document.getElementById("bisarki-song-label");
+
+  if (locationLabel) {
+    locationLabel.textContent =
+      t.location || "📍 Lokasyon";
+  }
+
+  if (speakingLabel) {
+    speakingLabel.textContent =
+      t.speakingLanguage || "💬 Konuşma Dili";
+  }
+
+  if (writingLabel) {
+    writingLabel.textContent =
+      t.writingLanguage || "✍️ Yazışma Dili";
+  }
+
+  if (songLabel) {
+    songLabel.textContent =
+      t.songLanguage || "🎵 Şarkı Dili";
+  }
+
+  const codes = supportedLanguages;
+  const names = bisarkiMetadataLanguages[language] ||
+                bisarkiMetadataLanguages.tr;
+
+  ["bisarki-speaking-language","bisarki-writing-language"].forEach(id => {
+    const select = document.getElementById(id);
+    if (!select) return;
+
+    const selected = Array.from(select.selectedOptions)
+      .map(o => o.value);
+
+    select.innerHTML = "";
+
+    codes.forEach((code, index) => {
+      const option = document.createElement("option");
+      option.value = code;
+      option.textContent = names[index];
+      option.selected = selected.includes(code);
+      select.appendChild(option);
+    });
+  });
+
+  const songTop = document.getElementById("bisarki-song-language-top");
+  if (songTop) {
+    const currentSong = songTop.value || "tr";
+    const songNames =
+      bisarkiSongMetadataLanguages[language] ||
+      bisarkiSongMetadataLanguages.tr;
+
+    songTop.innerHTML = "";
+
+    codes.forEach((code, index) => {
+      const option = document.createElement("option");
+      option.value = code;
+      option.textContent = songNames[index];
+      option.selected = code === currentSong;
+      songTop.appendChild(option);
+    });
+
+    songTop.value = supportedLanguages.includes(currentSong)
+      ? currentSong
+      : "tr";
+  }
+
+  const location = document.getElementById("bisarki-location");
+  if (location) {
+    const current = location.value;
+    const locationNames =
+      bisarkiLocationNames[language] ||
+      bisarkiLocationNames.tr;
+
+    Array.from(location.options).forEach(option => {
+      if (locationNames[option.value]) {
+        option.textContent = locationNames[option.value];
+      }
+    });
+
+    location.value = current;
+  }
+
+  meta.dir = language === "ar" ? "rtl" : "ltr";
+
+  bisarkiUpdateLocationInfo();
+}
+
+/* Metadata'yı mevcut dil sistemine bağla */
+const bisarkiPreviousApplyTranslationsForMetadata =
+  applyTranslations;
+
+applyTranslations = function(language) {
+  bisarkiPreviousApplyTranslationsForMetadata(language);
+  bisarkiApplyMetadataLanguage(language);
+};
+
+bisarkiInitMetadata();
+bisarkiApplyMetadataLanguage(
   localStorage.getItem("bisarkiPageLanguage") || "tr"
 );
 
