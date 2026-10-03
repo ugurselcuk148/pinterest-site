@@ -65,6 +65,14 @@ body {
   color: #67b7ff;
 }
 
+.music-box-tag {
+  margin-top: 5px;
+  color: #cfe6ff;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+
 .hero h1 {
   font-size: 27px;
   margin: 14px 0 10px;
@@ -284,6 +292,7 @@ footer {
   <header class="hero">
     <img class="brand-icon" src="./favicon.png" alt="Gece Mavi Müzik">
     <div class="logo">BİŞARKI</div>
+    <div class="music-box-tag" id="bisarki-music-box-tag">Size Özel Müzik Kutusu 🎵</div>
     <h1>Hikâyeni bir şarkıya dönüştürelim. 💙</h1>
     <p>
       Sevdiğin kişiye, özel bir güne veya hayatındaki unutulmaz bir ana
@@ -2228,6 +2237,31 @@ applyFormTranslations = function(language) {
 addBisarkiCurrencyConverter();
 
 
+/* 🎵 BİŞARKI Müzik Kutusu çok dilli başlık */
+const bisarkiMusicBoxTranslations = {
+  tr: "Size Özel Müzik Kutusu 🎵",
+  en: "Your Personalized Music Box 🎵",
+  zh: "专属音乐盒 🎵",
+  hi: "आपके लिए विशेष संगीत बॉक्स 🎵",
+  ru: "Ваша персональная музыкальная шкатулка 🎵",
+  ar: "صندوق الموسيقى الخاص بك 🎵",
+  de: "Deine persönliche Musikbox 🎵",
+  fr: "Votre boîte à musique personnalisée 🎵",
+  es: "Tu caja de música personalizada 🎵",
+  it: "Il tuo carillon musicale personalizzato 🎵"
+};
+
+function applyBisarkiMusicBoxLanguage(language) {
+  const el = document.getElementById("bisarki-music-box-tag");
+  if (!el) return;
+
+  el.textContent =
+    bisarkiMusicBoxTranslations[language] ||
+    bisarkiMusicBoxTranslations.tr;
+
+  el.dir = language === "ar" ? "rtl" : "ltr";
+}
+
 /* 💱 Döviz + üst MP3 fiyatı çok dilli son düzeltme */
 const bisarkiCurrencyUiTranslations = {
   tr: {
@@ -2399,6 +2433,7 @@ const bisarkiPreviousApplyFormTranslationsForCurrencyUi =
 applyFormTranslations = function(language) {
   bisarkiPreviousApplyFormTranslationsForCurrencyUi(language);
   applyBisarkiCurrencyUiTranslations(language);
+  applyBisarkiMusicBoxLanguage(language);
 };
 
 applyBisarkiCurrencyUiTranslations(
