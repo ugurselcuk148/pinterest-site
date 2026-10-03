@@ -2716,6 +2716,137 @@ applyBisarkiCurrencyUiTranslations(
 );
 
 
+
+/* 📦 BİŞARKI frontend → backend sipariş gönderimi */
+const BISARKI_API_URL =
+  window.BISARKI_API_URL ||
+  "http://localhost:3000";
+
+function bisarkiCollectFormData(form) {
+  const data = {};
+
+  form.querySelectorAll("input, textarea, select").forEach(field => {
+    if (!field.name) return;
+
+    if (field.type === "file") return;
+
+    if (field.multiple) {
+      data[field.name] = Array.from(field.selectedOptions)
+        .map(option => option.value);
+      return;
+    }
+
+    data[field.name] = field.value;
+  });
+
+  const location = document.getElementById("bisarki-location");
+  const speaking = document.getElementById("bisarki-speaking-language");
+  const writing = document.getElementById("bisarki-writing-language");
+  const songLanguage = document.getElementById("bisarki-song-language-top");
+
+  data.location = location ? location.value : "";
+
+  data.speakingLanguages = speaking
+    ? Array.from(speaking.selectedOptions).map(option => option.value)
+    : [];
+
+  data.writingLanguages = writing
+    ? Array.from(writing.selectedOptions).map(option => option.value)
+    : [];
+
+  data.songLanguage = songLanguage ? songLanguage.value : "tr";
+
+  data.duration = 15;
+  data.visualType = "customer";
+  data.radioPermission = false;
+
+  return data;
+}
+
+document.querySelectorAll(".order-form").forEach(form => {
+  form.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const button = form.querySelector('button[type="submit"]');
+    const success = form.querySelector(".success");
+    const note = form.querySelector(".note");
+
+    if (!button) return;
+
+    const originalButtonText = button.textContent;
+
+    button.disabled = true;
+    button.textContent = "⏳ Sipariş gönderiliyor...";
+
+    if (success) {
+      success.style.display = "none";
+      success.textContent = "";
+    }
+
+    try {
+      const orderData = bisarkiCollectFormData(form);
+
+      const response = await fetch(
+        BISARKI_API_URL + "/api/orders",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(orderData)
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok || !result.ok) {
+        throw new Error(
+          result.message ||
+          "Sipariş gönderilemedi."
+        );
+      }
+
+      if (success) {
+        success.innerHTML =
+          "✅ Sipariş talebiniz başarıyla alındı.<br>" +
+          "<strong>Sipariş No: " +
+          result.order.id +
+          "</strong><br>" +
+          "BİŞARKI ekibimiz hazırlık sürecine geçecektir.";
+
+        success.style.display = "block";
+      }
+
+      if (note) {
+        note.textContent =
+          "Siparişiniz sisteme kaydedildi. Sipariş numaranızı saklayabilirsiniz.";
+      }
+
+      form.reset();
+
+      const savedSongLanguage =
+        localStorage.getItem("bisarkiSongLanguage") || "tr";
+
+      if (typeof bisarkiSyncSongLanguage === "function") {
+        bisarkiSyncSongLanguage(savedSongLanguage);
+      }
+
+    } catch (error) {
+      console.error("BİŞARKI sipariş gönderme hatası:", error);
+
+      if (success) {
+        success.textContent =
+          "❌ Sipariş gönderilemedi. Lütfen bağlantınızı kontrol edip tekrar deneyin.";
+
+        success.style.display = "block";
+      }
+    } finally {
+      button.disabled = false;
+      button.textContent = originalButtonText;
+    }
+  });
+});
+
 /* 🌍 BİŞARKI kullanıcı metadata davranışları */
 const bisarkiMetadataLanguages = {
   tr: ["Türkçe","English","中文","हिन्दी","Русский","العربية","Deutsch","Français","Español","Italiano"],
