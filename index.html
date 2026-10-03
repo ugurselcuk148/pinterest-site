@@ -273,6 +273,13 @@ footer {
 
 <div class="container">
 
+
+
+  <header class="hero">
+    <img class="brand-icon" src="./favicon.png" alt="Gece Mavi Müzik">
+    <div class="logo">BİŞARKI</div>
+    <div class="music-box-tag" id="bisarki-music-box-tag">Size Özel Müzik Kutusu 🎵</div>
+
   <div class="language-box">
     <label for="language-select">🌍 Dil / Language</label>
     <select id="language-select">
@@ -288,11 +295,6 @@ footer {
       <option value="it">🇮🇹 Italiano</option>
     </select>
   </div>
-
-  <header class="hero">
-    <img class="brand-icon" src="./favicon.png" alt="Gece Mavi Müzik">
-    <div class="logo">BİŞARKI</div>
-    <div class="music-box-tag" id="bisarki-music-box-tag">Size Özel Müzik Kutusu 🎵</div>
     <h1>Hikâyeni bir şarkıya dönüştürelim. 💙</h1>
     <p>
       Sevdiğin kişiye, özel bir güne veya hayatındaki unutulmaz bir ana
@@ -1783,7 +1785,7 @@ function applyMp3Translations(language) {
     info.innerHTML =
       `<strong>${t.mp3Title}</strong><br>` +
       `${t.mp3Desc}<br><br>` +
-      `${t.price}`;
+      `💙 <strong id="mp3-price-info">${t.price.replace(/^💙\s*/, "")}</strong>`;
   }
 
   const button = form.querySelector('button[type="submit"]');
