@@ -526,6 +526,17 @@ footer {
           <input type="tel" name="whatsapp" required
                  placeholder="05xx xxx xx xx">
 
+          <label style="display:flex;align-items:flex-start;gap:10px;margin-top:18px;cursor:pointer;font-weight:normal;">
+            <input type="checkbox" name="radioPermission" value="true"
+                   style="width:auto;margin-top:3px;">
+            <span>
+              📻 Şarkımın BİŞARKI Radyo'da yayınlanmasına izin veriyorum.
+              <small style="display:block;margin-top:5px;color:#91a7c0;font-weight:normal;line-height:1.4;">
+                Bu seçeneği işaretlerseniz şarkınız BİŞARKI Radyo ve tanıtım yayınlarında kullanılabilir.
+              </small>
+            </span>
+          </label>
+
           <button class="btn" type="submit">
             🎵 MP3 Talebimi Hazırla
           </button>
@@ -533,8 +544,7 @@ footer {
           <div class="success"></div>
 
           <div class="note">
-            Form şu anda tasarım/prototip aşamasındadır.
-            Gerçek ödeme ve otomatik sipariş sistemi henüz bağlanmadı.
+            Siparişiniz sisteme kaydedilir. Sipariş numaranızı saklayabilirsiniz.
           </div>
 
         </form>
@@ -625,6 +635,17 @@ footer {
           <label>WhatsApp numaranız</label>
           <input type="tel" name="whatsapp" required
                  placeholder="05xx xxx xx xx">
+
+          <label style="display:flex;align-items:flex-start;gap:10px;margin-top:18px;cursor:pointer;font-weight:normal;">
+            <input type="checkbox" name="radioPermission" value="true"
+                   style="width:auto;margin-top:3px;">
+            <span>
+              📻 Şarkımın BİŞARKI Radyo'da yayınlanmasına izin veriyorum.
+              <small style="display:block;margin-top:5px;color:#91a7c0;font-weight:normal;line-height:1.4;">
+                Bu seçeneği işaretlerseniz şarkınız BİŞARKI Radyo ve tanıtım yayınlarında kullanılabilir.
+              </small>
+            </span>
+          </label>
 
           <button class="btn" type="submit">
             🎬 MP4 Klip Talebimi Hazırla
@@ -744,6 +765,17 @@ footer {
           <label>WhatsApp numaranız</label>
           <input type="tel" name="whatsapp" required
                  placeholder="05xx xxx xx xx">
+
+          <label style="display:flex;align-items:flex-start;gap:10px;margin-top:18px;cursor:pointer;font-weight:normal;">
+            <input type="checkbox" name="radioPermission" value="true"
+                   style="width:auto;margin-top:3px;">
+            <span>
+              📻 Şarkımın BİŞARKI Radyo'da yayınlanmasına izin veriyorum.
+              <small style="display:block;margin-top:5px;color:#91a7c0;font-weight:normal;line-height:1.4;">
+                Bu seçeneği işaretlerseniz şarkınız BİŞARKI Radyo ve tanıtım yayınlarında kullanılabilir.
+              </small>
+            </span>
+          </label>
 
           <button class="btn" type="submit">
             💙 Özel Gün Talebimi Hazırla
@@ -2758,7 +2790,11 @@ function bisarkiCollectFormData(form) {
 
   data.duration = 15;
   data.visualType = "customer";
-  data.radioPermission = false;
+  const radioPermissionField = form.querySelector('[name="radioPermission"]');
+  data.radioPermission = !!(
+    radioPermissionField &&
+    radioPermissionField.checked
+  );
 
   return data;
 }
