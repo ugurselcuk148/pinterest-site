@@ -289,7 +289,7 @@ footer {
       Sevdiğin kişiye, özel bir güne veya hayatındaki unutulmaz bir ana
       özel şarkını birlikte hazırlayalım.
     </p>
-    <div class="price">🎵 MP3 100 TL'den başlayan fiyatlarla</div>
+    <div class="price" id="mp3-price-badge">🎵 MP3 100 TL'den başlayan fiyatlarla</div>
   </header>
 
   <main class="tabs">
@@ -2386,18 +2386,11 @@ function applyBisarkiCurrencyUiTranslations(language) {
   }
 
   /* Üstteki MP3 fiyat rozeti */
-  document.querySelectorAll(".hero, .hero *").forEach(el => {
-    if (el.children.length === 0) {
-      const text = el.textContent.trim();
+  const mp3Badge = document.getElementById("mp3-price-badge");
 
-      if (
-        text === "🎵 MP3 100 TL'den başlayan fiyatlarla" ||
-        text.includes("🎵 MP3 100 TL'den başlayan fiyatlarla")
-      ) {
-        el.textContent = t.mp3Badge;
-      }
-    }
-  });
+  if (mp3Badge) {
+    mp3Badge.textContent = t.mp3Badge;
+  }
 }
 
 const bisarkiPreviousApplyFormTranslationsForCurrencyUi =
