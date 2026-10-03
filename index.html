@@ -192,6 +192,27 @@ input[type="file"] {
   padding: 10px;
 }
 
+#mp4-file-button {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px 16px;
+  border-radius: 13px;
+  text-align: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(30, 100, 170, 0.35);
+  border: 1px solid rgba(127, 196, 255, 0.45);
+  transition: 0.2s ease;
+}
+
+#mp4-file-button:hover {
+  background: rgba(30, 100, 170, 0.55);
+  transform: translateY(-1px);
+}
+
 .file-name {
   margin-top: 7px;
   color: #7fc4ff;
@@ -455,9 +476,10 @@ footer {
             <option>Karışık / BİŞARKI seçsin</option>
           </select>
 
-          <label>Fotoğraf / görsel yükle</label>
+          <label for="mp4-file" id="mp4-file-button">Fotoğraf / görsel seç</label>
           <input id="mp4-file" type="file" name="gorsel"
-                 accept="image/png,image/jpeg,image/webp">
+                 accept="image/png,image/jpeg,image/webp"
+                 style="display:none;">
 
           <div class="file-name" id="file-name">
             İstersen klip için bir fotoğraf seçebilirsin.
@@ -1802,6 +1824,7 @@ const bisarkiMp4Translations = {
     description: "Sana özel şarkının yanında fotoğraf ve görsellerle hazırlanmış bir MP4 klip seçeneği oluşturabiliriz.",
     price: "Fiyat seçilen seçeneklere göre belirlenir.",
     upload: "Fotoğraf / görsel yükle",
+    fileButton: "Fotoğraf / görsel seç",
     fileHint: "İstersen klip için bir fotoğraf seçebilirsin.",
     submit: "🎬 MP4 Klip Talebimi Hazırla",
     note: "Fotoğraf yükleme alanı hazırdır. Gerçek dosya aktarımı ve ödeme sistemi henüz bağlanmamıştır."
@@ -1811,6 +1834,7 @@ const bisarkiMp4Translations = {
     description: "Alongside your custom song, we can create an MP4 video using your photos and visuals.",
     price: "The price depends on the options you choose.",
     upload: "Upload photo / image",
+    fileButton: "Select photo / image",
     fileHint: "You can choose a photo for the clip if you wish.",
     submit: "🎬 Prepare My MP4 Clip Request",
     note: "The photo upload area is ready. Actual file transfer and payment system are not connected yet."
@@ -1820,6 +1844,7 @@ const bisarkiMp4Translations = {
     description: "除了为你定制歌曲，我们还可以使用你的照片和图片制作 MP4 视频。",
     price: "价格根据所选择的选项确定。",
     upload: "上传照片 / 图片",
+    fileButton: "选择照片 / 图片",
     fileHint: "如果愿意，您可以选择一张用于视频的照片。",
     submit: "🎬 准备我的 MP4 视频请求",
     note: "照片上传区域已准备就绪。实际文件传输和支付系统尚未连接。"
@@ -1829,6 +1854,7 @@ const bisarkiMp4Translations = {
     description: "आपके लिए बनाए गए गीत के साथ, हम आपकी फ़ोटो और दृश्यों का उपयोग करके MP4 वीडियो तैयार कर सकते हैं।",
     price: "कीमत आपके चुने गए विकल्पों के अनुसार तय की जाती है।",
     upload: "फ़ोटो / चित्र अपलोड करें",
+    fileButton: "फ़ोटो / चित्र चुनें",
     fileHint: "यदि चाहें तो क्लिप के लिए एक फ़ोटो चुन सकते हैं।",
     submit: "🎬 मेरा MP4 क्लिप अनुरोध तैयार करें",
     note: "फ़ोटो अपलोड क्षेत्र तैयार है। वास्तविक फ़ाइल स्थानांतरण और भुगतान प्रणाली अभी कनेक्ट नहीं की गई है।"
@@ -1838,6 +1864,7 @@ const bisarkiMp4Translations = {
     description: "В дополнение к вашей индивидуальной песне мы можем создать MP4-клип с вашими фотографиями и изображениями.",
     price: "Цена зависит от выбранных вариантов.",
     upload: "Загрузить фото / изображение",
+    fileButton: "Выбрать фото / изображение",
     fileHint: "При желании вы можете выбрать фотографию для клипа.",
     submit: "🎬 Подготовить мой запрос на MP4-клип",
     note: "Область загрузки фото готова. Передача файлов и система оплаты пока не подключены."
@@ -1847,6 +1874,7 @@ const bisarkiMp4Translations = {
     description: "بالإضافة إلى الأغنية المصممة لك، يمكننا إنشاء فيديو MP4 باستخدام صورك ومرئياتك.",
     price: "يتم تحديد السعر وفقًا للخيارات التي تختارها.",
     upload: "رفع صورة / صورة مرئية",
+    fileButton: "اختر صورة / صورة مرئية",
     fileHint: "يمكنك اختيار صورة للمقطع إذا رغبت.",
     submit: "🎬 إعداد طلب فيديو MP4 الخاص بي",
     note: "منطقة رفع الصور جاهزة. لم يتم ربط نقل الملفات ونظام الدفع الفعلي بعد."
@@ -1856,6 +1884,7 @@ const bisarkiMp4Translations = {
     description: "Zusätzlich zu deinem persönlichen Lied können wir einen MP4-Clip mit deinen Fotos und Bildern erstellen.",
     price: "Der Preis richtet sich nach den ausgewählten Optionen.",
     upload: "Foto / Bild hochladen",
+    fileButton: "Foto / Bild auswählen",
     fileHint: "Wenn du möchtest, kannst du ein Foto für den Clip auswählen.",
     submit: "🎬 Meine MP4-Clip-Anfrage erstellen",
     note: "Der Fotoupload-Bereich ist bereit. Die tatsächliche Dateiübertragung und das Zahlungssystem sind noch nicht verbunden."
@@ -1865,6 +1894,7 @@ const bisarkiMp4Translations = {
     description: "En plus de votre chanson personnalisée, nous pouvons créer un clip MP4 avec vos photos et visuels.",
     price: "Le prix dépend des options choisies.",
     upload: "Télécharger une photo / image",
+    fileButton: "Sélectionner une photo / image",
     fileHint: "Vous pouvez choisir une photo pour le clip si vous le souhaitez.",
     submit: "🎬 Préparer ma demande de clip MP4",
     note: "La zone de téléchargement de photos est prête. Le transfert réel des fichiers et le système de paiement ne sont pas encore connectés."
@@ -1874,6 +1904,7 @@ const bisarkiMp4Translations = {
     description: "Además de tu canción personalizada, podemos crear un videoclip MP4 con tus fotos e imágenes.",
     price: "El precio depende de las opciones seleccionadas.",
     upload: "Subir foto / imagen",
+    fileButton: "Seleccionar foto / imagen",
     fileHint: "Si lo deseas, puedes elegir una foto para el videoclip.",
     submit: "🎬 Preparar mi solicitud de videoclip MP4",
     note: "El área de carga de fotos está lista. La transferencia real de archivos y el sistema de pago aún no están conectados."
@@ -1883,6 +1914,7 @@ const bisarkiMp4Translations = {
     description: "Oltre alla tua canzone personalizzata, possiamo creare un video MP4 con le tue foto e immagini.",
     price: "Il prezzo dipende dalle opzioni selezionate.",
     upload: "Carica foto / immagine",
+    fileButton: "Seleziona foto / immagine",
     fileHint: "Se vuoi, puoi scegliere una foto per il videoclip.",
     submit: "🎬 Prepara la mia richiesta per il video MP4",
     note: "L'area di caricamento delle foto è pronta. Il trasferimento effettivo dei file e il sistema di pagamento non sono ancora collegati."
@@ -1905,12 +1937,10 @@ function applyMp4Translations(language) {
       `🎬 <strong>${t.price}</strong>`;
   }
 
-  const fileInput = form.querySelector('#mp4-file');
-  if (fileInput) {
-    const label = fileInput.previousElementSibling;
-    if (label && label.tagName === "LABEL") {
-      label.textContent = t.upload;
-    }
+  const fileButton = form.querySelector("#mp4-file-button");
+  if (fileButton) {
+    fileButton.textContent = t.fileButton || t.upload;
+    fileButton.dir = language === "ar" ? "rtl" : "ltr";
   }
 
   const fileName = form.querySelector("#file-name");
@@ -1921,6 +1951,17 @@ function applyMp4Translations(language) {
 
   const note = form.querySelector(".note");
   if (note) note.textContent = t.note;
+}
+
+const mp4FileInput = document.getElementById("mp4-file");
+const mp4FileName = document.getElementById("file-name");
+
+if (mp4FileInput && mp4FileName) {
+  mp4FileInput.addEventListener("change", function() {
+    if (this.files && this.files[0]) {
+      mp4FileName.textContent = this.files[0].name;
+    }
+  });
 }
 
 const bisarkiOriginalApplyFormTranslations = applyFormTranslations;
