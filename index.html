@@ -2118,7 +2118,18 @@ const bisarkiCurrencyConverter = {
     [amountEl, fromEl, toEl].forEach(el => {
       if (el) {
         el.addEventListener("input", () => this.convert());
-        el.addEventListener("change", () => this.convert());
+        el.addEventListener("change", () => {
+          this.convert();
+
+          if (el === toEl) {
+            const language =
+              localStorage.getItem("bisarkiPageLanguage") ||
+              document.documentElement.lang ||
+              "tr";
+
+            updateBisarkiMp3Badge(language);
+          }
+        });
       }
     });
 
@@ -2275,7 +2286,9 @@ const bisarkiCurrencyUiTranslations = {
     SAR: "🇸🇦 SAR — Suudi Riyali",
     AED: "🇦🇪 AED — BAE Dirhemi",
     approximate: "Yaklaşık karşılık:",
-    mp3Badge: "🎵 MP3 100 TL'den başlayan fiyatlarla"
+    mp3Badge: "🎵 MP3 100 TL'den başlayan fiyatlarla",
+    mp3Prefix: "🎵 MP3 fiyatı yaklaşık",
+    mp3Loading: "🎵 MP3 fiyatı hesaplanıyor..."
   },
   en: {
     TRY: "🇹🇷 TRY — Turkish Lira",
@@ -2288,7 +2301,7 @@ const bisarkiCurrencyUiTranslations = {
     SAR: "🇸🇦 SAR — Saudi Riyal",
     AED: "🇦🇪 AED — UAE Dirham",
     approximate: "Approximate equivalent:",
-    mp3Badge: "🎵 MP3 starting from 100 TRY"
+    mp3Badge: "🎵 MP3 starting from 100 TRY", mp3Prefix: "🎵 MP3 price approx.", mp3Loading: "🎵 Calculating MP3 price..."
   },
   zh: {
     TRY: "🇹🇷 TRY — 土耳其里拉",
@@ -2301,7 +2314,7 @@ const bisarkiCurrencyUiTranslations = {
     SAR: "🇸🇦 SAR — 沙特里亚尔",
     AED: "🇦🇪 AED — 阿联酋迪拉姆",
     approximate: "近似金额:",
-    mp3Badge: "🎵 MP3 起价 100 TRY"
+    mp3Badge: "🎵 MP3 起价 100 TRY", mp3Prefix: "🎵 MP3 价格约为", mp3Loading: "🎵 正在计算 MP3 价格..."
   },
   hi: {
     TRY: "🇹🇷 TRY — तुर्की लीरा",
@@ -2327,7 +2340,7 @@ const bisarkiCurrencyUiTranslations = {
     SAR: "🇸🇦 SAR — Саудовский риял",
     AED: "🇦🇪 AED — Дирхам ОАЭ",
     approximate: "Примерный эквивалент:",
-    mp3Badge: "🎵 MP3 от 100 TRY"
+    mp3Badge: "🎵 MP3 от 100 TRY", mp3Prefix: "🎵 Примерная цена MP3", mp3Loading: "🎵 Расчёт цены MP3..."
   },
   ar: {
     TRY: "🇹🇷 TRY — الليرة التركية",
@@ -2353,7 +2366,7 @@ const bisarkiCurrencyUiTranslations = {
     SAR: "🇸🇦 SAR — Saudi-Riyal",
     AED: "🇦🇪 AED — VAE-Dirham",
     approximate: "Ungefährer Gegenwert:",
-    mp3Badge: "🎵 MP3 ab 100 TRY"
+    mp3Badge: "🎵 MP3 ab 100 TRY", mp3Prefix: "🎵 MP3-Preis ca.", mp3Loading: "🎵 MP3-Preis wird berechnet..."
   },
   fr: {
     TRY: "🇹🇷 TRY — Livre turque",
@@ -2366,7 +2379,7 @@ const bisarkiCurrencyUiTranslations = {
     SAR: "🇸🇦 SAR — Riyal saoudien",
     AED: "🇦🇪 AED — Dirham des Émirats arabes unis",
     approximate: "Équivalent approximatif :",
-    mp3Badge: "🎵 MP3 à partir de 100 TRY"
+    mp3Badge: "🎵 MP3 à partir de 100 TRY", mp3Prefix: "🎵 Prix MP3 env.", mp3Loading: "🎵 Calcul du prix MP3..."
   },
   es: {
     TRY: "🇹🇷 TRY — Lira turca",
@@ -2379,7 +2392,7 @@ const bisarkiCurrencyUiTranslations = {
     SAR: "🇸🇦 SAR — Rial saudí",
     AED: "🇦🇪 AED — Dírham de los EAU",
     approximate: "Equivalente aproximado:",
-    mp3Badge: "🎵 MP3 desde 100 TRY"
+    mp3Badge: "🎵 MP3 desde 100 TRY", mp3Prefix: "🎵 Precio MP3 aprox.", mp3Loading: "🎵 Calculando el precio MP3..."
   },
   it: {
     TRY: "🇹🇷 TRY — Lira turca",
@@ -2392,9 +2405,47 @@ const bisarkiCurrencyUiTranslations = {
     SAR: "🇸🇦 SAR — Riyal saudita",
     AED: "🇦🇪 AED — Dirham degli Emirati Arabi Uniti",
     approximate: "Equivalente approssimativo:",
-    mp3Badge: "🎵 MP3 a partire da 100 TRY"
+    mp3Badge: "🎵 MP3 a partire da 100 TRY", mp3Prefix: "🎵 Prezzo MP3 circa", mp3Loading: "🎵 Calcolo del prezzo MP3..."
   }
 };
+
+async function updateBisarkiMp3Badge(language) {
+  const badge = document.getElementById("mp3-price-badge");
+  if (!badge) return;
+
+  const t = bisarkiCurrencyUiTranslations[language] ||
+            bisarkiCurrencyUiTranslations.tr;
+
+  const toEl = document.getElementById("bisarki-currency-to");
+  const target = toEl ? toEl.value : "TRY";
+
+  if (target === "TRY") {
+    badge.textContent = t.mp3Badge;
+    return;
+  }
+
+  badge.textContent = t.mp3Loading || "🎵 MP3 ...";
+
+  try {
+    const response = await fetch(
+      `https://api.frankfurter.dev/v2/rate/TRY/${target}`
+    );
+
+    if (!response.ok) throw new Error("Exchange rate error");
+
+    const data = await response.json();
+    const converted = 100 * Number(data.rate);
+    const value = converted.toLocaleString(undefined, {
+      maximumFractionDigits: 2
+    });
+
+    badge.textContent =
+      `${t.mp3Prefix || "🎵 MP3 fiyatı yaklaşık"} ${value} ${target}`;
+  } catch (error) {
+    console.error("BİŞARKI MP3 fiyat rozeti:", error);
+    badge.textContent = t.mp3Badge;
+  }
+}
 
 function applyBisarkiCurrencyUiTranslations(language) {
   const t = bisarkiCurrencyUiTranslations[language] ||
@@ -2420,11 +2471,7 @@ function applyBisarkiCurrencyUiTranslations(language) {
   }
 
   /* Üstteki MP3 fiyat rozeti */
-  const mp3Badge = document.getElementById("mp3-price-badge");
-
-  if (mp3Badge) {
-    mp3Badge.textContent = t.mp3Badge;
-  }
+  updateBisarkiMp3Badge(language);
 }
 
 const bisarkiPreviousApplyFormTranslationsForCurrencyUi =
