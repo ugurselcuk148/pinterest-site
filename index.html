@@ -1271,73 +1271,146 @@ footer {
   const location = document.getElementById("bisarki-location");
   const currencyDisplay = document.getElementById("bisarki-currency-display");
 
-  const currencies = {
-    TR: "₺ TL",
-    US: "$ USD",
-    GB: "£ GBP",
-    CN: "¥ CNY",
-    IN: "₹ INR",
-    RU: "₽ RUB",
-    SA: "﷼ SAR",
-    DE: "€ EUR",
-    FR: "€ EUR",
-    ES: "€ EUR",
-    IT: "€ EUR"
-  };
-
-  function updateCurrency() {
-    if (location && currencyDisplay) {
-      currencyDisplay.textContent =
-        "💱 Para birimi: " + (currencies[location.value] || "₺ TL");
-    }
-  }
-
-  if (location) {
-    location.addEventListener("change", updateCurrency);
-    updateCurrency();
-  }
-
   if (!minus || !plus || !duration || !display || !displayControl || !price) {
     console.log("BİŞARKI yeni süre elemanları bulunamadı");
     return;
   }
 
+  let fxRates = {
+    TR: 1,
+    US: 0.031,
+    GB: 0.024,
+    CN: 0.22,
+    IN: 2.6,
+    RU: 2.8,
+    SA: 0.116,
+    DE: 0.027,
+    FR: 0.027,
+    ES: 0.027,
+    IT: 0.027
+  };
+
+  const currencyInfo = {
+    TR: { code: "TRY", symbol: "₺" },
+    US: { code: "USD", symbol: "$" },
+    GB: { code: "GBP", symbol: "£" },
+    CN: { code: "CNY", symbol: "¥" },
+    IN: { code: "INR", symbol: "₹" },
+    RU: { code: "RUB", symbol: "₽" },
+    SA: { code: "SAR", symbol: "﷼" },
+    DE: { code: "EUR", symbol: "€" },
+    FR: { code: "EUR", symbol: "€" },
+    ES: { code: "EUR", symbol: "€" },
+    IT: { code: "EUR", symbol: "€" }
+  };
+
+  function formatMoney(amount, code) {
+    try {
+      return new Intl.NumberFormat("tr-TR", {
+        style: "currency",
+        currency: code,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(amount);
+    } catch (e) {
+      return amount.toFixed(2) + " " + code;
+    }
+  }
+
+  function updateCurrencyText() {
+    if (location && currencyDisplay) {
+      const info = currencyInfo[location.value] || currencyInfo.TR;
+
+      currencyDisplay.textContent =
+        "🌍 Ödeme tutarı seçtiğiniz ülkenin para biriminde yaklaşık olarak gösterilir: " +
+        info.symbol + " " + info.code;
+    }
+  }
+
+  async function loadLiveRates() {
+    try {
+      const targets = ["USD", "GBP", "CNY", "INR", "RUB", "SAR", "EUR"];
+
+      const results = await Promise.all(
+        targets.map(async function (target) {
+          const response = await fetch(
+            "https://api.frankfurter.dev/v2/rate/TRY/" + target,
+            { cache: "no-store" }
+          );
+
+          if (!response.ok) {
+            throw new Error("Kur alınamadı: " + target);
+          }
+
+          const data = await response.json();
+
+          if (!data.rate || !Number.isFinite(Number(data.rate))) {
+            throw new Error("Geçersiz kur: " + target);
+          }
+
+          return [target, Number(data.rate)];
+        })
+      );
+
+      const live = Object.fromEntries(results);
+
+      fxRates = {
+        TR: 1,
+        US: live.USD,
+        GB: live.GBP,
+        CN: live.CNY,
+        IN: live.INR,
+        RU: live.RUB,
+        SA: live.SAR,
+        DE: live.EUR,
+        FR: live.EUR,
+        ES: live.EUR,
+        IT: live.EUR
+      };
+
+      console.log(
+        "BİŞARKI canlı döviz kurları güncellendi:",
+        fxRates
+      );
+
+      update(duration.value || 15);
+
+    } catch (error) {
+      console.warn(
+        "BİŞARKI canlı döviz kuru alınamadı. Son güvenli oranlar kullanılacak.",
+        error
+      );
+    }
+  }
+
   function update(value) {
     value = Number(value);
-    if (!Number.isFinite(value)) value = 15;
 
-    value = Math.max(15, Math.min(300, value));
+    if (!Number.isFinite(value)) {
+      value = 15;
+    }
+
+    value = Math.max(15, Math.min(300, Math.round(value)));
 
     duration.value = value;
     display.textContent = value;
     displayControl.textContent = value;
-    const currencyRates = {
-      TR: {symbol:"TL", rate:1},
-      US: {symbol:"USD", rate:0.031},
-      GB: {symbol:"GBP", rate:0.024},
-      CN: {symbol:"CNY", rate:0.22},
-      IN: {symbol:"INR", rate:2.6},
-      RU: {symbol:"RUB", rate:2.8},
-      SA: {symbol:"SAR", rate:0.116},
-      DE: {symbol:"EUR", rate:0.027},
-      FR: {symbol:"EUR", rate:0.027},
-      ES: {symbol:"EUR", rate:0.027},
-      IT: {symbol:"EUR", rate:0.027}
-    };
 
-    const selectedCurrency = currencies[location?.value] || "₺ TL";
     const country = location?.value || "TR";
-    const currency = currencyRates[country] || currencyRates.TR;
+    const info = currencyInfo[country] || currencyInfo.TR;
+    const rate = fxRates[country] || fxRates.TR;
 
-    const converted = (value * currency.rate).toFixed(2);
+    const converted = value * rate;
+    const perSecond = rate;
 
-    price.textContent = converted + " " + currency.symbol;
+    price.textContent = formatMoney(converted, info.code);
 
     if (priceBadge) {
-      const secondPrice = currency.rate.toFixed(2);
       priceBadge.textContent =
-        "🎵 MP3 " + currency.symbol + secondPrice + "/saniye";
+        "🎵 " + formatMoney(perSecond, info.code) + " / saniye";
     }
+
+    updateCurrencyText();
 
     if (
       window.bisarkiCurrencyConverter &&
@@ -1355,8 +1428,15 @@ footer {
     update(Number(duration.value) + 1);
   });
 
-  update(duration.value || 15);
+  if (location) {
+    location.addEventListener("change", function () {
+      update(duration.value || 15);
+    });
+  }
 
-  console.log("BİŞARKI YENİ SÜRE SİSTEMİ AKTİF");
+  update(duration.value || 15);
+  loadLiveRates();
+
+  console.log("BİŞARKI canlı döviz + süre fiyat sistemi aktif");
 })();
 </script>
