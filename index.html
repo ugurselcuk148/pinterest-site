@@ -2557,3 +2557,54 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v14-style">
+
+/* V14 Live Studio Badge */
+.bisarki-permission-box h3{
+  position:relative;
+}
+
+.bisarki-permission-box h3::after{
+  content:" 🔴 CANLI YAYIN";
+  display:inline-block;
+  margin-left:10px;
+  font-size:12px;
+  letter-spacing:1px;
+  color:#ff6b6b;
+  text-shadow:0 0 10px rgba(255,80,80,.8);
+  animation:bisarkiLivePulse 1.8s infinite;
+}
+
+@keyframes bisarkiLivePulse{
+  0%,100%{
+    opacity:.55;
+    transform:scale(1);
+  }
+  50%{
+    opacity:1;
+    transform:scale(1.08);
+  }
+}
+
+/* Stüdyo ışığı */
+.bisarki-permission-box{
+  animation:bisarkiStudioGlow 6s infinite ease-in-out;
+}
+
+@keyframes bisarkiStudioGlow{
+  0%,100%{
+    filter:brightness(1);
+  }
+  50%{
+    filter:brightness(1.08);
+  }
+}
+
+/* Mikrofon hissi */
+.bisarki-permission-box strong::before{
+  content:"🎙️ ";
+  filter:drop-shadow(0 0 6px #00bfff);
+}
+
+</style>
+
