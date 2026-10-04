@@ -2747,3 +2747,82 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v17-style">
+
+/* V17 AI Broadcast Edition */
+.bisarki-permission-box{
+  position:relative;
+  overflow:hidden;
+}
+
+/* AI DJ etiketi */
+.bisarki-permission-box h3::before{
+  content:"🤖 AI DJ • ";
+  color:#00bfff;
+  text-shadow:0 0 12px #00bfff;
+  animation:bisarkiAIDJGlow 2.5s infinite;
+}
+
+@keyframes bisarkiAIDJGlow{
+  0%,100%{
+    opacity:.55;
+  }
+  50%{
+    opacity:1;
+  }
+}
+
+/* Akıllı yayın tarama ışığı */
+.bisarki-permission-box::after{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-40%;
+  width:35%;
+  height:100%;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(0,191,255,.22),
+    transparent
+  );
+  animation:bisarkiAIScan 5s infinite;
+}
+
+@keyframes bisarkiAIScan{
+  0%{
+    left:-40%;
+  }
+  100%{
+    left:120%;
+  }
+}
+
+/* AI yayın noktaları */
+.bisarki-permission-box strong::after{
+  content:" • LIVE AI";
+  color:#7fc4ff;
+  font-size:.85em;
+  letter-spacing:1px;
+  text-shadow:0 0 10px #00bfff;
+  animation:bisarkiAILive 1.8s infinite;
+}
+
+@keyframes bisarkiAILive{
+  0%,100%{
+    opacity:.45;
+  }
+  50%{
+    opacity:1;
+  }
+}
+
+/* Premium AI panel ışığı */
+.bisarki-permission-box{
+  box-shadow:
+    0 0 35px rgba(0,191,255,.3),
+    inset 0 0 25px rgba(127,196,255,.08);
+}
+
+</style>
+
