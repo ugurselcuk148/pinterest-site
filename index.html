@@ -2082,3 +2082,46 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v5-style">
+
+.bisarki-permission-box{
+  position:relative;
+}
+
+.bisarki-permission-box::after{
+  content:"🎵";
+  position:absolute;
+  right:22px;
+  top:18px;
+  font-size:28px;
+  opacity:.35;
+  animation:musicFloat 3s infinite ease-in-out;
+}
+
+@keyframes musicFloat{
+  0%,100%{
+    transform:translateY(0);
+  }
+  50%{
+    transform:translateY(-8px);
+  }
+}
+
+.bisarki-permission-box input[type="checkbox"]:checked + span{
+  animation:radioApproved .8s ease;
+}
+
+@keyframes radioApproved{
+  0%{
+    transform:scale(1);
+  }
+  50%{
+    transform:scale(1.03);
+  }
+  100%{
+    transform:scale(1);
+  }
+}
+
+</style>
+
