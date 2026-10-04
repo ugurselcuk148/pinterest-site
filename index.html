@@ -2229,3 +2229,65 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v8-style">
+
+.bisarki-permission-box{
+  background:
+    radial-gradient(
+      circle at 20% 10%,
+      rgba(0,191,255,.18),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(70,90,255,.18),
+      transparent 40%
+    );
+}
+
+/* Gece Mavi yıldız/parıltı efekti */
+.bisarki-permission-box::before{
+  animation:
+    bisarkiNightGlow 6s infinite ease-in-out;
+}
+
+@keyframes bisarkiNightGlow{
+  0%,100%{
+    opacity:.35;
+  }
+  50%{
+    opacity:.75;
+  }
+}
+
+/* Premium dokunma efekti */
+.bisarki-permission-box .consent-item:active{
+  transform:scale(.98);
+}
+
+/* Radyo başlık vurgusu */
+.bisarki-permission-box strong{
+  background:
+    linear-gradient(
+      90deg,
+      #7fc4ff,
+      #ffffff,
+      #7fc4ff
+    );
+  background-size:200%;
+  -webkit-background-clip:text;
+  color:transparent;
+  animation:bisarkiTextShine 4s infinite;
+}
+
+@keyframes bisarkiTextShine{
+  0%{
+    background-position:0%;
+  }
+  100%{
+    background-position:200%;
+  }
+}
+
+</style>
+
