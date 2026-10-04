@@ -2684,3 +2684,66 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v16-style">
+
+/* V16 Ultimate Studio */
+.bisarki-permission-box{
+  position:relative;
+  overflow:hidden;
+}
+
+/* DJ panel ışığı */
+.bisarki-permission-box::after{
+  content:"🎛️  STUDIO LIVE";
+  position:absolute;
+  right:18px;
+  bottom:16px;
+  font-size:11px;
+  letter-spacing:1.5px;
+  color:#7fc4ff;
+  opacity:.7;
+  text-shadow:0 0 12px #00bfff;
+  animation:bisarkiStudioLive 2s infinite;
+}
+
+@keyframes bisarkiStudioLive{
+  0%,100%{
+    opacity:.45;
+  }
+  50%{
+    opacity:1;
+  }
+}
+
+/* VU meter hissi */
+.bisarki-permission-box .consent-item::after{
+  content:"▂ ▅ ▇ ▅ ▂";
+  display:block;
+  margin-top:8px;
+  color:#00bfff;
+  letter-spacing:4px;
+  text-shadow:0 0 10px #00bfff;
+  animation:bisarkiVU 1s infinite ease-in-out;
+}
+
+@keyframes bisarkiVU{
+  0%,100%{
+    transform:scaleY(.75);
+    opacity:.5;
+  }
+  50%{
+    transform:scaleY(1.15);
+    opacity:1;
+  }
+}
+
+/* Premium cam panel */
+.bisarki-permission-box{
+  backdrop-filter:blur(16px);
+  box-shadow:
+    0 0 40px rgba(0,191,255,.28),
+    inset 0 0 30px rgba(255,255,255,.05);
+}
+
+</style>
+
