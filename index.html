@@ -565,24 +565,52 @@ footer {
                     placeholder="Tanışmanız, yaşadığınız güzel bir anı, duygularınız..."></textarea>
 
           <label>Şarkı süresi 🎵</label>
-          <input
-            type="number"
-            name="duration"
-            id="mp3-duration"
-            min="15"
-            max="300"
-            step="1"
-            required
-          >
-          <small style="display:block;margin-top:6px;opacity:.8;">
-  15 ile 300 saniye arasında istediğiniz süreyi seçebilirsiniz.
-  Ücret: <strong>1 TL/saniye</strong>.
-</small>
-<div class="bisarki-price-panel" aria-live="polite">
-  <div class="price-title">💰 Ödenecek tutar</div>
+
+<div class="bisarki-duration-card" aria-label="Şarkı süresi seçimi">
+
+  <div class="bisarki-duration-badge">
+    <span>🎵</span>
+    <strong id="mp3-duration-display">15</strong>
+    <small>sn</small>
+  </div>
+
+  <div class="bisarki-duration-controls">
+    <button type="button" id="mp3-duration-minus" aria-label="Süreyi azalt">−</button>
+
+    <div class="bisarki-duration-current">
+      <strong id="mp3-duration-display-control">15</strong>
+      <span> saniye</span>
+    </div>
+
+    <button type="button" id="mp3-duration-plus" aria-label="Süreyi artır">+</button>
+  </div>
+
+  <div class="bisarki-duration-range">
+    <span>15 sn</span>
+    <span>300 sn</span>
+  </div>
+
+  <div class="bisarki-duration-price">
+    <span>💰 Ödenecek tutar</span>
+    <strong id="mp3-live-price">15 TL</strong>
+  </div>
+
+  <input
+    type="hidden"
+    name="duration"
+    id="mp3-duration"
+    value="15"
+    required
+  >
+
   <div id="mp3-duration-warning" style="display:none;margin-top:8px;"></div>
-<div class="price-total" id="mp3-live-price"></div>
-</div>
+
+</div></div>
+
+<small style="display:block;margin-top:6px;opacity:.8;">
+  15 ile 300 saniye arasında istediğiniz süreyi seçebilirsiniz.
+  Her 1 saniye = <strong>1 TL</strong>.
+</small>
 
           <label>Şarkının duygusu</label>
           <select name="duygu" required>
@@ -3546,3 +3574,182 @@ document.querySelectorAll(".order-form").forEach(form => {
     }
   });
 });
+
+
+
+<style>
+.bisarki-duration-card {
+  position: relative;
+  z-index: 20;
+  margin: 12px 0 18px;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(80, 140, 220, .35);
+  background: rgba(20, 45, 80, .22);
+  text-align: center;
+}
+
+.bisarki-duration-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 10px 22px;
+  margin-bottom: 16px;
+  border-radius: 999px;
+  background: rgba(40, 110, 190, .28);
+  border: 1px solid rgba(100, 170, 240, .45);
+  box-shadow: 0 5px 18px rgba(0,0,0,.12);
+}
+
+.bisarki-duration-badge span {
+  font-size: 22px;
+}
+
+.bisarki-duration-badge strong {
+  font-size: 30px;
+  line-height: 1;
+}
+
+.bisarki-duration-badge small {
+  font-size: 15px;
+  opacity: .85;
+}
+
+
+
+.bisarki-duration-range {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 12px;
+  opacity: .7;
+}
+
+.bisarki-duration-price {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(0,0,0,.12);
+}
+
+.bisarki-duration-price span {
+  display: block;
+  font-size: 13px;
+  opacity: .8;
+}
+
+.bisarki-duration-price strong {
+  display: block;
+  margin-top: 3px;
+  font-size: 24px;
+}
+</style>
+
+
+
+
+(function () {
+  function initBisarkiDurationControls() {
+    const minus = document.getElementById("mp3-duration-minus");
+    const plus = document.getElementById("mp3-duration-plus");
+    const duration = document.getElementById("mp3-duration");
+    const display = document.getElementById("mp3-duration-display");
+    const displayControl = document.getElementById("mp3-duration-display-control");
+    const price = document.getElementById("mp3-live-price");
+
+    if (!minus || !plus || !duration || !display || !displayControl || !price) {
+      console.log("BİŞARKI süre kontrolleri bulunamadı.");
+      return;
+    }
+
+    const MIN_DURATION = 15;
+    const MAX_DURATION = 300;
+    const PRICE_PER_SECOND = 1;
+
+    function updateDuration(value) {
+      value = Number(value);
+
+      if (!Number.isInteger(value)) {
+        value = MIN_DURATION;
+      }
+
+      value = Math.max(MIN_DURATION, Math.min(MAX_DURATION, value));
+
+      duration.value = value;
+      display.textContent = value;
+      displayControl.textContent = value;
+      price.textContent = value * PRICE_PER_SECOND + " TL";
+
+      duration.dispatchEvent(new Event("input", { bubbles: true }));
+      duration.dispatchEvent(new Event("change", { bubbles: true }));
+
+      if (
+        typeof window.bisarkiCurrencyConverter !== "undefined" &&
+        typeof window.bisarkiCurrencyConverter.convert === "function"
+      ) {
+        window.bisarkiCurrencyConverter.convert();
+      }
+    }
+
+    minus.addEventListener("click", function () {
+      updateDuration(Number(duration.value) - 1);
+    });
+
+    plus.addEventListener("click", function () {
+      updateDuration(Number(duration.value) + 1);
+    });
+
+    updateDuration(Number(duration.value) || MIN_DURATION);
+
+    console.log("BİŞARKI SÜRE KONTROLLERİ HAZIR:", duration.value);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initBisarkiDurationControls);
+  } else {
+    initBisarkiDurationControls();
+  }
+})();
+
+</script>
+
+
+<script>
+(function () {
+  const minus = document.getElementById("mp3-duration-minus");
+  const plus = document.getElementById("mp3-duration-plus");
+  const duration = document.getElementById("mp3-duration");
+  const display = document.getElementById("mp3-duration-display");
+  const displayControl = document.getElementById("mp3-duration-display-control");
+  const price = document.getElementById("mp3-live-price");
+
+  if (!minus || !plus || !duration || !display || !displayControl || !price) {
+    console.log("BİŞARKI yeni süre elemanları bulunamadı");
+    return;
+  }
+
+  function update(value) {
+    value = Number(value);
+    if (!Number.isFinite(value)) value = 15;
+
+    value = Math.max(15, Math.min(300, value));
+
+    duration.value = value;
+    display.textContent = value;
+    displayControl.textContent = value;
+    price.textContent = value + " TL";
+  }
+
+  minus.addEventListener("click", function () {
+    update(Number(duration.value) - 1);
+  });
+
+  plus.addEventListener("click", function () {
+    update(Number(duration.value) + 1);
+  });
+
+  update(duration.value || 15);
+
+  console.log("BİŞARKI YENİ SÜRE SİSTEMİ AKTİF");
+})();
+</script>
