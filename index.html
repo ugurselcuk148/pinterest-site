@@ -1267,6 +1267,7 @@ footer {
   const display = document.getElementById("mp3-duration-display");
   const displayControl = document.getElementById("mp3-duration-display-control");
   const price = document.getElementById("mp3-live-price");
+  const priceBadge = document.getElementById("mp3-price-badge");
   const location = document.getElementById("bisarki-location");
   const currencyDisplay = document.getElementById("bisarki-currency-display");
 
@@ -1331,6 +1332,12 @@ footer {
     const converted = (value * currency.rate).toFixed(2);
 
     price.textContent = converted + " " + currency.symbol;
+
+    if (priceBadge) {
+      const secondPrice = currency.rate.toFixed(2);
+      priceBadge.textContent =
+        "🎵 MP3 " + secondPrice + " " + currency.symbol + "/saniye";
+    }
 
     if (
       window.bisarkiCurrencyConverter &&
