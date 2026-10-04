@@ -2909,3 +2909,89 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v19-style">
+
+/* V19 Immersive 3D Concert Edition */
+.bisarki-permission-box{
+  position:relative;
+  overflow:hidden;
+  perspective:900px;
+}
+
+/* Konser sahne ışığı */
+.bisarki-permission-box::before{
+  content:"";
+  position:absolute;
+  top:-40%;
+  left:20%;
+  width:60%;
+  height:120%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(0,191,255,.28),
+      transparent 65%
+    );
+  animation:bisarkiStageLight 5s infinite ease-in-out;
+  pointer-events:none;
+}
+
+@keyframes bisarkiStageLight{
+  0%,100%{
+    transform:rotate(-8deg) scale(.9);
+    opacity:.4;
+  }
+  50%{
+    transform:rotate(8deg) scale(1.15);
+    opacity:1;
+  }
+}
+
+/* 3D konser dalgası */
+.bisarki-permission-box strong::after{
+  content:"  🎵 3D LIVE CONCERT";
+  display:inline-block;
+  color:#7fc4ff;
+  text-shadow:
+    0 0 10px #00bfff,
+    0 0 20px #0077ff;
+  animation:bisarki3DWave 2s infinite ease-in-out;
+}
+
+@keyframes bisarki3DWave{
+  0%,100%{
+    transform:translateZ(0) scale(1);
+  }
+  50%{
+    transform:translateZ(30px) scale(1.08);
+  }
+}
+
+/* Lazer ışık çizgileri */
+.bisarki-permission-box{
+  box-shadow:
+    0 0 35px rgba(0,191,255,.35),
+    0 0 80px rgba(70,90,255,.22),
+    inset 0 0 40px rgba(255,255,255,.08);
+}
+
+/* Sahne canlı noktaları */
+.bisarki-permission-box h3::after{
+  content:" ✨ STAGE MODE";
+  font-size:.75em;
+  color:#00bfff;
+  text-shadow:0 0 12px #00bfff;
+  animation:bisarkiStagePulse 1.4s infinite;
+}
+
+@keyframes bisarkiStagePulse{
+  0%,100%{
+    opacity:.45;
+  }
+  50%{
+    opacity:1;
+  }
+}
+
+</style>
+
