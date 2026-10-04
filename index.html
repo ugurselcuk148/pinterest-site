@@ -2125,3 +2125,54 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v6-style">
+
+.bisarki-permission-box{
+  border-radius:28px;
+}
+
+.bisarki-permission-box::marker{
+  display:none;
+}
+
+.bisarki-permission-box .consent-item{
+  position:relative;
+  overflow:hidden;
+}
+
+.bisarki-permission-box .consent-item::before{
+  content:"📻 BİŞARKI RADIO";
+  position:absolute;
+  top:8px;
+  right:12px;
+  font-size:11px;
+  letter-spacing:1px;
+  color:#7fc4ff;
+  opacity:.7;
+}
+
+.bisarki-permission-box input[type="checkbox"]:checked + span{
+  color:#fff;
+  text-shadow:
+  0 0 8px #00bfff,
+  0 0 18px #0077ff;
+}
+
+.bisarki-permission-box input[type="checkbox"]:checked{
+  animation:radioCheckPulse .7s ease;
+}
+
+@keyframes radioCheckPulse{
+  0%{
+    transform:scale(1);
+  }
+  50%{
+    transform:scale(1.35);
+  }
+  100%{
+    transform:scale(1.15);
+  }
+}
+
+</style>
+
