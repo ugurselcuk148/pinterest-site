@@ -442,6 +442,8 @@ footer {
       <option value="es">🇪🇸 Español</option>
       <option value="it">🇮🇹 Italiano</option>
     </select>
+
+
   </div>
 
   <div class="bisarki-metadata" id="bisarki-metadata">
@@ -462,6 +464,11 @@ footer {
           <option value="ES">🇪🇸 İspanya</option>
           <option value="IT">🇮🇹 İtalya</option>
         </select>
+
+        <div id="bisarki-currency-display" style="margin-top:8px;font-size:14px;">
+          💱 Para birimi: ₺ TL
+        </div>
+
       </div>
 
       <div class="bisarki-meta-field">
@@ -1260,6 +1267,34 @@ footer {
   const display = document.getElementById("mp3-duration-display");
   const displayControl = document.getElementById("mp3-duration-display-control");
   const price = document.getElementById("mp3-live-price");
+  const location = document.getElementById("bisarki-location");
+  const currencyDisplay = document.getElementById("bisarki-currency-display");
+
+  const currencies = {
+    TR: "₺ TL",
+    US: "$ USD",
+    GB: "£ GBP",
+    CN: "¥ CNY",
+    IN: "₹ INR",
+    RU: "₽ RUB",
+    SA: "﷼ SAR",
+    DE: "€ EUR",
+    FR: "€ EUR",
+    ES: "€ EUR",
+    IT: "€ EUR"
+  };
+
+  function updateCurrency() {
+    if (location && currencyDisplay) {
+      currencyDisplay.textContent =
+        "💱 Para birimi: " + (currencies[location.value] || "₺ TL");
+    }
+  }
+
+  if (location) {
+    location.addEventListener("change", updateCurrency);
+    updateCurrency();
+  }
 
   if (!minus || !plus || !duration || !display || !displayControl || !price) {
     console.log("BİŞARKI yeni süre elemanları bulunamadı");
