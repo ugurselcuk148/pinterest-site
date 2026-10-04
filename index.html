@@ -2340,3 +2340,52 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v10-style">
+
+/* V10 Premium Glass Experience */
+.bisarki-permission-box{
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-radius:30px;
+}
+
+/* Premium iç kart */
+.bisarki-permission-box .consent-item{
+  transition:
+    transform .35s ease,
+    background .35s ease,
+    box-shadow .35s ease;
+}
+
+.bisarki-permission-box .consent-item:hover{
+  transform:translateY(-3px);
+  background:rgba(255,255,255,.08);
+  box-shadow:0 10px 30px rgba(0,191,255,.18);
+}
+
+/* Seçili izin hissi */
+.bisarki-permission-box input[type="checkbox"]:checked + span{
+  animation:bisarkiApprovedGlow .8s ease;
+}
+
+@keyframes bisarkiApprovedGlow{
+  0%{
+    filter:brightness(1);
+  }
+  50%{
+    filter:brightness(1.35);
+  }
+  100%{
+    filter:brightness(1);
+  }
+}
+
+/* Premium radyo başlığı */
+.bisarki-permission-box h3{
+  letter-spacing:.5px;
+  text-shadow:
+  0 0 8px rgba(127,196,255,.45);
+}
+
+</style>
+
