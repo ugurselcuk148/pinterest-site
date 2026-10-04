@@ -2291,3 +2291,52 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v9-style">
+
+/* Gece Mavi yıldız atmosferi */
+.bisarki-permission-box{
+  position:relative;
+  overflow:hidden;
+}
+
+.bisarki-permission-box::after{
+  content:"✦  ✧  ✦";
+  position:absolute;
+  top:15px;
+  left:18px;
+  font-size:18px;
+  color:#7fc4ff;
+  opacity:.45;
+  letter-spacing:12px;
+  animation:bisarkiStarsMove 5s infinite ease-in-out;
+}
+
+@keyframes bisarkiStarsMove{
+  0%,100%{
+    transform:translateY(0);
+    opacity:.35;
+  }
+  50%{
+    transform:translateY(-8px);
+    opacity:.8;
+  }
+}
+
+/* Radyo dalga hissi */
+.bisarki-permission-box{
+  animation:bisarkiRadioWave 8s infinite ease-in-out;
+}
+
+@keyframes bisarkiRadioWave{
+  0%,100%{
+    box-shadow:
+    0 0 25px rgba(0,191,255,.25);
+  }
+  50%{
+    box-shadow:
+    0 0 45px rgba(0,191,255,.45);
+  }
+}
+
+</style>
+
