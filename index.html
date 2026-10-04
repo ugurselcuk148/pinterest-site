@@ -741,7 +741,7 @@ footer {
           Sana özel şarkının yanında fotoğraf ve görsellerle hazırlanmış
           bir MP4 klip seçeneği oluşturabiliriz.
           <br><br>
-          🎬 <strong>Fiyat seçilen seçeneklere göre belirlenir.</strong>
+          🎬 <strong>MP4 klip fiyatı 1 TL/saniye.</strong>
         </div>
 
         <form class="order-form" data-type="MP4 Klip">
@@ -759,6 +759,22 @@ footer {
           <label>Hikâyenizi anlatın ❤️</label>
           <textarea name="hikaye" required
                     placeholder="Klipte kullanılabilecek anılarınızı anlatın..."></textarea>
+
+          <label>Şarkı süresi 🎵</label>
+          <input
+            type="number"
+            name="duration"
+            id="mp4-duration"
+            min="15"
+            max="300"
+            step="1"
+            value="15"
+            required
+          >
+          <small style="display:block;margin-top:6px;opacity:.8;">
+            15 ile 300 saniye arasında istediğiniz süreyi seçebilirsiniz.
+            Fiyat: <strong id="mp4-live-price">15 TL</strong>
+          </small>
 
           <label>Şarkının duygusu</label>
           <select name="duygu" required>
@@ -3123,6 +3139,36 @@ applyBisarkiCurrencyUiTranslations(
 
 
 
+
+
+/* 🎬 BİŞARKI MP4 1 TL / saniye canlı fiyat */
+(function () {
+  const durationInput = document.getElementById("mp4-duration");
+  const priceOutput = document.getElementById("mp4-live-price");
+
+  if (!durationInput || !priceOutput) return;
+
+  function updateMp4Price() {
+    let duration = Number(durationInput.value);
+
+    if (!Number.isFinite(duration)) {
+      duration = 15;
+    }
+
+    duration = Math.round(duration);
+
+    if (duration < 15) duration = 15;
+    if (duration > 300) duration = 300;
+
+    durationInput.value = duration;
+    priceOutput.textContent = duration + " TL";
+  }
+
+  durationInput.addEventListener("input", updateMp4Price);
+  durationInput.addEventListener("change", updateMp4Price);
+
+  updateMp4Price();
+})();
 /* 💰 BİŞARKI 1 TL / saniye canlı fiyat */
 (function () {
   const durationInput = document.getElementById("mp3-duration");
