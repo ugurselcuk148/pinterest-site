@@ -831,7 +831,7 @@ footer {
             </div>
 
             <label class="consent-item">
-              <input type="checkbox" name="radioPermission" value="true">
+              <input type="checkbox" name="radioPermission" value="true" id="bisarki-radio-permission">
               <span>
                 📻 <strong>Radyo İzni</strong>
                 <small>
@@ -1813,6 +1813,193 @@ color:#073052;
 </div>
 
 
+<style id="bisarki-radio-popup-style">
+#bisarkiRadioPermissionPopup{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.72);
+  z-index:10000;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+
+.bisarki-radio-popup-box{
+  width:min(100%,420px);
+  max-height:90vh;
+  overflow-y:auto;
+  background:linear-gradient(145deg,#07152f,#0b3b66);
+  color:#fff;
+  border:1px solid rgba(127,196,255,.35);
+  border-radius:22px;
+  padding:24px;
+  text-align:center;
+  box-shadow:0 0 35px rgba(0,180,255,.45);
+}
+
+.bisarki-radio-popup-box h3{
+  margin:0 0 12px;
+  color:#7fc4ff;
+}
+
+.bisarki-radio-popup-box p{
+  color:#dbeaff;
+  line-height:1.6;
+  font-size:14px;
+}
+
+.bisarki-radio-popup-box .radio-popup-note{
+  color:#9fc4e8;
+  font-size:12px;
+}
+
+.bisarki-radio-popup-box button{
+  width:100%;
+  margin-top:12px;
+  padding:14px;
+  border:0;
+  border-radius:14px;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.bisarki-radio-yes{
+  background:#00bfff;
+  color:#fff;
+}
+
+.bisarki-radio-no{
+  background:#fff;
+  color:#073052;
+}
+</style>
+
+<div id="bisarkiRadioPermissionPopup">
+  <div class="bisarki-radio-popup-box">
+
+    <h3>📻 BİŞARKI Radyo'da yayınlansın mı?</h3>
+
+    <p>
+      Şarkınız, BİŞARKI tarafından hazırlanacak özel bir görsel ile birlikte
+      MP4 video formatında BİŞARKI Radyo'da yayınlanabilir.
+    </p>
+
+    <p>
+      💙 <strong>Evet</strong> derseniz, şarkınız BİŞARKI tarafından hazırlanacak
+      görsel ile Radyo'da yayınlanmak üzere değerlendirilecektir.
+    </p>
+
+    <p>
+      ↩️ <strong>Hayır</strong> derseniz, Radyo yayın izni verilmez ve
+      şarkı talebiniz yine devam eder.
+    </p>
+
+    <p class="radio-popup-note">
+      🔒 BİŞARKI Radyo'da kendi gönderdiğiniz müşteri görseliniz kullanılmayacaktır.
+      Radyo yayını için BİŞARKI tarafından ayrıca hazırlanmış görsel kullanılacaktır.
+    </p>
+
+    <button type="button"
+            class="bisarki-radio-yes"
+            id="bisarkiRadioPermissionYes">
+      💙 Evet, Radyo'da yayınlansın
+    </button>
+
+    <button type="button"
+            class="bisarki-radio-no"
+            id="bisarkiRadioPermissionNo">
+      ↩️ Hayır, devam et
+    </button>
+
+  </div>
+</div>
+
+<script id="bisarki-radio-popup-script">
+(function(){
+
+  const form = document.querySelector(
+    'form.order-form[data-type="MP3 Şarkı"]'
+  );
+
+  const checkbox = document.getElementById(
+    "bisarki-radio-permission"
+  );
+
+  const popup = document.getElementById(
+    "bisarkiRadioPermissionPopup"
+  );
+
+  const yes = document.getElementById(
+    "bisarkiRadioPermissionYes"
+  );
+
+  const no = document.getElementById(
+    "bisarkiRadioPermissionNo"
+  );
+
+  if (!form || !checkbox || !popup || !yes || !no) {
+    console.warn("BİŞARKI Radyo popup elemanları bulunamadı.");
+    return;
+  }
+
+  let radioPopupDecision = false;
+
+  function openRadioPopup(){
+    popup.style.display = "flex";
+  }
+
+  function closeRadioPopup(){
+    popup.style.display = "none";
+  }
+
+  /*
+   * capture:true kullanıyoruz.
+   * Böylece mevcut form submit kodlarından önce
+   * Radyo popup kontrolü yapılır.
+   */
+  form.addEventListener("submit", function(e){
+
+    if (radioPopupDecision) {
+      return;
+    }
+
+    if (checkbox.checked) {
+      return;
+    }
+
+    e.preventDefault();
+    e.stopImmediatePropagation();
+
+    openRadioPopup();
+
+  }, true);
 
 
+  yes.addEventListener("click", function(){
+
+    checkbox.checked = true;
+    radioPopupDecision = true;
+
+    closeRadioPopup();
+
+    form.requestSubmit();
+
+  });
+
+
+  no.addEventListener("click", function(){
+
+    checkbox.checked = false;
+    radioPopupDecision = true;
+
+    closeRadioPopup();
+
+    form.requestSubmit();
+
+  });
+
+})();
+</script>
 
