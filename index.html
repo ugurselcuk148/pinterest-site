@@ -393,6 +393,27 @@ footer {
   margin: 8px 0 0;
 }
 
+
+.bisarki-price-panel {
+  margin-top: 10px;
+  padding: 14px 16px;
+  border: 1px solid rgba(100,180,255,.35);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(12,43,80,.96), rgba(7,24,44,.96));
+  text-align: center;
+}
+
+.bisarki-price-panel .price-title {
+  font-size: 13px;
+  opacity: .8;
+  margin-bottom: 5px;
+}
+
+.bisarki-price-panel .price-total {
+  font-size: 25px;
+  font-weight: 900;
+}
+
 </style>
 </head>
 
@@ -551,13 +572,17 @@ footer {
             min="15"
             max="300"
             step="1"
-            value="15"
             required
           >
           <small style="display:block;margin-top:6px;opacity:.8;">
-            15 ile 300 saniye arasında istediğiniz süreyi seçebilirsiniz.
-            Fiyat: <strong id="mp3-live-price">15 TL</strong>
-          </small>
+  15 ile 300 saniye arasında istediğiniz süreyi seçebilirsiniz.
+  Ücret: <strong>1 TL/saniye</strong>.
+</small>
+<div class="bisarki-price-panel" aria-live="polite">
+  <div class="price-title">💰 Ödenecek tutar</div>
+  <div id="mp3-duration-warning" style="display:none;margin-top:8px;"></div>
+<div class="price-total" id="mp3-live-price"></div>
+</div>
 
           <label>Şarkının duygusu</label>
           <select name="duygu" required>
@@ -768,13 +793,17 @@ footer {
             min="15"
             max="300"
             step="1"
-            value="15"
             required
           >
           <small style="display:block;margin-top:6px;opacity:.8;">
-            15 ile 300 saniye arasında istediğiniz süreyi seçebilirsiniz.
-            Fiyat: <strong id="mp4-live-price">15 TL</strong>
-          </small>
+  15 ile 300 saniye arasında istediğiniz süreyi seçebilirsiniz.
+  Ücret: <strong>1 TL/saniye</strong>.
+</small>
+<div class="bisarki-price-panel" aria-live="polite">
+  <div class="price-title">💰 Ödenecek tutar</div>
+  <div id="mp4-duration-warning" style="display:none;margin-top:8px;"></div>
+<div class="price-total" id="mp4-live-price"></div>
+</div>
 
           <label>Şarkının duygusu</label>
           <select name="duygu" required>
@@ -2817,7 +2846,7 @@ function addBisarkiCurrencyConverter() {
         type="number"
         min="0"
         step="0.01"
-        value="100"
+        value="15"
       >
 
       <label data-currency-from for="bisarki-currency-from">Para birimi</label>
@@ -3074,7 +3103,29 @@ async function updateBisarkiMp3Badge(language) {
     if (!response.ok) throw new Error("Exchange rate error");
 
     const data = await response.json();
-    const converted = 100 * Number(data.rate);
+    const durationInput = document.getElementById("mp3-duration");
+    const rawDuration = durationInput ? durationInput.value.trim() : "";
+
+    // Süre boşsa döviz fiyatını hesaplama.
+    if (rawDuration === "") {
+      if (badge) badge.textContent = t.mp3InfoBadge || "1 TL/saniye";
+      if (info) info.textContent = t.mp3InfoBadge || "1 TL/saniye";
+      return;
+    }
+
+    const duration = Number(rawDuration);
+
+    // Geçersiz veya tam sayı olmayan sürelerde hesaplama yapma.
+    if (!Number.isFinite(duration) || !Number.isInteger(duration)) {
+      return;
+    }
+
+    // 15-300 saniye dışında döviz fiyatı hesaplama.
+    if (duration < 15 || duration > 300) {
+      return;
+    }
+
+    const converted = duration * Number(data.rate);
     const value = converted.toLocaleString(undefined, {
       maximumFractionDigits: 2
     });
@@ -3137,68 +3188,108 @@ applyBisarkiCurrencyUiTranslations(
   localStorage.getItem("bisarkiPageLanguage") || "tr"
 );
 
-
-
-
-
-/* 🎬 BİŞARKI MP4 1 TL / saniye canlı fiyat */
+/* 💰 BİŞARKI ANA FİYAT MOTORU
+   Kural: süre × 1 TL
+   Başlangıçta süre BOŞ
+   Minimum: 15 saniye
+   Maksimum: 300 saniye
+*/
 (function () {
-  const durationInput = document.getElementById("mp4-duration");
-  const priceOutput = document.getElementById("mp4-live-price");
 
-  if (!durationInput || !priceOutput) return;
+  const PRICE_PER_SECOND = 1;
+  const MIN_DURATION = 15;
+  const MAX_DURATION = 300;
 
-  function updateMp4Price() {
-    let duration = Number(durationInput.value);
+  function updatePrice(inputId, outputId, warningId) {
+    const input = document.getElementById(inputId);
+    const output = document.getElementById(outputId);
+    const warning = document.getElementById(warningId);
 
-    if (!Number.isFinite(duration)) {
-      duration = 15;
+    if (!input || !output) return;
+
+    function calculatePrice() {
+      const raw = input.value.trim();
+
+      if (warning) {
+        warning.textContent = "";
+        warning.style.display = "none";
+      }
+
+      if (raw === "") {
+        output.textContent = "";
+        return;
+      }
+
+      const duration = Number(raw);
+
+      if (!Number.isFinite(duration)) {
+        output.textContent = "";
+        if (warning) {
+          warning.textContent = "⚠️ Lütfen geçerli bir süre girin.";
+          warning.style.display = "block";
+        }
+        return;
+      }
+
+      if (!Number.isInteger(duration)) {
+        output.textContent = "";
+        if (warning) {
+          warning.textContent = "⚠️ Süre tam saniye olarak girilmelidir.";
+          warning.style.display = "block";
+        }
+        return;
+      }
+
+      if (duration < MIN_DURATION) {
+        output.textContent = "";
+        if (warning) {
+          warning.textContent = "⚠️ Minimum süre 15 saniyedir.";
+          warning.style.display = "block";
+        }
+        return;
+      }
+
+      if (duration > MAX_DURATION) {
+        output.textContent = "";
+        if (warning) {
+          warning.textContent = "⚠️ Maksimum süre 300 saniyedir.";
+          warning.style.display = "block";
+        }
+        return;
+      }
+
+      output.textContent =
+        Math.round(duration * PRICE_PER_SECOND) + " TL";
     }
 
-    duration = Math.round(duration);
+    input.addEventListener("input", calculatePrice);
+    input.addEventListener("change", calculatePrice);
+    input.addEventListener("blur", calculatePrice);
 
-    if (duration < 15) duration = 15;
-    if (duration > 300) duration = 300;
+    // Başlangıçta boş
+    input.value = "";
+    output.textContent = "";
 
-    durationInput.value = duration;
-    priceOutput.textContent = duration + " TL";
-  }
-
-  durationInput.addEventListener("input", updateMp4Price);
-  durationInput.addEventListener("change", updateMp4Price);
-
-  updateMp4Price();
-})();
-/* 💰 BİŞARKI 1 TL / saniye canlı fiyat */
-(function () {
-  const durationInput = document.getElementById("mp3-duration");
-  const priceOutput = document.getElementById("mp3-live-price");
-
-  if (!durationInput || !priceOutput) return;
-
-  function updateMp3Price() {
-    let duration = Number(durationInput.value);
-
-    if (!Number.isFinite(duration)) {
-      duration = 15;
+    if (warning) {
+      warning.textContent = "";
+      warning.style.display = "none";
     }
-
-    duration = Math.round(duration);
-
-    if (duration < 15) duration = 15;
-    if (duration > 300) duration = 300;
-
-    durationInput.value = duration;
-    priceOutput.textContent = duration + " TL";
   }
 
-  durationInput.addEventListener("input", updateMp3Price);
-  durationInput.addEventListener("change", updateMp3Price);
+  updatePrice(
+    "mp3-duration",
+    "mp3-live-price",
+    "mp3-duration-warning"
+  );
 
-  updateMp3Price();
+  updatePrice(
+    "mp4-duration",
+    "mp4-live-price",
+    "mp4-duration-warning"
+  );
+
 })();
 
-/* 📦 BİŞARKI frontend → backend sipariş gönderimi */
 const BISARKI_API_URL =
   window.BISARKI_API_URL ||
   "http://localhost:3000";
@@ -3381,332 +3472,3 @@ document.querySelectorAll(".order-form").forEach(form => {
     }
   });
 });
-
-/* 🌍 BİŞARKI kullanıcı metadata davranışları */
-const bisarkiMetadataLanguages = {
-  tr: ["Türkçe","English","中文","हिन्दी","Русский","العربية","Deutsch","Français","Español","Italiano"],
-  en: ["Turkish","English","Chinese","Hindi","Russian","Arabic","German","French","Spanish","Italian"],
-  zh: ["土耳其语","英语","中文","印地语","俄语","阿拉伯语","德语","法语","西班牙语","意大利语"],
-  hi: ["तुर्की","अंग्रेज़ी","चीनी","हिन्दी","रूसी","अरबी","जर्मन","फ़्रेंच","स्पेनिश","इतालवी"],
-  ru: ["Турецкий","Английский","Китайский","Хинди","Русский","Арабский","Немецкий","Французский","Испанский","Итальянский"],
-  ar: ["التركية","الإنجليزية","الصينية","الهندية","الروسية","العربية","الألمانية","الفرنسية","الإسبانية","الإيطالية"],
-  de: ["Türkisch","Englisch","Chinesisch","Hindi","Russisch","Arabisch","Deutsch","Französisch","Spanisch","Italienisch"],
-  fr: ["Turc","Anglais","Chinois","Hindi","Russe","Arabe","Allemand","Français","Espagnol","Italien"],
-  es: ["Turco","Inglés","Chino","Hindi","Ruso","Árabe","Alemán","Francés","Español","Italiano"],
-  it: ["Turco","Inglese","Cinese","Hindi","Russo","Arabo","Tedesco","Francese","Spagnolo","Italiano"]
-};
-
-const bisarkiSongMetadataLanguages = {
-  tr: ["Türkçe","İngilizce","Çince","Hintçe","Rusça","Arapça","Almanca","Fransızca","İspanyolca","İtalyanca"],
-  en: ["Turkish","English","Chinese","Hindi","Russian","Arabic","German","French","Spanish","Italian"],
-  zh: ["土耳其语","英语","中文","印地语","俄语","阿拉伯语","德语","法语","西班牙语","意大利语"],
-  hi: ["तुर्की","अंग्रेज़ी","चीनी","हिन्दी","रूसी","अरबी","जर्मन","फ़्रेंच","स्पेनिश","इतालवी"],
-  ru: ["Турецкий","Английский","Китайский","Хинди","Русский","Арабский","Немецкий","Французский","Испанский","Итальянский"],
-  ar: ["التركية","الإنجليزية","الصينية","الهندية","الروسية","العربية","الألمانية","الفرنسية","الإسبانية","الإيطالية"],
-  de: ["Türkisch","Englisch","Chinesisch","Hindi","Russisch","Arabisch","Deutsch","Französisch","Spanisch","Italienisch"],
-  fr: ["Turc","Anglais","Chinois","Hindi","Russe","Arabe","Allemand","Français","Espagnol","Italien"],
-  es: ["Turco","Inglés","Chino","Hindi","Ruso","Árabe","Alemán","Francés","Español","Italiano"],
-  it: ["Turco","Inglese","Cinese","Hindi","Russo","Arabo","Tedesco","Francese","Spagnolo","Italiano"]
-};
-
-const bisarkiLocationNames = {
-  tr: {
-    TR:"🇹🇷 Türkiye", US:"🇺🇸 Amerika Birleşik Devletleri", GB:"🇬🇧 Birleşik Krallık",
-    CN:"🇨🇳 Çin", IN:"🇮🇳 Hindistan", RU:"🇷🇺 Rusya", SA:"🇸🇦 Suudi Arabistan",
-    DE:"🇩🇪 Almanya", FR:"🇫🇷 Fransa", ES:"🇪🇸 İspanya", IT:"🇮🇹 İtalya"
-  },
-  en: {
-    TR:"🇹🇷 Türkiye", US:"🇺🇸 United States", GB:"🇬🇧 United Kingdom",
-    CN:"🇨🇳 China", IN:"🇮🇳 India", RU:"🇷🇺 Russia", SA:"🇸🇦 Saudi Arabia",
-    DE:"🇩🇪 Germany", FR:"🇫🇷 France", ES:"🇪🇸 Spain", IT:"🇮🇹 Italy"
-  }
-};
-
-function bisarkiDetectLocation() {
-  const saved = localStorage.getItem("bisarkiLocation");
-  if (saved) return saved;
-
-  const locale = (
-    navigator.language ||
-    (navigator.languages && navigator.languages[0]) ||
-    ""
-  ).toUpperCase();
-
-  const match = locale.match(/-([A-Z]{2})$/);
-  const country = match ? match[1] : "";
-
-  const allowed = ["TR","US","GB","CN","IN","RU","SA","DE","FR","ES","IT"];
-
-  if (allowed.includes(country)) return country;
-
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
-
-  const timezoneMap = {
-    "Europe/Istanbul":"TR",
-    "America/New_York":"US",
-    "America/Los_Angeles":"US",
-    "Europe/London":"GB",
-    "Asia/Shanghai":"CN",
-    "Asia/Kolkata":"IN",
-    "Europe/Moscow":"RU",
-    "Asia/Riyadh":"SA",
-    "Europe/Berlin":"DE",
-    "Europe/Paris":"FR",
-    "Europe/Madrid":"ES",
-    "Europe/Rome":"IT"
-  };
-
-  return timezoneMap[timezone] || "TR";
-}
-
-function bisarkiSaveMultiSelect(id, key) {
-  const el = document.getElementById(id);
-  if (!el) return;
-
-  el.addEventListener("change", function() {
-    const values = Array.from(this.selectedOptions).map(o => o.value);
-    localStorage.setItem(key, JSON.stringify(values));
-  });
-}
-
-function bisarkiLoadMultiSelect(id, key, defaultValue) {
-  const el = document.getElementById(id);
-  if (!el) return;
-
-  let values = [];
-
-  try {
-    values = JSON.parse(localStorage.getItem(key) || "[]");
-  } catch (_) {
-    values = [];
-  }
-
-  if (!Array.isArray(values) || !values.length) {
-    values = defaultValue;
-  }
-
-  Array.from(el.options).forEach(option => {
-    option.selected = values.includes(option.value);
-  });
-}
-
-function bisarkiSyncSongLanguage(value) {
-  if (!supportedLanguages.includes(value)) value = "tr";
-
-  localStorage.setItem("bisarkiSongLanguage", value);
-
-  const top = document.getElementById("bisarki-song-language-top");
-  if (top) top.value = value;
-
-  document.querySelectorAll('[name="song_language"]').forEach(select => {
-    if (select.value !== value) select.value = value;
-  });
-}
-
-function bisarkiInitMetadata() {
-  const location = document.getElementById("bisarki-location");
-  const speaking = document.getElementById("bisarki-speaking-language");
-  const writing = document.getElementById("bisarki-writing-language");
-  const songTop = document.getElementById("bisarki-song-language-top");
-  const locationInfo = document.getElementById("bisarki-location-info");
-
-  if (location) {
-    const detected = bisarkiDetectLocation();
-    location.value = detected;
-
-    localStorage.setItem("bisarkiLocation", detected);
-
-    location.addEventListener("change", function() {
-      localStorage.setItem("bisarkiLocation", this.value);
-      bisarkiUpdateLocationInfo();
-    });
-  }
-
-  bisarkiLoadMultiSelect(
-    "bisarki-speaking-language",
-    "bisarkiSpeakingLanguages",
-    ["tr"]
-  );
-
-  bisarkiLoadMultiSelect(
-    "bisarki-writing-language",
-    "bisarkiWritingLanguages",
-    ["tr"]
-  );
-
-  bisarkiSaveMultiSelect(
-    "bisarki-speaking-language",
-    "bisarkiSpeakingLanguages"
-  );
-
-  bisarkiSaveMultiSelect(
-    "bisarki-writing-language",
-    "bisarkiWritingLanguages"
-  );
-
-  const savedSongLanguage =
-    localStorage.getItem("bisarkiSongLanguage") || "tr";
-
-  if (songTop) {
-    songTop.value = supportedLanguages.includes(savedSongLanguage)
-      ? savedSongLanguage
-      : "tr";
-
-    songTop.addEventListener("change", function() {
-      bisarkiSyncSongLanguage(this.value);
-    });
-  }
-
-  document.querySelectorAll('[name="song_language"]').forEach(select => {
-    select.addEventListener("change", function() {
-      bisarkiSyncSongLanguage(this.value);
-    });
-  });
-
-  bisarkiSyncSongLanguage(savedSongLanguage);
-
-  bisarkiUpdateLocationInfo();
-
-  if (locationInfo) {
-    locationInfo.dataset.ready = "true";
-  }
-}
-
-function bisarkiUpdateLocationInfo() {
-  const location = document.getElementById("bisarki-location");
-  const info = document.getElementById("bisarki-location-info");
-
-  if (!location || !info) return;
-
-  const language =
-    localStorage.getItem("bisarkiPageLanguage") || "tr";
-
-  const names =
-    bisarkiLocationNames[language] ||
-    bisarkiLocationNames.tr;
-
-  info.textContent =
-    names[location.value] ||
-    names.TR ||
-    "Ülke veya bölgenizi seçin.";
-}
-
-function bisarkiApplyMetadataLanguage(language) {
-  const t = translations[language] || translations.tr;
-  const meta = document.getElementById("bisarki-metadata");
-
-  if (!meta) return;
-
-  const locationLabel =
-    document.getElementById("bisarki-location-label");
-  const speakingLabel =
-    document.getElementById("bisarki-speaking-label");
-  const writingLabel =
-    document.getElementById("bisarki-writing-label");
-  const songLabel =
-    document.getElementById("bisarki-song-label");
-
-  if (locationLabel) {
-    locationLabel.textContent =
-      t.location || "📍 Lokasyon";
-  }
-
-  if (speakingLabel) {
-    speakingLabel.textContent =
-      t.speakingLanguage || "💬 Konuşma Dili";
-  }
-
-  if (writingLabel) {
-    writingLabel.textContent =
-      t.writingLanguage || "✍️ Yazışma Dili";
-  }
-
-  if (songLabel) {
-    songLabel.textContent =
-      t.songLanguage || "🎵 Şarkı Dili";
-  }
-
-  const codes = supportedLanguages;
-  const names = bisarkiMetadataLanguages[language] ||
-                bisarkiMetadataLanguages.tr;
-
-  ["bisarki-speaking-language","bisarki-writing-language"].forEach(id => {
-    const select = document.getElementById(id);
-    if (!select) return;
-
-    const selected = Array.from(select.selectedOptions)
-      .map(o => o.value);
-
-    select.innerHTML = "";
-
-    codes.forEach((code, index) => {
-      const option = document.createElement("option");
-      option.value = code;
-      option.textContent = names[index];
-      option.selected = selected.includes(code);
-      select.appendChild(option);
-    });
-  });
-
-  const songTop = document.getElementById("bisarki-song-language-top");
-  if (songTop) {
-    const currentSong = songTop.value || "tr";
-    const songNames =
-      bisarkiSongMetadataLanguages[language] ||
-      bisarkiSongMetadataLanguages.tr;
-
-    songTop.innerHTML = "";
-
-    codes.forEach((code, index) => {
-      const option = document.createElement("option");
-      option.value = code;
-      option.textContent = songNames[index];
-      option.selected = code === currentSong;
-      songTop.appendChild(option);
-    });
-
-    songTop.value = supportedLanguages.includes(currentSong)
-      ? currentSong
-      : "tr";
-  }
-
-  const location = document.getElementById("bisarki-location");
-  if (location) {
-    const current = location.value;
-    const locationNames =
-      bisarkiLocationNames[language] ||
-      bisarkiLocationNames.tr;
-
-    Array.from(location.options).forEach(option => {
-      if (locationNames[option.value]) {
-        option.textContent = locationNames[option.value];
-      }
-    });
-
-    location.value = current;
-  }
-
-  meta.dir = language === "ar" ? "rtl" : "ltr";
-
-  bisarkiUpdateLocationInfo();
-}
-
-/* Metadata'yı mevcut dil sistemine bağla */
-const bisarkiPreviousApplyTranslationsForMetadata =
-  applyTranslations;
-
-applyTranslations = function(language) {
-  bisarkiPreviousApplyTranslationsForMetadata(language);
-  bisarkiApplyMetadataLanguage(language);
-};
-
-bisarkiInitMetadata();
-bisarkiApplyMetadataLanguage(
-  localStorage.getItem("bisarkiPageLanguage") || "tr"
-);
-
-setPageLanguage(initialLanguage);
-</script>
-
-</body>
-</html>
