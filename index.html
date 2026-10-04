@@ -8,66 +8,81 @@
 
 <style>
 .language-box {
-  margin: 14px 0 4px;
-  text-align: right;
+  margin: 8px auto;
+  text-align: center;
 }
 
 .language-box label {
-  display: inline-block;
-  margin: 0 6px 0 0;
-  color: #b9c9dc;
-  font-size: 13px;
-  font-weight: bold;
-}
-
-.language-box select {
-  width: auto;
-  min-width: 145px;
-  padding: 9px 12px;
-  border-radius: 10px;
-  background: #07182c;
-}
-
-/* BİŞARKI kullanıcı metadata alanları */
-.bisarki-metadata {
-  margin: 16px auto 8px;
-  padding: 12px;
-  border: 1px solid #17385d;
-  border-radius: 14px;
-  background: rgba(7, 24, 44, .72);
-  text-align: left;
-}
-
-.bisarki-metadata-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.bisarki-meta-field {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.bisarki-meta-field label {
   color: #b9c9dc;
   font-size: 12px;
   font-weight: bold;
 }
 
-.bisarki-meta-field select {
+.language-box select {
   width: 100%;
-  min-height: 40px;
-  padding: 8px 10px;
+  max-width: 220px;
+  padding: 7px 10px;
+  border-radius: 8px;
+}
+
+/* BİŞARKI mini ayar paneli */
+.bisarki-metadata {
+  margin: 10px auto;
+  padding: 8px;
   border: 1px solid #17385d;
-  border-radius: 10px;
-  background: #07182c;
-  color: #fff;
+  border-radius: 12px;
+  background: rgba(7,24,44,.55);
+}
+
+.bisarki-metadata-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+
+.bisarki-meta-field {
+  background:rgba(15,35,65,.55);
+  border:1px solid #17385d;
+  border-radius:12px;
+  padding:8px;
+}
+
+.bisarki-meta-field select {
+  background:#07182c;
+  border-radius:8px;
+  font-size:12px;
+}
+
+@media(max-width:700px){
+  .bisarki-metadata-grid {
+    grid-template-columns:1fr;
+  }
+}
+
+.bisarki-meta-field {
+  gap:3px;
+}
+
+.bisarki-meta-field label {
+  font-size:11px;
+  color:#b9c9dc;
+}
+
+.bisarki-meta-field select {
+  min-height:34px;
+  padding:5px 7px;
+  border-radius:8px;
+  font-size:13px;
 }
 
 .bisarki-meta-field select[multiple] {
-  min-height: 76px;
+  min-height:55px;
+}
+
+@media(max-width:700px){
+.bisarki-metadata-grid{
+ grid-template-columns:1fr;
+}
 }
 
 @media(max-width:480px) {
@@ -414,7 +429,99 @@ footer {
   font-weight: 900;
 }
 
+
+/* Sistem dil algılama alanları - kullanıcıya gösterilmez */
+ .system-language-field,
+#bisarki-speaking-language,
+#bisarki-writing-language {
+  display:none;
+}
+
 </style>
+
+<style>
+.system-language-field{
+  display:none !important;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+<style id="bisarki-final-layout">
+#bisarki-metadata{
+  display:block !important;
+  width:100% !important;
+}
+
+#bisarki-metadata .bisarki-metadata-grid{
+  display:grid !important;
+  grid-template-columns:repeat(3, minmax(0, 1fr)) !important;
+  gap:10px !important;
+  width:100% !important;
+}
+
+#bisarki-metadata .bisarki-metadata-grid > .language-box{
+  display:block !important;
+  width:auto !important;
+  flex:none !important;
+  grid-column:1 !important;
+  grid-row:1 !important;
+  margin:0 !important;
+}
+
+#bisarki-metadata .bisarki-metadata-grid > .bisarki-meta-field:not(.system-language-field):not(.song-language-field){
+  display:block !important;
+  width:auto !important;
+  flex:none !important;
+  grid-column:2 !important;
+  grid-row:1 !important;
+  margin:0 !important;
+}
+
+#bisarki-metadata .bisarki-metadata-grid > .song-language-field{
+  display:block !important;
+  width:auto !important;
+  flex:none !important;
+  grid-column:3 !important;
+  grid-row:1 !important;
+  margin:0 !important;
+}
+
+#bisarki-metadata .bisarki-metadata-grid > .system-language-field{
+  display:none !important;
+}
+
+@media(max-width:700px){
+  #bisarki-metadata .bisarki-metadata-grid{
+    display:grid !important;
+    grid-template-columns:repeat(3, minmax(0, 1fr)) !important;
+    gap:6px !important;
+  }
+
+  #bisarki-metadata .bisarki-metadata-grid > .language-box{
+    grid-column:1 !important;
+    grid-row:1 !important;
+  }
+
+  #bisarki-metadata .bisarki-metadata-grid > .bisarki-meta-field:not(.system-language-field):not(.song-language-field){
+    grid-column:2 !important;
+    grid-row:1 !important;
+  }
+
+  #bisarki-metadata .bisarki-metadata-grid > .song-language-field{
+    grid-column:3 !important;
+    grid-row:1 !important;
+  }
+}
+</style>
+
 </head>
 
 <body>
@@ -428,7 +535,11 @@ footer {
     <div class="logo">BİŞARKI</div>
     <div class="music-box-tag" id="bisarki-music-box-tag">Size Özel Müzik Kutusu 🎵</div>
 
-  <div class="language-box">
+  
+
+  <div class="bisarki-metadata" id="bisarki-metadata">
+    <div class="bisarki-metadata-grid">
+<div class="language-box">
     <label for="language-select">🌍 Dil / Language</label>
     <select id="language-select">
       <option value="tr">🇹🇷 Türkçe</option>
@@ -446,8 +557,6 @@ footer {
 
   </div>
 
-  <div class="bisarki-metadata" id="bisarki-metadata">
-    <div class="bisarki-metadata-grid">
 
       <div class="bisarki-meta-field">
         <label for="bisarki-location" id="bisarki-location-label">📍 Lokasyon</label>
@@ -471,10 +580,10 @@ footer {
 
       </div>
 
-      <div class="bisarki-meta-field">
+      <div class="bisarki-meta-field system-language-field">
         <label for="bisarki-speaking-language" id="bisarki-speaking-label">💬 Konuşma Dili</label>
         <select id="bisarki-speaking-language" multiple>
-          <option value="tr">Türkçe</option>
+          <option value="tr">🇹🇷 Türkçe</option>
           <option value="en">English</option>
           <option value="zh">中文</option>
           <option value="hi">हिन्दी</option>
@@ -487,7 +596,7 @@ footer {
         </select>
       </div>
 
-      <div class="bisarki-meta-field">
+      <div class="bisarki-meta-field system-language-field">
         <label for="bisarki-writing-language" id="bisarki-writing-label">✍️ Yazışma Dili</label>
         <select id="bisarki-writing-language" multiple>
           <option value="tr">Türkçe</option>
@@ -503,10 +612,11 @@ footer {
         </select>
       </div>
 
-      <div class="bisarki-meta-field">
-        <label for="bisarki-song-language-top" id="bisarki-song-label">🎵 Şarkı Dili</label>
+      <div class="bisarki-meta-field song-language-field">
+        <label for="bisarki-song-language-top" id="bisarki-song-label">🎵 Şarkı</label>
         <select id="bisarki-song-language-top">
-          <option value="tr">Türkçe</option>
+          <option value="auto" selected>🤖 Otomatik algıla</option>
+          <option value="tr">🇹🇷 Türkçe</option>
           <option value="en">English</option>
           <option value="zh">中文</option>
           <option value="hi">हिन्दी</option>
@@ -1440,3 +1550,269 @@ footer {
   console.log("BİŞARKI canlı döviz + süre fiyat sistemi aktif");
 })();
 </script>
+
+
+<script>
+function bisarkiLanguageConfirm(lang){
+
+  const names = {
+    tr: "Türkçe 🇹🇷",
+    en: "English 🇬🇧",
+    ar: "العربية 🇸🇦",
+    zh: "中文 🇨🇳",
+    hi: "हिन्दी 🇮🇳",
+    ru: "Русский 🇷🇺",
+    de: "Deutsch 🇩🇪",
+    fr: "Français 🇫🇷",
+    es: "Español 🇪🇸",
+    it: "Italiano 🇮🇹"
+  };
+
+  const messages = {
+
+    tr:
+`🎵 Şarkınızın algılanan dili: ${names[lang]}
+
+Bu dilde şarkınızı hazırlayalım mı?`,
+
+    en:
+`🎵 Detected song language: ${names[lang]}
+
+Would you like us to prepare your song in this language?`,
+
+    ar:
+`🎵 لغة الأغنية المكتشفة: ${names[lang]}
+
+هل تريد إعداد أغنيتك بهذه اللغة؟`,
+
+    zh:
+`🎵 检测到的歌曲语言: ${names[lang]}
+
+您希望用这种语言制作您的歌曲吗？`,
+
+    hi:
+`🎵 पहचानी गई गीत भाषा: ${names[lang]}
+
+क्या आप इस भाषा में अपना गीत तैयार करवाना चाहते हैं?`,
+
+    ru:
+`🎵 Определённый язык песни: ${names[lang]}
+
+Подготовить вашу песню на этом языке?`,
+
+    de:
+`🎵 Erkannte Liedsprache: ${names[lang]}
+
+Möchten Sie Ihr Lied in dieser Sprache erstellen lassen?`,
+
+    fr:
+`🎵 Langue détectée de la chanson : ${names[lang]}
+
+Voulez-vous préparer votre chanson dans cette langue ?`,
+
+    es:
+`🎵 Idioma detectado de la canción: ${names[lang]}
+
+¿Quieres preparar tu canción en esta lengua?`,
+
+    it:
+`🎵 Lingua rilevata della canzone: ${names[lang]}
+
+Vuoi preparare la tua canzone in questa lingua?`
+  };
+
+
+  
+  const popup = document.getElementById("bisarkiLanguagePopup");
+  const text = document.getElementById("bisarkiLanguageText");
+  const yes = document.getElementById("bisarkiLanguageYes");
+  const no = document.getElementById("bisarkiLanguageNo");
+
+  if(!popup || !text || !yes || !no){
+    return confirm(messages[lang] || messages.tr);
+  }
+
+  text.innerHTML = messages[lang] || messages.tr;
+
+  popup.style.display = "flex";
+
+  return new Promise(function(resolve){
+
+    yes.onclick = function(){
+
+      popup.style.display = "none";
+      resolve(true);
+
+    };
+
+
+    no.onclick = function(){
+
+      popup.style.display = "none";
+      resolve(false);
+
+    };
+
+  });
+
+}
+
+
+
+function bisarkiDetectLanguage(text) {
+  if (!text || text.trim().length < 3) return "auto";
+
+  const t = text.toLowerCase();
+
+  if (/[çğıöşü]/i.test(t) ||
+      /\b(ben|sen|aşk|sevgi|özledim|kalbim|hayatım)\b/i.test(t)) {
+    return "tr";
+  }
+
+  const trWords =
+    (t.match(/\b(ben|sen|aşk|sevgi|seviyorum|seviyorum|özledim|özlüyorum|kalbim|hayatım|canım|mutlu|güzel|birlikte|sonsuz)\b/gi) || []).length;
+
+  const enWords =
+    (t.match(/\b(the|you|love|my|heart|miss|forever|baby|together|beautiful)\b/gi) || []).length;
+
+
+  if (trWords > enWords && trWords > 0) {
+    return "tr";
+  }
+
+  if (enWords > trWords && enWords >= 2) {
+    return "en";
+  }
+
+  if (/[\u0600-\u06FF]/.test(t)) return "ar";
+  if (/[\u4E00-\u9FFF]/.test(t)) return "zh";
+  if (/[\u0900-\u097F]/.test(t)) return "hi";
+
+  return "auto";
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+
+  const songLang = document.getElementById(
+    "bisarki-song-language-top"
+  );
+
+  const stories = document.querySelectorAll(
+    'textarea[name="hikaye"]'
+  );
+
+  if (!songLang || !stories.length) return;
+
+  let bisarkiAutoLanguageActive = true;
+
+  songLang.addEventListener("change", function(){
+    if(songLang.value !== "auto"){
+      bisarkiAutoLanguageActive = false;
+    } else {
+      bisarkiAutoLanguageActive = true;
+    }
+  });
+
+
+  stories.forEach(function(box){
+
+    box.addEventListener("input", function(){
+
+      if(songLang.value === "auto" && bisarkiAutoLanguageActive){
+
+        const lang = bisarkiDetectLanguage(box.value);
+
+        if(lang !== "auto"){
+
+          bisarkiLanguageConfirm(lang).then(function(approved){
+
+            if(approved){
+
+              songLang.value = lang;
+              bisarkiAutoLanguageActive = false;
+
+            } else {
+
+              songLang.value = "auto";
+              bisarkiAutoLanguageActive = true;
+
+            }
+
+          });
+
+        }
+
+      }
+
+    });
+
+  });
+
+});
+</script>
+
+
+<style>
+#bisarkiLanguagePopup{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.65);
+z-index:9999;
+align-items:center;
+justify-content:center;
+}
+
+.bisarki-popup-box{
+width:90%;
+max-width:380px;
+background:linear-gradient(145deg,#07152f,#0b3b66);
+color:white;
+border-radius:22px;
+padding:25px;
+text-align:center;
+box-shadow:0 0 35px rgba(0,180,255,.5);
+}
+
+.bisarki-popup-box button{
+width:100%;
+margin-top:12px;
+padding:14px;
+border:0;
+border-radius:14px;
+font-size:16px;
+}
+
+.bisarki-yes{
+background:#00bfff;
+color:white;
+}
+
+.bisarki-no{
+background:white;
+color:#073052;
+}
+</style>
+
+<div id="bisarkiLanguagePopup">
+<div class="bisarki-popup-box">
+
+<h3>🎵 BİŞARKI</h3>
+
+<p id="bisarkiLanguageText"></p>
+
+<button class="bisarki-yes" id="bisarkiLanguageYes">
+💙 Evet, bu dilde hazırla
+</button>
+
+<button class="bisarki-no" id="bisarkiLanguageNo">
+🔄 Dili değiştirmek istiyorum
+</button>
+
+</div>
+</div>
+
+
+
+
+
