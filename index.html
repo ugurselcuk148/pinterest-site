@@ -1310,7 +1310,27 @@ footer {
     duration.value = value;
     display.textContent = value;
     displayControl.textContent = value;
-    price.textContent = value + " TL";
+    const currencyRates = {
+      TR: {symbol:"TL", rate:1},
+      US: {symbol:"USD", rate:0.031},
+      GB: {symbol:"GBP", rate:0.024},
+      CN: {symbol:"CNY", rate:0.22},
+      IN: {symbol:"INR", rate:2.6},
+      RU: {symbol:"RUB", rate:2.8},
+      SA: {symbol:"SAR", rate:0.116},
+      DE: {symbol:"EUR", rate:0.027},
+      FR: {symbol:"EUR", rate:0.027},
+      ES: {symbol:"EUR", rate:0.027},
+      IT: {symbol:"EUR", rate:0.027}
+    };
+
+    const selectedCurrency = currencies[location?.value] || "₺ TL";
+    const country = location?.value || "TR";
+    const currency = currencyRates[country] || currencyRates.TR;
+
+    const converted = (value * currency.rate).toFixed(2);
+
+    price.textContent = converted + " " + currency.symbol;
 
     if (
       window.bisarkiCurrencyConverter &&
