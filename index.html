@@ -2608,3 +2608,79 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v15-style">
+
+/* V15 Broadcast Experience */
+.bisarki-permission-box{
+  position:relative;
+  overflow:hidden;
+}
+
+/* ON AIR ışığı */
+.bisarki-permission-box h3::after{
+  content:"  🔴 ON AIR";
+  display:inline-block;
+  margin-left:10px;
+  font-size:12px;
+  letter-spacing:1.5px;
+  color:#ff4040;
+  text-shadow:0 0 12px #ff4040;
+  animation:bisarkiOnAirPulse 1.4s infinite;
+}
+
+@keyframes bisarkiOnAirPulse{
+  0%,100%{
+    opacity:.45;
+  }
+  50%{
+    opacity:1;
+  }
+}
+
+/* Yayın dalgası */
+.bisarki-permission-box::before{
+  content:"";
+  position:absolute;
+  width:220px;
+  height:220px;
+  right:-80px;
+  bottom:-80px;
+  border-radius:50%;
+  border:2px solid rgba(0,191,255,.25);
+  animation:bisarkiBroadcastWave 4s infinite;
+}
+
+@keyframes bisarkiBroadcastWave{
+  0%{
+    transform:scale(.6);
+    opacity:.2;
+  }
+  50%{
+    transform:scale(1);
+    opacity:.6;
+  }
+  100%{
+    transform:scale(1.35);
+    opacity:0;
+  }
+}
+
+/* Nota parçacığı */
+.bisarki-permission-box strong::after{
+  content:" ♪";
+  color:#7fc4ff;
+  text-shadow:0 0 10px #00bfff;
+  animation:bisarkiMusicNote 2s infinite ease-in-out;
+}
+
+@keyframes bisarkiMusicNote{
+  0%,100%{
+    transform:translateY(0);
+  }
+  50%{
+    transform:translateY(-5px);
+  }
+}
+
+</style>
+
