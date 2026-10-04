@@ -2715,26 +2715,65 @@ const bisarkiCurrencyConverter = {
 
     if (!amountEl || !fromEl || !toEl || !resultEl) return;
 
-    const amount = Number(amountEl.value);
-    const from = fromEl.value;
-    const to = toEl.value;
     const language =
       localStorage.getItem("bisarkiPageLanguage") ||
       document.documentElement.lang ||
       "tr";
 
     const t = this.translations[language] || this.translations.tr;
+    const to = toEl.value;
 
-    if (!Number.isFinite(amount) || amount < 0) {
-      resultEl.textContent = t.error;
+    /*
+      💰 BİŞARKI DÖVİZ ANA MOTORU
+
+      Kaynak: Ödenecek tutar (TRY)
+
+      ANA FORMÜL:
+      Ödenecek tutar × döviz kuru = döviz karşılığı
+    */
+
+    const durationInput = document.getElementById("mp3-duration");
+
+    const rawDuration = durationInput
+      ? durationInput.value.trim()
+      : "";
+
+    // Süre boşsa döviz hesabı yapma.
+    if (rawDuration === "") {
+      amountEl.value = "";
+      resultEl.textContent = "—";
+      if (dateEl) dateEl.textContent = "";
       return;
     }
 
-    if (from === to) {
+    const duration = Number(rawDuration);
+
+    // Geçersiz sürelerde hesaplama yapma.
+    if (
+      !Number.isFinite(duration) ||
+      !Number.isInteger(duration) ||
+      duration < 15 ||
+      duration > 300
+    ) {
+      amountEl.value = "";
+      resultEl.textContent = "—";
+      if (dateEl) dateEl.textContent = "";
+      return;
+    }
+
+    // BİŞARKI fiyat motoru: 1 TL / saniye
+    const payableTry = duration;
+
+    // Döviz çeviricinin tutarı artık doğrudan Ödenecek Tutar'dan gelir.
+    amountEl.value = payableTry.toFixed(2);
+
+    // TRY → TRY
+    if (to === "TRY") {
       resultEl.textContent =
-        `${amount.toLocaleString(undefined, {
+        `${payableTry.toLocaleString(undefined, {
           maximumFractionDigits: 2
-        })} ${to}`;
+        })} TRY`;
+
       if (dateEl) dateEl.textContent = "";
       return;
     }
@@ -2743,13 +2782,22 @@ const bisarkiCurrencyConverter = {
 
     try {
       const response = await fetch(
-        `https://api.frankfurter.dev/v2/rate/${from}/${to}`
+        `https://api.frankfurter.dev/v2/rate/TRY/${to}`
       );
 
-      if (!response.ok) throw new Error("Exchange rate error");
+      if (!response.ok) {
+        throw new Error("Exchange rate error");
+      }
 
       const data = await response.json();
-      const converted = amount * Number(data.rate);
+      const rate = Number(data.rate);
+
+      if (!Number.isFinite(rate)) {
+        throw new Error("Invalid exchange rate");
+      }
+
+      // 💰 ANA FORMÜL
+      const converted = payableTry * rate;
 
       resultEl.textContent =
         `${converted.toLocaleString(undefined, {
@@ -2757,15 +2805,23 @@ const bisarkiCurrencyConverter = {
         })} ${to}`;
 
       if (dateEl) {
-        dateEl.textContent = data.date ? `(${data.date})` : "";
+        dateEl.textContent =
+          data.date ? `(${data.date})` : "";
       }
+
     } catch (error) {
-      console.error("BİŞARKI döviz çevirici:", error);
+      console.error(
+        "BİŞARKI döviz ana motoru:",
+        error
+      );
+
       resultEl.textContent = t.error;
-      if (dateEl) dateEl.textContent = "";
+
+      if (dateEl) {
+        dateEl.textContent = "";
+      }
     }
   },
-
   init() {
     const box = document.getElementById("bisarki-currency-converter");
     if (!box) return;
@@ -2840,18 +2896,19 @@ function addBisarkiCurrencyConverter() {
     </div>
 
     <div style="display:grid;gap:8px;">
-      <label data-currency-amount for="bisarki-currency-amount">Tutar</label>
+      <label data-currency-amount for="bisarki-currency-amount">Ödenecek tutar (TRY)</label>
       <input
         id="bisarki-currency-amount"
         type="number"
         min="0"
         step="0.01"
-        value="15"
+        placeholder="Şarkı süresini girince otomatik hesaplanır"
+        readonly
       >
 
-      <label data-currency-from for="bisarki-currency-from">Para birimi</label>
-      <select id="bisarki-currency-from">
-        ${options}
+      <label data-currency-from for="bisarki-currency-from">Kaynak para birimi</label>
+      <select id="bisarki-currency-from" disabled>
+        <option value="TRY">🇹🇷 TRY — Türk Lirası</option>
       </select>
 
       <label data-currency-to for="bisarki-currency-to">Göster</label>
@@ -2866,7 +2923,8 @@ function addBisarkiCurrencyConverter() {
       </div>
 
       <small data-currency-note>
-        Görünen tutar yaklaşık döviz karşılığıdır; BİŞARKI fiyatını değiştirmez.
+        Ödenecek tutar × güncel döviz kuru ile hesaplanan yaklaşık karşılıktır.
+        BİŞARKI'nın TL fiyatını değiştirmez.
       </small>
     </div>
   `;
@@ -3287,6 +3345,22 @@ applyBisarkiCurrencyUiTranslations(
     "mp4-live-price",
     "mp4-duration-warning"
   );
+
+  // 💱 Döviz ana motoru:
+  // Ödenecek tutar değişince döviz karşılığını güncelle.
+  const durationInput = document.getElementById("mp3-duration");
+
+  if (durationInput) {
+    ["input", "change", "blur"].forEach(eventName => {
+      durationInput.addEventListener(eventName, () => {
+        if (
+          typeof bisarkiCurrencyConverter !== "undefined"
+        ) {
+          bisarkiCurrencyConverter.convert();
+        }
+      });
+    });
+  }
 
 })();
 
