@@ -2441,3 +2441,66 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v12-style">
+
+/* V12 canlı radyo dalga efekti */
+.bisarki-permission-box{
+  position:relative;
+  overflow:hidden;
+}
+
+.bisarki-permission-box::after{
+  content:"";
+  position:absolute;
+  left:15%;
+  right:15%;
+  bottom:18px;
+  height:3px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #00bfff,
+      #7fc4ff,
+      #00bfff,
+      transparent
+    );
+  background-size:200%;
+  animation:bisarkiWaveMove 3s infinite linear;
+  opacity:.65;
+}
+
+@keyframes bisarkiWaveMove{
+  0%{
+    background-position:0%;
+  }
+  100%{
+    background-position:200%;
+  }
+}
+
+/* Yayına hazır hissi */
+.bisarki-permission-box input[type="checkbox"]:checked + span{
+  animation:bisarkiReadyPulse 2s infinite ease-in-out;
+}
+
+@keyframes bisarkiReadyPulse{
+  0%,100%{
+    filter:brightness(1);
+  }
+  50%{
+    filter:brightness(1.25);
+  }
+}
+
+/* Premium radyo noktası */
+.bisarki-permission-box h3::after{
+  content:" ● CANLI";
+  color:#00bfff;
+  font-size:.65em;
+  letter-spacing:1px;
+  text-shadow:0 0 10px #00bfff;
+}
+
+</style>
+
