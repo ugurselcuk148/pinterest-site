@@ -2826,3 +2826,86 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v18-style">
+
+/* V18 Hologram Studio Edition */
+.bisarki-permission-box{
+  position:relative;
+  overflow:hidden;
+  backdrop-filter:blur(18px);
+}
+
+/* Hologram ışık katmanı */
+.bisarki-permission-box::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(
+      120deg,
+      transparent,
+      rgba(0,191,255,.18),
+      transparent
+    );
+  animation:bisarkiHologramMove 6s infinite linear;
+  pointer-events:none;
+}
+
+@keyframes bisarkiHologramMove{
+  0%{
+    transform:translateX(-100%);
+  }
+  100%{
+    transform:translateX(100%);
+  }
+}
+
+/* Ses dalgası */
+.bisarki-permission-box strong::after{
+  content:" 〰〰〰 LIVE WAVE";
+  display:inline-block;
+  color:#7fc4ff;
+  letter-spacing:1px;
+  text-shadow:0 0 12px #00bfff;
+  animation:bisarkiWavePulse 1.5s infinite;
+}
+
+@keyframes bisarkiWavePulse{
+  0%,100%{
+    transform:scaleX(.9);
+    opacity:.5;
+  }
+  50%{
+    transform:scaleX(1.15);
+    opacity:1;
+  }
+}
+
+/* Neon hologram kenar */
+.bisarki-permission-box{
+  box-shadow:
+    0 0 30px rgba(0,191,255,.35),
+    0 0 70px rgba(70,90,255,.18),
+    inset 0 0 35px rgba(255,255,255,.06);
+}
+
+/* Stüdyo canlı noktaları */
+.bisarki-permission-box h3::after{
+  content:" ● HOLO STUDIO";
+  color:#00bfff;
+  font-size:.75em;
+  text-shadow:0 0 10px #00bfff;
+  animation:bisarkiHoloDot 1s infinite;
+}
+
+@keyframes bisarkiHoloDot{
+  0%,100%{
+    opacity:.4;
+  }
+  50%{
+    opacity:1;
+  }
+}
+
+</style>
+
