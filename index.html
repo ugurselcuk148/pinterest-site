@@ -2389,3 +2389,55 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v11-style">
+
+/* V11 Radyo aktif durum efekti */
+.bisarki-permission-box .consent-item{
+  position:relative;
+  transition:.35s ease;
+}
+
+/* Seçili kart neon hissi */
+.bisarki-permission-box input[type="checkbox"]:checked + span{
+  color:#ffffff;
+  text-shadow:
+    0 0 8px #00bfff,
+    0 0 18px rgba(0,191,255,.8);
+}
+
+/* Checkbox onay animasyonu */
+.bisarki-permission-box input[type="checkbox"]:checked{
+  animation:bisarkiCheckPop .45s ease;
+}
+
+@keyframes bisarkiCheckPop{
+  0%{
+    transform:scale(1);
+  }
+  50%{
+    transform:scale(1.4);
+  }
+  100%{
+    transform:scale(1.15);
+  }
+}
+
+/* Radyo dalga çizgisi */
+.bisarki-permission-box .consent-item::after{
+  content:"";
+  position:absolute;
+  left:10%;
+  right:10%;
+  bottom:0;
+  height:1px;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(0,191,255,.7),
+    transparent
+  );
+  opacity:.35;
+}
+
+</style>
+
