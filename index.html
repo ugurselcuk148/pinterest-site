@@ -2176,3 +2176,56 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v7-style">
+
+.bisarki-permission-box{
+  isolation:isolate;
+}
+
+.bisarki-permission-box::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(
+      120deg,
+      transparent 20%,
+      rgba(0,191,255,.12),
+      transparent 80%
+    );
+  transform:translateX(-120%);
+  animation:bisarkiLightSweep 5s infinite;
+  pointer-events:none;
+}
+
+@keyframes bisarkiLightSweep{
+  0%,70%{
+    transform:translateX(-120%);
+  }
+  100%{
+    transform:translateX(120%);
+  }
+}
+
+.bisarki-permission-box .consent-item{
+  backdrop-filter:blur(8px);
+}
+
+.bisarki-permission-box input[type="checkbox"]:checked + span{
+  animation:bisarkiApprovedGlow 1s ease;
+}
+
+@keyframes bisarkiApprovedGlow{
+  0%{
+    filter:brightness(1);
+  }
+  50%{
+    filter:brightness(1.35);
+  }
+  100%{
+    filter:brightness(1);
+  }
+}
+
+</style>
+
