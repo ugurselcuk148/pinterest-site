@@ -537,22 +537,37 @@ footer {
 </style>
 
 <style id="bisarki-metadata-equal-style">
-/* BİŞARKI metadata: üç kutu eşit, başlıklar kalın ve bir kademe büyük */
-#bisarki-metadata .bisarki-metadata-grid > *{
+/* BİŞARKI: görünen üç metadata kutusu kesin olarak eşit */
+#bisarki-metadata .bisarki-metadata-grid > .language-box,
+#bisarki-metadata .bisarki-metadata-grid > .bisarki-meta-field:not(.system-language-field):not(.song-language-field),
+#bisarki-metadata .bisarki-metadata-grid > .song-language-field{
   box-sizing:border-box !important;
+  width:100% !important;
   min-width:0 !important;
   height:86px !important;
+  min-height:86px !important;
+  margin:0 !important;
+  padding:0 !important;
 }
 
-#bisarki-metadata .bisarki-metadata-grid > * > label{
+#bisarki-metadata .bisarki-metadata-grid > .language-box > label,
+#bisarki-metadata .bisarki-metadata-grid > .bisarki-meta-field:not(.system-language-field):not(.song-language-field) > label,
+#bisarki-metadata .bisarki-metadata-grid > .song-language-field > label{
+  display:block !important;
+  box-sizing:border-box !important;
+  width:100% !important;
   margin:0 0 7px !important;
+  padding:0 !important;
   font-size:15px !important;
   font-weight:700 !important;
   line-height:1.2 !important;
   white-space:nowrap !important;
 }
 
-#bisarki-metadata .bisarki-metadata-grid > * > select{
+#bisarki-metadata .bisarki-metadata-grid > .language-box > select,
+#bisarki-metadata .bisarki-metadata-grid > .bisarki-meta-field:not(.system-language-field):not(.song-language-field) > select,
+#bisarki-metadata .bisarki-metadata-grid > .song-language-field > select{
+  display:block !important;
   box-sizing:border-box !important;
   width:100% !important;
   height:46px !important;
@@ -563,15 +578,22 @@ footer {
 }
 
 @media(max-width:700px){
-  #bisarki-metadata .bisarki-metadata-grid > *{
+  #bisarki-metadata .bisarki-metadata-grid > .language-box,
+  #bisarki-metadata .bisarki-metadata-grid > .bisarki-meta-field:not(.system-language-field):not(.song-language-field),
+  #bisarki-metadata .bisarki-metadata-grid > .song-language-field{
     height:82px !important;
+    min-height:82px !important;
   }
 
-  #bisarki-metadata .bisarki-metadata-grid > * > label{
+  #bisarki-metadata .bisarki-metadata-grid > .language-box > label,
+  #bisarki-metadata .bisarki-metadata-grid > .bisarki-meta-field:not(.system-language-field):not(.song-language-field) > label,
+  #bisarki-metadata .bisarki-metadata-grid > .song-language-field > label{
     font-size:15px !important;
   }
 
-  #bisarki-metadata .bisarki-metadata-grid > * > select{
+  #bisarki-metadata .bisarki-metadata-grid > .language-box > select,
+  #bisarki-metadata .bisarki-metadata-grid > .bisarki-meta-field:not(.system-language-field):not(.song-language-field) > select,
+  #bisarki-metadata .bisarki-metadata-grid > .song-language-field > select{
     height:44px !important;
     min-height:44px !important;
     padding:9px 7px !important;
