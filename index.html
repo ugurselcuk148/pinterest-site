@@ -2995,3 +2995,95 @@ color:#073052;
 
 </style>
 
+<style id="bisarki-radio-v20-style">
+
+/* V20 Virtual Arena Edition */
+.bisarki-permission-box{
+  position:relative;
+  overflow:hidden;
+}
+
+/* Arena ışık kubbesi */
+.bisarki-permission-box::before{
+  content:"";
+  position:absolute;
+  inset:-50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(0,191,255,.25),
+      transparent 45%
+    );
+  animation:bisarkiArenaGlow 7s infinite ease-in-out;
+  pointer-events:none;
+}
+
+@keyframes bisarkiArenaGlow{
+  0%,100%{
+    transform:scale(.85);
+    opacity:.35;
+  }
+  50%{
+    transform:scale(1.15);
+    opacity:.9;
+  }
+}
+
+/* Sanal dinleyici ışıkları */
+.bisarki-permission-box::after{
+  content:"• • •  LIVE AUDIENCE  • • •";
+  position:absolute;
+  bottom:10px;
+  left:0;
+  width:100%;
+  text-align:center;
+  color:#7fc4ff;
+  font-size:11px;
+  letter-spacing:3px;
+  opacity:.55;
+  animation:bisarkiAudiencePulse 2s infinite;
+}
+
+@keyframes bisarkiAudiencePulse{
+  0%,100%{
+    opacity:.35;
+  }
+  50%{
+    opacity:1;
+  }
+}
+
+/* DJ mixer hissi */
+.bisarki-permission-box strong{
+  text-shadow:
+    0 0 8px #00bfff,
+    0 0 18px rgba(0,191,255,.8);
+}
+
+/* Arena yayın dalgası */
+.bisarki-permission-box h3::before{
+  content:"🎚️ ARENA LIVE • ";
+  color:#00bfff;
+  text-shadow:0 0 12px #00bfff;
+  animation:bisarkiMixerPulse 1.5s infinite;
+}
+
+@keyframes bisarkiMixerPulse{
+  0%,100%{
+    opacity:.5;
+  }
+  50%{
+    opacity:1;
+  }
+}
+
+/* Premium arena çerçevesi */
+.bisarki-permission-box{
+  box-shadow:
+    0 0 40px rgba(0,191,255,.35),
+    0 0 90px rgba(70,90,255,.2),
+    inset 0 0 45px rgba(255,255,255,.08);
+}
+
+</style>
+
