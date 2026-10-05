@@ -681,7 +681,7 @@ footer {
 
       <div class="bisarki-meta-field song-language-field">
         <label for="bisarki-song-language-top" id="bisarki-song-label">🎵 Şarkı</label>
-        <select id="bisarki-song-language-top">
+        <select id="bisarki-song-language-top" name="sarki_dili">
           <option value="auto" selected>🤖 Otomatik algıla</option>
           <option value="tr">🇹🇷 Türkçe</option>
           <option value="en">English</option>
@@ -1537,8 +1537,7 @@ footer {
 
 
 <script>
-function bisarkiLanguageConfirm(lang){
-
+document.addEventListener("DOMContentLoaded", function () {
   const names = {
     tr: "Türkçe 🇹🇷",
     en: "English 🇬🇧",
@@ -1553,439 +1552,482 @@ function bisarkiLanguageConfirm(lang){
   };
 
   const messages = {
-
-    tr:
-`🎵 Şarkınızın algılanan dili: ${names[lang]}
-
-Bu dilde şarkınızı hazırlayalım mı?`,
-
-    en:
-`🎵 Detected song language: ${names[lang]}
-
-Would you like us to prepare your song in this language?`,
-
-    ar:
-`🎵 لغة الأغنية المكتشفة: ${names[lang]}
-
-هل تريد إعداد أغنيتك بهذه اللغة؟`,
-
-    zh:
-`🎵 检测到的歌曲语言: ${names[lang]}
-
-您希望用这种语言制作您的歌曲吗？`,
-
-    hi:
-`🎵 पहचानी गई गीत भाषा: ${names[lang]}
-
-क्या आप इस भाषा में अपना गीत तैयार करवाना चाहते हैं?`,
-
-    ru:
-`🎵 Определённый язык песни: ${names[lang]}
-
-Подготовить вашу песню на этом языке?`,
-
-    de:
-`🎵 Erkannte Liedsprache: ${names[lang]}
-
-Möchten Sie Ihr Lied in dieser Sprache erstellen lassen?`,
-
-    fr:
-`🎵 Langue détectée de la chanson : ${names[lang]}
-
-Voulez-vous préparer votre chanson dans cette langue ?`,
-
-    es:
-`🎵 Idioma detectado de la canción: ${names[lang]}
-
-¿Quieres preparar tu canción en esta lengua?`,
-
-    it:
-`🎵 Lingua rilevata della canzone: ${names[lang]}
-
-Vuoi preparare la tua canzone in questa lingua?`
+    tr: `🎵 Şarkınızın algılanan dili: ${names.tr}<br><br>Bu dilde şarkınızı hazırlayalım mı?`,
+    en: `🎵 Detected song language: ${names.en}<br><br>Would you like us to prepare your song in this language?`,
+    ar: `🎵 لغة الأغنية المكتشفة: ${names.ar}<br><br>هل تريد إعداد أغنيتك بهذه اللغة؟`,
+    zh: `🎵 检测到的歌曲语言: ${names.zh}<br><br>您希望用这种语言制作您的歌曲吗？`,
+    hi: `🎵 पहचानी गई गीत भाषा: ${names.hi}<br><br>क्या आप इस भाषा में अपना गीत तैयार करवाना चाहते हैं?`,
+    ru: `🎵 Определённый язык песни: ${names.ru}<br><br>Подготовить вашу песню на этом языке?`,
+    de: `🎵 Erkannte Liedsprache: ${names.de}<br><br>Möchten Sie Ihr Lied in dieser Sprache erstellen lassen?`,
+    fr: `🎵 Langue détectée de la chanson : ${names.fr}<br><br>Voulez-vous préparer votre chanson dans cette langue ?`,
+    es: `🎵 Idioma detectado de la canción: ${names.es}<br><br>¿Quieres preparar tu canción en esta lengua?`,
+    it: `🎵 Lingua rilevata della canzone: ${names.it}<br><br>Vuoi preparare la tua canzone in questa lingua?`
   };
 
+  const songLanguageSelect =
+    document.getElementById("bisarki-song-language-top");
 
-  
-  const popup = document.getElementById("bisarkiLanguagePopup");
-  const text = document.getElementById("bisarkiLanguageText");
-  const yes = document.getElementById("bisarkiLanguageYes");
-  const no = document.getElementById("bisarkiLanguageNo");
+  const languagePopup =
+    document.getElementById("bisarkiLanguagePopup");
 
-  if(!popup || !text || !yes || !no){
-    return confirm(messages[lang] || messages.tr);
+  const languagePopupText =
+    document.getElementById("bisarkiLanguageText");
+
+  const languagePopupYes =
+    document.getElementById("bisarkiLanguageYes");
+
+  const languagePopupNo =
+    document.getElementById("bisarkiLanguageNo");
+
+  const unknownMessages = {
+    tr: `🎵 Şarkı dilini otomatik olarak belirleyemedik.<br><br>Lütfen şarkınızın dilini yukarıdaki listeden seçin.`,
+    en: `🎵 We couldn't automatically determine the song language.<br><br>Please select your song language from the list above.`,
+    zh: `🎵 我们无法自动确定歌曲语言。<br><br>请从上面的列表中选择歌曲语言。`,
+    hi: `🎵 हम गीत की भाषा को स्वचालित रूप से निर्धारित नहीं कर सके।<br><br>कृपया ऊपर दी गई सूची से गीत की भाषा चुनें।`,
+    ru: `🎵 Не удалось автоматически определить язык песни.<br><br>Пожалуйста, выберите язык песни из списка выше.`,
+    ar: `🎵 تعذر تحديد لغة الأغنية تلقائيًا.<br><br>يرجى اختيار لغة الأغنية من القائمة أعلاه.`,
+    de: `🎵 Die Sprache des Liedes konnte nicht automatisch erkannt werden.<br><br>Bitte wählen Sie die Sprache aus der Liste oben aus.`,
+    fr: `🎵 Nous n'avons pas pu déterminer automatiquement la langue de la chanson.<br><br>Veuillez sélectionner la langue dans la liste ci-dessus.`,
+    es: `🎵 No pudimos determinar automáticamente el idioma de la canción.<br><br>Selecciona el idioma de la canción de la lista de arriba.`,
+    it: `🎵 Non è stato possibile determinare automaticamente la lingua della canzone.<br><br>Seleziona la lingua della canzone dall'elenco qui sopra.`
+  };
+
+  let pendingDetectedLanguage = "";
+
+  let manualSongLanguage =
+    !!songLanguageSelect &&
+    songLanguageSelect.value !== "auto";
+
+  if (songLanguageSelect) {
+    songLanguageSelect.addEventListener("change", function () {
+      manualSongLanguage =
+        songLanguageSelect.value !== "auto";
+
+      if (manualSongLanguage) {
+        lastDetected = songLanguageSelect.value;
+        console.log(
+          "BİŞARKI manuel şarkı dili seçildi:",
+          names[songLanguageSelect.value] || songLanguageSelect.value
+        );
+      } else {
+        lastDetected = "";
+        console.log(
+          "BİŞARKI şarkı dili otomatik algılamaya döndü."
+        );
+      }
+    });
   }
 
-  text.innerHTML = messages[lang] || messages.tr;
-
-  popup.style.display = "flex";
-
-  return new Promise(function(resolve){
-
-    yes.onclick = function(){
-
-      popup.style.display = "none";
-      resolve(true);
-
-    };
-
-
-    no.onclick = function(){
-
-      popup.style.display = "none";
-      resolve(false);
-
-    };
-
-  });
-
-}
-
-
-
-function bisarkiDetectLanguage(text) {
-  if (!text || text.trim().length < 3) return "auto";
-
-  const t = text.toLowerCase();
-
-  if (/[çğıöşü]/i.test(t) ||
-      /\b(ben|sen|aşk|sevgi|özledim|kalbim|hayatım)\b/i.test(t)) {
-    return "tr";
-  }
-
-  const trWords =
-    (t.match(/\b(ben|sen|aşk|sevgi|seviyorum|seviyorum|özledim|özlüyorum|kalbim|hayatım|canım|mutlu|güzel|birlikte|sonsuz)\b/gi) || []).length;
-
-  const enWords =
-    (t.match(/\b(the|you|love|my|heart|miss|forever|baby|together|beautiful)\b/gi) || []).length;
-
-
-  if (trWords > enWords && trWords > 0) {
-    return "tr";
-  }
-
-  if (enWords > trWords && enWords >= 2) {
-    return "en";
-  }
-
-  if (/[\u0600-\u06FF]/.test(t)) return "ar";
-  if (/[\u4E00-\u9FFF]/.test(t)) return "zh";
-  if (/[\u0900-\u097F]/.test(t)) return "hi";
-
-  return "auto";
-}
-
-document.addEventListener("DOMContentLoaded", function(){
-
-  const songLang = document.getElementById(
-    "bisarki-song-language-top"
-  );
-
-  const stories = document.querySelectorAll(
-    'textarea[name="hikaye"]'
-  );
-
-  if (!songLang || !stories.length) return;
-
-  let bisarkiAutoLanguageActive = true;
-
-  songLang.addEventListener("change", function(){
-    if(songLang.value !== "auto"){
-      bisarkiAutoLanguageActive = false;
-    } else {
-      bisarkiAutoLanguageActive = true;
+  function closeLanguagePopup() {
+    if (languagePopup) {
+      languagePopup.style.display = "none";
+      languagePopup.setAttribute("aria-hidden", "true");
     }
-  });
+  }
 
+  function bisarkiLanguageConfirm(lang) {
+    pendingDetectedLanguage = lang;
 
-  stories.forEach(function(box){
+    if (!languagePopup || !languagePopupText) {
+      return;
+    }
 
-    box.addEventListener("input", function(){
+    languagePopupText.innerHTML =
+      messages[lang] || messages.tr;
 
-      if(songLang.value === "auto" && bisarkiAutoLanguageActive){
+    const popupButtons = {
+      tr: {
+        yes: "💙 Evet, bu dili kullan",
+        no: "↩️ Hayır, tekrar kontrol et"
+      },
+      en: {
+        yes: "💙 Yes, use this language",
+        no: "↩️ No, check again"
+      },
+      zh: {
+        yes: "💙 是的，使用此语言",
+        no: "↩️ 不，再检查一次"
+      },
+      hi: {
+        yes: "💙 हाँ, इस भाषा का उपयोग करें",
+        no: "↩️ नहीं, फिर से जाँच करें"
+      },
+      ru: {
+        yes: "💙 Да, использовать этот язык",
+        no: "↩️ Нет, проверить ещё раз"
+      },
+      ar: {
+        yes: "💙 نعم، استخدم هذه اللغة",
+        no: "↩️ لا، تحقق مرة أخرى"
+      },
+      de: {
+        yes: "💙 Ja, diese Sprache verwenden",
+        no: "↩️ Nein, erneut prüfen"
+      },
+      fr: {
+        yes: "💙 Oui, utiliser cette langue",
+        no: "↩️ Non, vérifier à nouveau"
+      },
+      es: {
+        yes: "💙 Sí, usar este idioma",
+        no: "↩️ No, comprobar de nuevo"
+      },
+      it: {
+        yes: "💙 Sì, usa questa lingua",
+        no: "↩️ No, controlla di nuovo"
+      }
+    };
 
-        const lang = bisarkiDetectLanguage(box.value);
+    const buttons =
+      popupButtons[lang] || popupButtons.tr;
 
-        if(lang !== "auto"){
+    if (languagePopupYes) {
+      languagePopupYes.textContent = buttons.yes;
+    }
 
-          bisarkiLanguageConfirm(lang).then(function(approved){
+    if (languagePopupNo) {
+      languagePopupNo.textContent = buttons.no;
+    }
 
-            if(approved){
+    languagePopup.style.display = "flex";
+    languagePopup.setAttribute("aria-hidden", "false");
+  }
 
-              songLang.value = lang;
-              bisarkiAutoLanguageActive = false;
+  function bisarkiLanguageUnknown() {
+    pendingDetectedLanguage = "";
 
-            } else {
+    if (!languagePopup || !languagePopupText) {
+      return;
+    }
 
-              songLang.value = "auto";
-              bisarkiAutoLanguageActive = true;
+    const pageLang =
+      document.documentElement.lang || "tr";
 
-            }
+    languagePopupText.innerHTML =
+      unknownMessages[pageLang] ||
+      unknownMessages.tr;
 
-          });
+    if (languagePopupYes) {
+      languagePopupYes.textContent =
+        "🎵 Dili seç";
+    }
 
-        }
+    if (languagePopupNo) {
+      languagePopupNo.textContent =
+        "↩️ Otomatikte kal";
+    }
 
+    languagePopup.style.display = "flex";
+    languagePopup.setAttribute("aria-hidden", "false");
+  }
+
+  if (languagePopupYes) {
+    languagePopupYes.addEventListener("click", function () {
+      if (pendingDetectedLanguage && songLanguageSelect) {
+        songLanguageSelect.value =
+          pendingDetectedLanguage;
+
+        manualSongLanguage = true;
+
+        console.log(
+          "BİŞARKI algılanan dil müşteri tarafından onaylandı:",
+          names[pendingDetectedLanguage]
+        );
+      } else if (songLanguageSelect) {
+        songLanguageSelect.focus();
       }
 
+      closeLanguagePopup();
     });
+  }
 
+  if (languagePopupNo) {
+    languagePopupNo.addEventListener("click", function () {
+      if (pendingDetectedLanguage) {
+        if (songLanguageSelect) {
+          songLanguageSelect.value = "auto";
+        }
+
+        manualSongLanguage = false;
+        lastDetected = "";
+
+        console.log(
+          "BİŞARKI algılanan dil reddedildi; otomatik mod devam ediyor."
+        );
+      }
+
+      closeLanguagePopup();
+    });
+  }
+
+  const languageWords = {
+    tr: [
+      "ve","bir","bu","için","ile","ama","çok","sen","ben","gibi",
+      "olan","değil","daha","aşk","seni","benim","hayat","bugün",
+      "nasıl","ne","biz","bize","sana","kalbim","sevgilim"
+    ],
+    en: [
+      "the","and","you","your","is","are","this","that","with","for",
+      "love","my","we","to","of","in","on","i","me","be","have",
+      "has","was","were","from","with","baby","heart"
+    ],
+    de: [
+      "der","die","das","und","ist","ich","du","nicht","ein","eine",
+      "für","mit","mein","meine","liebe","wir","von","zu","den",
+      "dem","auf","auch","herz"
+    ],
+    fr: [
+      "le","la","les","et","est","je","tu","une","des","pour",
+      "avec","mon","ma","amour","nous","dans","que","qui","pas",
+      "sur","mes","coeur"
+    ],
+    es: [
+      "el","la","los","las","y","es","que","yo","tú","una",
+      "para","con","mi","amor","nos","en","por","del","como",
+      "te","corazón"
+    ],
+    it: [
+      "il","lo","la","gli","e","è","io","tu","una","per",
+      "con","mio","amore","noi","che","non","del","nel",
+      "sono","cuore"
+    ],
+    ru: [
+      "и","в","не","на","я","ты","что","это","мы","мой",
+      "моя","для","с","как","любовь","тебя","меня","сердце"
+    ]
+  };
+
+  function normalize(text) {
+    return text
+      .toLocaleLowerCase("tr-TR")
+      .replace(/[.,!?;:()[\]{}"'“”‘’]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function detectLanguage(text) {
+    const clean = normalize(text);
+
+    if (clean.length < 15) return null;
+
+    if (/[\u0600-\u06FF]/.test(clean)) {
+      return "ar";
+    }
+
+    if (/[\u4E00-\u9FFF]/.test(clean)) {
+      return "zh";
+    }
+
+    if (/[\u0900-\u097F]/.test(clean)) {
+      return "hi";
+    }
+
+    if (/[\u0400-\u04FF]/.test(clean)) {
+      return "ru";
+    }
+
+    const words = clean.split(/\s+/);
+    const scores = {};
+
+    for (const lang in languageWords) {
+      scores[lang] = 0;
+
+      for (const word of languageWords[lang]) {
+        if (words.includes(word)) {
+          scores[lang]++;
+        }
+      }
+    }
+
+    // Türkçe karakterleri tek başına Türkçe kanıtı sayma.
+  // Böylece "kfkflflfögög" gibi anlamsız metinler Türkçe olarak seçilmez.
+  if (/[çğıöşü]/.test(clean)) {
+    const turkishWordEvidence = languageWords.tr.some(word =>
+      words.includes(word)
+    );
+
+    if (turkishWordEvidence) {
+      scores.tr += 2;
+    }
+  }
+
+    const ranked = Object.entries(scores)
+      .sort((a, b) => b[1] - a[1]);
+
+    if (!ranked.length || ranked[0][1] < 1) {
+      return null;
+    }
+
+    const best = ranked[0];
+    const second = ranked[1];
+
+    if (best[1] >= 2 && (!second || best[1] > second[1])) {
+      return best[0];
+    }
+
+    return null;
+  }
+
+  const mp3Form = document.querySelector(
+    'form.order-form[data-type="MP3 Şarkı"]'
+  );
+
+  if (!mp3Form) {
+    console.warn("BİŞARKI: MP3 formu bulunamadı.");
+    return;
+  }
+
+  const story = mp3Form.querySelector('textarea[name="hikaye"]');
+
+  if (!story) {
+    console.warn("BİŞARKI: MP3 hikâye alanı bulunamadı.");
+    return;
+  }
+
+  let lastDetected = "";
+  let timer = null;
+
+  story.addEventListener("input", function () {
+    clearTimeout(timer);
+
+    if (manualSongLanguage) {
+      return;
+    }
+
+    timer = setTimeout(function () {
+      if (manualSongLanguage) {
+        return;
+      }
+
+      const text = story.value.trim();
+
+      if (text.length < 15) {
+        return;
+      }
+
+      const lang = detectLanguage(text);
+
+      if (!lang) {
+        lastDetected = "";
+
+        console.log(
+          "BİŞARKI otomatik dil algılama: dil belirlenemedi."
+        );
+
+        bisarkiLanguageUnknown();
+        return;
+      }
+
+      if (lang === lastDetected) {
+        return;
+      }
+
+      lastDetected = lang;
+
+      console.log(
+        "BİŞARKI otomatik dil algılama:",
+        names[lang]
+      );
+
+      bisarkiLanguageConfirm(lang);
+    }, 700);
   });
 
+  console.log(
+    "BİŞARKI: MP3 hikâye alanı otomatik dil algılama aktif."
+  );
 });
 </script>
 
 
-<style>
+<!-- BİŞARKI ŞARKI DİLİ ONAY POPUP -->
+<style id="bisarki-language-popup-safe-style">
 #bisarkiLanguagePopup{
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.65);
-z-index:9999;
-align-items:center;
-justify-content:center;
-}
-
-.bisarki-popup-box{
-width:90%;
-max-width:380px;
-background:linear-gradient(145deg,#07152f,#0b3b66);
-color:white;
-border-radius:22px;
-padding:25px;
-text-align:center;
-box-shadow:0 0 35px rgba(0,180,255,.5);
-}
-
-.bisarki-popup-box button{
-width:100%;
-margin-top:12px;
-padding:14px;
-border:0;
-border-radius:14px;
-font-size:16px;
-}
-
-.bisarki-yes{
-background:#00bfff;
-color:white;
-}
-
-.bisarki-no{
-background:white;
-color:#073052;
-}
-</style>
-
-<div id="bisarkiLanguagePopup">
-<div class="bisarki-popup-box">
-
-<h3>🎵 BİŞARKI</h3>
-
-<p id="bisarkiLanguageText"></p>
-
-<button class="bisarki-yes" id="bisarkiLanguageYes">
-💙 Evet, bu dilde hazırla
-</button>
-
-<button class="bisarki-no" id="bisarkiLanguageNo">
-🔄 Dili değiştirmek istiyorum
-</button>
-
-</div>
-</div>
-
-
-<style id="bisarki-radio-popup-style">
-#bisarkiRadioPermissionPopup{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.72);
-  z-index:10000;
+  background:rgba(0,0,0,.68);
+  z-index:99999;
   align-items:center;
   justify-content:center;
-  padding:18px;
+  padding:20px;
+  box-sizing:border-box;
 }
 
-.bisarki-radio-popup-box{
-  width:min(100%,420px);
-  max-height:90vh;
-  overflow-y:auto;
-  background:linear-gradient(145deg,#07152f,#0b3b66);
+#bisarkiLanguagePopup .bisarki-language-popup-card{
+  width:min(460px,100%);
+  background:#07152f;
   color:#fff;
-  border:1px solid rgba(127,196,255,.35);
+  border:1px solid rgba(0,191,255,.28);
   border-radius:22px;
   padding:24px;
+  box-shadow:0 20px 70px rgba(0,0,0,.55);
   text-align:center;
-  box-shadow:0 0 35px rgba(0,180,255,.45);
 }
 
-.bisarki-radio-popup-box h3{
-  margin:0 0 12px;
-  color:#7fc4ff;
-}
-
-.bisarki-radio-popup-box p{
-  color:#dbeaff;
+#bisarkiLanguageText{
   line-height:1.6;
-  font-size:14px;
+  font-size:16px;
+  margin-bottom:20px;
 }
 
-.bisarki-radio-popup-box .radio-popup-note{
-  color:#9fc4e8;
-  font-size:12px;
+#bisarkiLanguagePopup .bisarki-language-buttons{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
 }
 
-.bisarki-radio-popup-box button{
-  width:100%;
-  margin-top:12px;
-  padding:14px;
+#bisarkiLanguagePopup button{
   border:0;
-  border-radius:14px;
+  border-radius:12px;
+  padding:12px 18px;
   font-size:15px;
-  font-weight:700;
+  font-weight:600;
   cursor:pointer;
 }
 
-.bisarki-radio-yes{
+#bisarkiLanguageYes{
   background:#00bfff;
-  color:#fff;
+  color:#031020;
 }
 
-.bisarki-radio-no{
-  background:#fff;
-  color:#073052;
+#bisarkiLanguageNo{
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.18);
+}
+
+@media(max-width:480px){
+  #bisarkiLanguagePopup .bisarki-language-popup-card{
+    padding:20px;
+  }
+
+  #bisarkiLanguagePopup .bisarki-language-buttons{
+    flex-direction:column;
+  }
+
+  #bisarkiLanguagePopup button{
+    width:100%;
+  }
 }
 </style>
 
-<div id="bisarkiRadioPermissionPopup">
-  <div class="bisarki-radio-popup-box">
+<div id="bisarkiLanguagePopup" aria-hidden="true">
+  <div class="bisarki-language-popup-card" role="dialog" aria-modal="true">
+    <div id="bisarkiLanguageText"></div>
 
-    <h3>📻 BİŞARKI Radyo'da yayınlansın mı?</h3>
+    <div class="bisarki-language-buttons">
+      <button type="button" id="bisarkiLanguageYes">
+        💙 Evet
+      </button>
 
-    <p>
-      Şarkınız, BİŞARKI tarafından hazırlanacak özel bir görsel ile birlikte
-      MP4 video formatında BİŞARKI Radyo'da yayınlanabilir.
-    </p>
-
-    <p>
-      💙 <strong>Evet</strong> derseniz, şarkınız BİŞARKI tarafından hazırlanacak
-      görsel ile Radyo'da yayınlanmak üzere değerlendirilecektir.
-    </p>
-
-    <p>
-      ↩️ <strong>Hayır</strong> derseniz, Radyo yayın izni verilmez ve
-      şarkı talebiniz yine devam eder.
-    </p>
-
-    <p class="radio-popup-note">
-      🔒 BİŞARKI Radyo'da kendi gönderdiğiniz müşteri görseliniz kullanılmayacaktır.
-      Radyo yayını için BİŞARKI tarafından ayrıca hazırlanmış görsel kullanılacaktır.
-    </p>
-
-    <button type="button"
-            class="bisarki-radio-yes"
-            id="bisarkiRadioPermissionYes">
-      💙 Evet, Radyo'da yayınlansın
-    </button>
-
-    <button type="button"
-            class="bisarki-radio-no"
-            id="bisarkiRadioPermissionNo">
-      ↩️ Hayır, devam et
-    </button>
-
+      <button type="button" id="bisarkiLanguageNo">
+        ↩️ Hayır
+      </button>
+    </div>
   </div>
 </div>
-
-<script id="bisarki-radio-popup-script">
-(function(){
-
-  const form = document.querySelector(
-    'form.order-form[data-type="MP3 Şarkı"]'
-  );
-
-  const checkbox = document.getElementById(
-    "bisarki-radio-permission"
-  );
-
-  const popup = document.getElementById(
-    "bisarkiRadioPermissionPopup"
-  );
-
-  const yes = document.getElementById(
-    "bisarkiRadioPermissionYes"
-  );
-
-  const no = document.getElementById(
-    "bisarkiRadioPermissionNo"
-  );
-
-  if (!form || !checkbox || !popup || !yes || !no) {
-    console.warn("BİŞARKI Radyo popup elemanları bulunamadı.");
-    return;
-  }
-
-  let radioPopupDecision = false;
-
-  function openRadioPopup(){
-    popup.style.display = "flex";
-  }
-
-  function closeRadioPopup(){
-    popup.style.display = "none";
-  }
-
-  /*
-   * capture:true kullanıyoruz.
-   * Böylece mevcut form submit kodlarından önce
-   * Radyo popup kontrolü yapılır.
-   */
-  form.addEventListener("submit", function(e){
-
-    if (radioPopupDecision) {
-      return;
-    }
-
-    if (checkbox.checked) {
-      return;
-    }
-
-    e.preventDefault();
-    e.stopImmediatePropagation();
-
-    openRadioPopup();
-
-  }, true);
-
-
-  yes.addEventListener("click", function(){
-
-    checkbox.checked = true;
-    radioPopupDecision = true;
-
-    closeRadioPopup();
-
-    form.requestSubmit();
-
-  });
-
-
-  no.addEventListener("click", function(){
-
-    checkbox.checked = false;
-    radioPopupDecision = true;
-
-    closeRadioPopup();
-
-    form.requestSubmit();
-
-  });
-
-})();
-</script>
 
 <style id="bisarki-radio-card-premium">
 
@@ -3295,3 +3337,117 @@ color:#073052;
 
 </style>
 
+
+<div id="bisarkiRadioPermissionPopup"
+style="
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.75);
+z-index:99999;
+align-items:center;
+justify-content:center;
+padding:20px;
+">
+
+<div style="
+background:#07152d;
+color:white;
+max-width:430px;
+width:100%;
+padding:30px;
+border-radius:28px;
+text-align:center;
+box-shadow:0 0 50px rgba(0,191,255,.5);
+">
+
+<h3>📻 BİŞARKI Radyo'da yayınlansın mı?</h3>
+
+<p>
+Şarkınız, BİŞARKI tarafından hazırlanacak özel görsel ile birlikte Radyo'da yayınlanabilir.
+</p>
+
+<button id="bisarkiRadioPermissionYes">
+💙 Evet, Radyo'da yayınlansın
+</button>
+
+<br><br>
+
+<button id="bisarkiRadioPermissionNo">
+↩️ Hayır, devam et
+</button>
+
+</div>
+</div>
+
+<script id="bisarki-radio-popup-final-js">
+(function(){
+
+const form=document.querySelector(
+'form.order-form[data-type="MP3 Şarkı"]'
+);
+
+const checkbox=document.getElementById(
+"bisarki-radio-permission"
+);
+
+const popup=document.getElementById(
+"bisarkiRadioPermissionPopup"
+);
+
+const yes=document.getElementById(
+"bisarkiRadioPermissionYes"
+);
+
+const no=document.getElementById(
+"bisarkiRadioPermissionNo"
+);
+
+if(!form || !checkbox || !popup || !yes || !no){
+ console.warn("BİŞARKI Radyo popup elemanları eksik");
+ return;
+}
+
+let decision=false;
+
+form.addEventListener("submit",function(e){
+
+ if(decision) return;
+
+ if(checkbox.checked){
+   return;
+ }
+
+ e.preventDefault();
+
+ popup.style.display="flex";
+
+});
+
+
+yes.addEventListener("click",function(){
+
+ checkbox.checked=true;
+ decision=true;
+
+ popup.style.display="none";
+
+ form.requestSubmit();
+
+});
+
+
+no.addEventListener("click",function(){
+
+ checkbox.checked=false;
+ decision=true;
+
+ popup.style.display="none";
+
+ form.requestSubmit();
+
+});
+
+
+})();
+</script>
