@@ -498,6 +498,19 @@ footer {
   display:none !important;
 }
 
+#bisarki-currency-display.bisarki-currency-note{
+  grid-column:2 !important;
+  grid-row:2 !important;
+  margin:0 !important;
+  padding:2px 4px 0 !important;
+  border:0 !important;
+  background:transparent !important;
+  color:#8fa7c0 !important;
+  font-size:11px !important;
+  line-height:1.4 !important;
+  text-align:left !important;
+}
+
 @media(max-width:700px){
   #bisarki-metadata .bisarki-metadata-grid{
     display:grid !important;
@@ -641,10 +654,10 @@ footer {
           <option value="IT">🇮🇹 İtalya</option>
         </select>
 
-        <div id="bisarki-currency-display" style="margin-top:8px;font-size:14px;">
-          🌍 Ödeme tutarı seçtiğiniz ülkenin para biriminde gösterilir: ₺ TRY
-        </div>
+      </div>
 
+      <div id="bisarki-currency-display" class="bisarki-currency-note">
+        🌍 Ödeme tutarı seçtiğiniz ülkenin para biriminde gösterilir: ₺ TRY
       </div>
 
       <div class="bisarki-meta-field system-language-field">
