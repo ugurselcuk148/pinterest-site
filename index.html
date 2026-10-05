@@ -2269,7 +2269,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function normalize(text) {
     return text
-      .toLocaleLowerCase("tr-TR")
+      .toLowerCase()
       .replace(/[.,!?;:()[\]{}"'“”‘’]/g, " ")
       .replace(/\s+/g, " ")
       .trim();
@@ -2278,8 +2278,11 @@ document.addEventListener("DOMContentLoaded", function () {
   function detectLanguage(text) {
     const clean = normalize(text);
 
-    if (clean.length < 15) return null;
+    if (!clean || clean.length < 8) {
+      return null;
+    }
 
+    /* Alfabe tabanlı kesin algılama */
     if (/[\u0600-\u06FF]/.test(clean)) {
       return "ar";
     }
@@ -2296,7 +2299,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return "ru";
     }
 
-    const words = clean.split(/\s+/);
+    const words = clean.split(/\s+/).filter(Boolean);
     const scores = {};
 
     for (const lang in languageWords) {
@@ -2304,34 +2307,83 @@ document.addEventListener("DOMContentLoaded", function () {
 
       for (const word of languageWords[lang]) {
         if (words.includes(word)) {
-          scores[lang]++;
+          scores[lang] += 1;
         }
       }
     }
 
-    // Türkçe karakterleri tek başına Türkçe kanıtı sayma.
-  // Böylece "kfkflflfögög" gibi anlamsız metinler Türkçe olarak seçilmez.
-  if (/[çğıöşü]/.test(clean)) {
-    const turkishWordEvidence = languageWords.tr.some(word =>
-      words.includes(word)
-    );
+    /*
+     * Türkçe karakter + Türkçe kelime birlikte güçlü kanıttır.
+     */
+    if (/[çğıöşü]/.test(clean)) {
+      const turkishWordEvidence = languageWords.tr.some(word =>
+        words.includes(word)
+      );
 
-    if (turkishWordEvidence) {
-      scores.tr += 2;
+      if (turkishWordEvidence) {
+        scores.tr += 3;
+      }
     }
-  }
+
+    /*
+     * Dil karakteristikleri:
+     * Tek bir kelimeyle yanlış seçim yapılmasını önlerken
+     * kısa ama anlamlı cümleleri de algılayabilsin.
+     */
+    const patterns = {
+      tr: [
+        /\b(ben|sen|seni|bana|sana|biz|bize|bizim|benim|senin)\b/,
+        /\b(çok|daha|için|ile|gibi|olan|değil|bugün|hayat|kalbim|sevgilim)\b/,
+        /\b(aşk|aşık|sevgi|seviyorum|özledim|özlem)\b/
+      ],
+      en: [
+        /\b(i|you|your|my|me|we|our|the|and|this|that)\b/,
+        /\b(love|loved|loving|heart|baby|forever|always)\b/
+      ],
+      de: [
+        /\b(ich|du|dich|mein|meine|wir|der|die|das|und|nicht)\b/,
+        /\b(liebe|herz|immer|für|mit)\b/
+      ],
+      fr: [
+        /\b(je|tu|toi|mon|ma|mes|nous|le|la|les|et|une|des)\b/,
+        /\b(amour|coeur|toujours|avec|pour)\b/
+      ],
+      es: [
+        /\b(yo|tú|tu|te|mi|mis|nos|el|la|los|las|y|una|que)\b/,
+        /\b(am|amor|corazón|siempre|para|con)\b/
+      ],
+      it: [
+        /\b(io|tu|te|mio|mia|noi|il|lo|la|gli|e|una|che)\b/,
+        /\b(amore|cuore|sempre|per|con)\b/
+      ]
+    };
+
+    for (const lang in patterns) {
+      for (const pattern of patterns[lang]) {
+        if (pattern.test(clean)) {
+          scores[lang] += 2;
+        }
+      }
+    }
 
     const ranked = Object.entries(scores)
       .sort((a, b) => b[1] - a[1]);
 
-    if (!ranked.length || ranked[0][1] < 1) {
+    if (!ranked.length || ranked[0][1] < 2) {
       return null;
     }
 
     const best = ranked[0];
     const second = ranked[1];
 
-    if (best[1] >= 2 && (!second || best[1] > second[1])) {
+    /*
+     * En yüksek skor belirgin şekilde öndeyse kabul et.
+     * Eşitse yanlış dil seçmek yerine otomatik modda kal.
+     */
+    if (
+      best[1] >= 2 &&
+      (!second || best[1] > second[1])
+    ) {
       return best[0];
     }
 
