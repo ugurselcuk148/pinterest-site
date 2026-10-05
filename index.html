@@ -499,10 +499,10 @@ footer {
 }
 
 #bisarki-currency-display.bisarki-currency-note{
-  grid-column:2 !important;
-  grid-row:2 !important;
-  margin:0 !important;
-  padding:2px 4px 0 !important;
+  display:block !important;
+  width:100% !important;
+  margin:8px 0 10px !important;
+  padding:0 4px !important;
   border:0 !important;
   background:transparent !important;
   color:#8fa7c0 !important;
@@ -656,10 +656,6 @@ footer {
 
       </div>
 
-      <div id="bisarki-currency-display" class="bisarki-currency-note">
-        🌍 Ödeme tutarı seçtiğiniz ülkenin para biriminde gösterilir: ₺ TRY
-      </div>
-
       <div class="bisarki-meta-field system-language-field">
         <label for="bisarki-speaking-language" id="bisarki-speaking-label">💬 Konuşma Dili</label>
         <select id="bisarki-speaking-language" multiple>
@@ -717,6 +713,11 @@ footer {
     </div>
   </div>
   </div>
+
+  <div id="bisarki-currency-display" class="bisarki-currency-note">
+    🌍 Ödeme tutarı seçtiğiniz ülkenin para biriminde gösterilir: ₺ TRY
+  </div>
+
     <h1 id="bisarki-hero-title">Hikâyeni bir şarkıya dönüştürelim. 💙</h1>
     <p id="bisarki-hero-text">
       Sevdiğin kişiye, özel bir güne veya hayatındaki unutulmaz bir ana
@@ -1429,7 +1430,7 @@ footer {
       const info = currencyInfo[location.value] || currencyInfo.TR;
 
       currencyDisplay.textContent =
-        "🌍 Ödeme tutarı seçtiğiniz ülkenin para biriminde yaklaşık olarak gösterilir: " +
+        "🌍 Ödeme tutarı seçtiğiniz ülkenin para biriminde gösterilir: " +
         info.symbol + " " + info.code;
     }
   }
