@@ -1014,6 +1014,394 @@ footer {
     </section>
 
 
+    <script>
+<!-- BİŞARKI REELS SÜRE + DÖVİZ JS -->
+(function () {
+  const minus = document.getElementById("reels-duration-minus");
+  const plus = document.getElementById("reels-duration-plus");
+  const duration = document.getElementById("reels-duration");
+  const display = document.getElementById("reels-duration-display");
+  const displayControl = document.getElementById("reels-duration-display-control");
+  const price = document.getElementById("reels-live-price");
+  const location = document.getElementById("bisarki-location");
+
+  if (!minus || !plus || !duration || !display || !displayControl || !price) {
+    console.warn("BİŞARKI Reels süre elemanları bulunamadı.");
+    return;
+  }
+
+  let fxRates = {
+    TR: 1,
+    US: 0.031,
+    GB: 0.024,
+    CN: 0.22,
+    IN: 2.6,
+    RU: 2.8,
+    SA: 0.116,
+    DE: 0.027,
+    FR: 0.027,
+    ES: 0.027,
+    IT: 0.027
+  };
+
+  const currencyInfo = {
+    TR: { code: "TRY", symbol: "₺" },
+    US: { code: "USD", symbol: "$" },
+    GB: { code: "GBP", symbol: "£" },
+    CN: { code: "CNY", symbol: "¥" },
+    IN: { code: "INR", symbol: "₹" },
+    RU: { code: "RUB", symbol: "₽" },
+    SA: { code: "SAR", symbol: "﷼" },
+    DE: { code: "EUR", symbol: "€" },
+    FR: { code: "EUR", symbol: "€" },
+    ES: { code: "EUR", symbol: "€" },
+    IT: { code: "EUR", symbol: "€" }
+  };
+
+  function formatMoney(amount, code) {
+    try {
+      return new Intl.NumberFormat("tr-TR", {
+        style: "currency",
+        currency: code,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(amount);
+    } catch (e) {
+      return amount.toFixed(2) + " " + code;
+    }
+  }
+
+  function update(value) {
+    value = Number(value);
+
+    if (!Number.isFinite(value)) {
+      value = 15;
+    }
+
+    value = Math.max(15, Math.min(300, Math.round(value)));
+
+    duration.value = value;
+    display.textContent = value;
+    displayControl.textContent = value;
+
+    const country = location?.value || "TR";
+    const info = currencyInfo[country] || currencyInfo.TR;
+    const rate = fxRates[country] || fxRates.TR;
+
+    price.textContent = formatMoney(value * rate, info.code);
+
+    console.log(
+      "BİŞARKI Reels fiyat:",
+      value,
+      "sn =",
+      price.textContent
+    );
+  }
+
+  async function loadLiveRates() {
+    try {
+      const targets = [
+        "USD",
+        "GBP",
+        "CNY",
+        "INR",
+        "RUB",
+        "SAR",
+        "EUR"
+      ];
+
+      const results = await Promise.all(
+        targets.map(async function (target) {
+          const response = await fetch(
+            "https://api.frankfurter.dev/v2/rate/TRY/" + target,
+            { cache: "no-store" }
+          );
+
+          if (!response.ok) {
+            throw new Error("Kur alınamadı: " + target);
+          }
+
+          const data = await response.json();
+
+          if (!data.rate || !Number.isFinite(Number(data.rate))) {
+            throw new Error("Geçersiz kur: " + target);
+          }
+
+          return [target, Number(data.rate)];
+        })
+      );
+
+      const live = Object.fromEntries(results);
+
+      fxRates = {
+        TR: 1,
+        US: live.USD,
+        GB: live.GBP,
+        CN: live.CNY,
+        IN: live.INR,
+        RU: live.RUB,
+        SA: live.SAR,
+        DE: live.EUR,
+        FR: live.EUR,
+        ES: live.EUR,
+        IT: live.EUR
+      };
+
+      console.log(
+        "BİŞARKI Reels canlı döviz kurları güncellendi:",
+        fxRates
+      );
+
+      update(duration.value || 15);
+
+    } catch (error) {
+      console.warn(
+        "BİŞARKI Reels canlı döviz kuru alınamadı. Son güvenli oranlar kullanılacak.",
+        error
+      );
+    }
+  }
+
+  minus.addEventListener("click", function () {
+    update(Number(duration.value) - 1);
+  });
+
+  plus.addEventListener("click", function () {
+    update(Number(duration.value) + 1);
+  });
+
+  if (location) {
+    location.addEventListener("change", function () {
+      update(duration.value || 15);
+    });
+  }
+
+  update(duration.value || 15);
+  loadLiveRates();
+
+  console.log("BİŞARKI Reels süre + canlı döviz sistemi aktif.");
+})();
+</script>
+
+<!-- REELS OLUŞTUR -->
+    <section class="tab open">
+
+      <button class="tab-header" type="button">
+        <span>🎬 REELS OLUŞTUR</span>
+        <span>+</span>
+      </button>
+
+      <div class="tab-content">
+
+        <div class="info">
+          <strong>Sana özel bir Reels</strong><br>
+          Hikâyeni anlat, duygunu seç ve sana özel şarkı fikrini oluşturalım.
+          Dikey sosyal medya Reels videosu olarak hazırlanır.
+          <br><br>
+          💙 <strong id="reels-price-info">1 TL/saniye</strong>
+        </div>
+
+        <form class="order-form" data-type="Reels Oluştur">
+
+          <input type="hidden" name="urun" value="Reels Oluştur">
+
+          <label>Şarkı kimin için?</label>
+          <input type="text" name="sarki_kimin_icin" required
+                 placeholder="Örn: Sevgilim, eşim, annem...">
+
+          <label>Şarkıda kimin adı geçsin?</label>
+          <input type="text" name="isim"
+                 placeholder="Örn: Ayşe">
+
+          <label>Hikâyenizi anlatın ❤️</label>
+          <textarea name="hikaye" required
+                    placeholder="Tanışmanız, yaşadığınız güzel bir anı, duygularınız..."></textarea>
+
+          <label>Reels süresi 🎬</label>
+
+<div class="bisarki-duration-card" aria-label="Şarkı süresi seçimi">
+
+  <div class="bisarki-duration-badge">
+    <span>🎵</span>
+    <strong id="reels-duration-display">15</strong>
+    <small>sn</small>
+  </div>
+
+  <div class="bisarki-duration-controls">
+    <button type="button" id="reels-duration-minus" aria-label="Süreyi azalt">−</button>
+
+    <div class="bisarki-duration-current">
+      <strong id="reels-duration-display-control">15</strong>
+      <span> saniye</span>
+    </div>
+
+    <button type="button" id="reels-duration-plus" aria-label="Süreyi artır">+</button>
+  </div>
+
+  <div class="bisarki-duration-range">
+    <span>15 sn</span>
+    <span>300 sn</span>
+  </div>
+
+  <div class="bisarki-duration-price">
+    <span>💰 Güncel tahmini ödeme tutarı</span>
+    <strong id="reels-live-price">15 TL</strong>
+  </div>
+
+  <input
+    type="hidden"
+    name="duration"
+    id="reels-duration"
+    value="15"
+    required
+  >
+
+  <div id="reels-duration-warning" style="display:none;margin-top:8px;"></div>
+
+</div></div>
+
+<small style="display:block;margin-top:6px;opacity:.8;">
+  15 ile 300 saniye arasında istediğiniz süreyi seçebilirsiniz.
+  💎 Reels videonuzun fiyatı seçtiğiniz süreye göre anında hesaplanır.<br>🎶 Şarkınız ve görsel anlatımınız seçtiğiniz süreye göre hazırlanır.
+</small>
+
+          <label>Şarkının duygusu</label>
+          <select name="duygu" required>
+            <option value="">Seçiniz</option>
+            <option>Aşk ve romantik</option>
+            <option>Hüzünlü</option>
+            <option>Özlem</option>
+            <option>Mutlu</option>
+            <option>Enerjik</option>
+            <option>Duygusal</option>
+            <option>Neşeli</option>
+          </select>
+
+          <label>Müzik tarzı 🎶</label>
+          <select name="tarz" required>
+            <option value="">Seçiniz</option>
+            <option>Pop</option>
+            <option>Slow</option>
+            <option>Arabesk</option>
+            <option>Türkçe Rock</option>
+            <option>Akustik</option>
+            <option>Rap</option>
+            <option>Fantezi</option>
+            <option>Karışık / BİŞARKI seçsin</option>
+          </select>
+
+          <label>Şarkıda mutlaka geçmesini istediğiniz sözler</label>
+          <textarea name="ozel_sozler"
+                    placeholder="Varsa özel kelime, cümle veya isimleri yazabilirsiniz."></textarea>
+
+          <label>Şarkının sonunda özel mesaj</label>
+          <textarea name="son_mesaj"
+                    placeholder="Örn: Seni her zaman seveceğim..."></textarea>
+
+          <label>E-posta adresiniz</label>
+          <input type="email" name="email" required
+                 placeholder="ornek@email.com">
+
+          <label>WhatsApp numaranız</label>
+          <input type="tel" name="whatsapp" required
+                 placeholder="05xx xxx xx xx">
+
+
+          <div class="consent-box">
+            <label class="consent-item bisarki-radio-premium">
+              <input type="checkbox" name="kvkkAcknowledged" value="true" required>
+              <span>
+                🔒 <strong>KVKK Aydınlatma Metni'ni okudum ve bilgilendirildim.</strong>
+                <small>
+                  Siparişiniz için kişisel verilerinizin nasıl işlendiği hakkında bilgilendirilirsiniz.
+                  Bu kutu açık rıza değil, bilgilendirildiğinizi belirtir.
+                </small>
+              </span>
+            </label>
+
+            <details class="consent-details">
+              <summary>KVKK Aydınlatma Metni'ni görüntüle</summary>
+              <p>
+                Adınız, e-posta adresiniz, WhatsApp/telefon numaranız, sipariş bilgileriniz
+                ve sipariş kapsamında paylaştığınız içerikler; siparişinizin oluşturulması,
+                kişiselleştirilmiş müziğin hazırlanması, sizinle iletişim kurulması,
+                teslimat ve yasal yükümlülüklerin yerine getirilmesi amaçlarıyla işlenebilir.
+              </p>
+              <p>
+                E-posta ve WhatsApp bilgileriniz, sipariş hizmetinin yürütülmesi için gerekli
+                olmayan amaçlarla ticari olarak satılmaz. Kanuni yükümlülükler, yetkili kamu
+                kurumları ve hizmetin yürütülmesi için gerekli teknik hizmet sağlayıcıları
+                bakımından KVKK kapsamında aktarım söz konusu olabilir.
+              </p>
+              <p>
+                Kişisel verilerinizle ilgili KVKK kapsamındaki haklarınız ve başvuru bilgileri
+                için BİŞARKI'nın yayımlayacağı güncel KVKK Aydınlatma Metni esas alınır.
+              </p>
+            </details>
+
+            <label class="consent-item">
+              <input type="checkbox" name="marketingConsent" value="true">
+              <span>
+                📩 BİŞARKI'dan kampanya, yeni hizmet ve tanıtım amaçlı e-posta/WhatsApp iletişimi almak için açık rıza veriyorum.
+                <small>
+                  Bu seçenek isteğe bağlıdır ve sipariş oluşturmak için gerekli değildir.
+                  Açık rızanızı daha sonra geri çekebilirsiniz.
+                </small>
+              </span>
+            </label>
+
+            <details class="consent-details">
+              <summary>Açık Rıza Metni'ni görüntüle</summary>
+              <p>
+                BİŞARKI'dan kampanya, yeni hizmet ve tanıtım amaçlı e-posta ve/veya WhatsApp
+                iletişimi alabilmek için iletişim bilgilerimin bu amaçla kullanılmasına
+                açık rıza veriyorum. Bu rıza sipariş hizmetinin sunulması için şart değildir
+                ve istediğim zaman geri çekilebilir.
+              </p>
+            </details>
+          </div>
+
+          <div class="consent-box bisarki-permission-box" style="margin-top:18px;">
+  <div style="margin-bottom:10px;color:#7fc4ff;font-weight:700;">
+    🎵 BİŞARKI Kullanım İzni
+  </div>
+
+  <label class="consent-item">
+    <input type="checkbox" name="radioPermission" value="true" id="reels-radio-permission">
+    <span>
+      💙 <strong>Şarkım BİŞARKI Radyo'da yayınlanabilir</strong>
+      <small>
+        Şarkınızın BİŞARKI Radyo'da yayınlanmasına izin verir.
+        Radyo yayını için müşteri tarafından gönderilen görsel kullanılmaz;
+        BİŞARKI tarafından hazırlanmış özel Radyo görseli kullanılır.
+      </small>
+    </span>
+  </label>
+
+  <div class="consent-details">
+    <strong>📻 Radyo notu:</strong>
+    BİŞARKI Radyo'da müşteri fotoğrafı, müşteri klibi veya kişisel görsel kullanılmaz.
+    Radyo yalnızca MP3 şarkıyı, şarkı bilgilerini ve BİŞARKI tarafından hazırlanmış
+    sabit Radyo görselini kullanır.
+  </div>
+</div>
+
+<button class="btn" type="submit">
+            🎬 Reels Talebimi Hazırla
+          </button>
+
+          <div class="success"></div>
+
+          <div class="note">
+            Siparişiniz sisteme kaydedilir. Sipariş numaranızı saklayabilirsiniz.
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+
+
     <!-- MP4 -->
     <section class="tab">
 
