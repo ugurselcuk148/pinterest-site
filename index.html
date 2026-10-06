@@ -3990,7 +3990,7 @@ no.addEventListener("click",function(){
   const STORAGE_KEY = "bisarki_current_record_v1";
 
   function value(name) {
-    const el = form.querySelector('[name="' + name + '"]');
+    const el = form.elements.namedItem(name);
     return el ? String(el.value || "").trim() : "";
   }
 
