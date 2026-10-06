@@ -427,6 +427,103 @@ BFL için hazırlanmış nihai görsel promptunu oluştur.`;
   }
 
 
+
+  function diagnoseBisarkiRecord() {
+    const STORAGE_KEY = "bisarki_current_record_v1";
+    const raw = localStorage.getItem(STORAGE_KEY);
+
+    const status = $("status");
+
+    if (!raw) {
+      status.style.display = "block";
+      status.innerHTML = `
+        <strong>🔎 KAYIT TEŞHİSİ</strong><br><br>
+        ❌ Kayıt bulunamadı.<br>
+        <small>Aranan anahtar: ${STORAGE_KEY}</small>
+      `;
+      console.warn(
+        "BİŞARKI TEŞHİS: localStorage kaydı bulunamadı."
+      );
+      return;
+    }
+
+    try {
+      const record = JSON.parse(raw);
+      const customer = record.customer || {};
+      const song = record.song || {};
+
+      status.style.display = "block";
+      status.innerHTML = `
+        <strong>🔎 KAYIT TEŞHİSİ</strong><br><br>
+
+        <strong>Origin:</strong>
+        ${location.origin}<br><br>
+
+        <strong>Kayıt:</strong> ✅ Bulundu<br><br>
+
+        <strong>customer.recipient:</strong>
+        ${customer.recipient || "—"}<br>
+
+        <strong>customer.name:</strong>
+        ${customer.name || "—"}<br>
+
+        <strong>customer.email:</strong>
+        ${customer.email || "—"}<br><br>
+
+        <strong>song.story:</strong>
+        ${song.story || "—"}<br>
+
+        <strong>song.emotion:</strong>
+        ${song.emotion || "—"}<br>
+
+        <strong>song.style:</strong>
+        ${song.style || "—"}<br>
+
+        <strong>song.customLyrics:</strong>
+        ${song.customLyrics || "—"}<br>
+
+        <strong>song.endingMessage:</strong>
+        ${song.endingMessage || "—"}<br>
+
+        <strong>song.language:</strong>
+        ${song.language || "—"}<br><br>
+
+        <strong>record.id:</strong>
+        ${record.id || "—"}<br>
+
+        <strong>record.status:</strong>
+        ${record.status || "—"}
+      `;
+
+      console.log(
+        "========== BİŞARKI KAYIT TEŞHİSİ =========="
+      );
+      console.log("Origin:", location.origin);
+      console.log("Storage Key:", STORAGE_KEY);
+      console.log("Raw:", raw);
+      console.log("Record:", record);
+      console.log("Customer:", customer);
+      console.log("Song:", song);
+      console.log(
+        "=========================================="
+      );
+
+    } catch (error) {
+
+      status.style.display = "block";
+      status.innerHTML = `
+        <strong>🔎 KAYIT TEŞHİSİ</strong><br><br>
+        ⚠️ Kayıt bulundu fakat JSON okunamadı.<br>
+        <small>${error.message}</small>
+      `;
+
+      console.error(
+        "BİŞARKI TEŞHİS JSON hatası:",
+        error
+      );
+    }
+  }
+
   function loadBisarkiRecord() {
 
     const STORAGE_KEY = "bisarki_current_record_v1";
@@ -479,6 +576,7 @@ BFL için hazırlanmış nihai görsel promptunu oluştur.`;
 
 
   loadBisarkiRecord();
+  diagnoseBisarkiRecord();
 
 
   $("generatePrompt").addEventListener(
