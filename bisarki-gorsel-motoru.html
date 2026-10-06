@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BİŞARKI | Görsel Motoru</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #071426;
+  color: #f5f7fb;
+}
+
+.container {
+  width: min(100% - 30px, 900px);
+  margin: 30px auto 60px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.logo {
+  width: 76px;
+  height: 76px;
+  margin: auto;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+h1 {
+  margin: 14px 0 6px;
+  font-size: 30px;
+}
+
+.subtitle {
+  opacity: .75;
+  line-height: 1.5;
+}
+
+.card {
+  background: #0d2039;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 12px 35px rgba(0,0,0,.18);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+label {
+  display: block;
+  margin: 17px 0 7px;
+  font-weight: 600;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 11px;
+  background: #08182b;
+  color: white;
+  padding: 13px;
+  font-size: 15px;
+  outline: none;
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #6da8ff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+button {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  background: #fff;
+  color: #071426;
+  margin-top: 20px;
+}
+
+button:hover {
+  opacity: .92;
+}
+
+.prompt-box {
+  white-space: pre-wrap;
+  line-height: 1.65;
+  background: #061120;
+  border-radius: 12px;
+  padding: 17px;
+  min-height: 180px;
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.notice {
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: .7;
+  margin-top: 12px;
+}
+
+.status {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.06);
+  display: none;
+}
+
+@media (max-width: 650px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 25px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <header class="header">
+
+    <img
+      class="logo"
+      src="./favicon.png"
+      alt="BİŞARKI"
+      onerror="this.style.display='none'"
+    >
+
+    <h1>🖼️ BİŞARKI Görsel Motoru</h1>
+
+    <div class="subtitle">
+      Müşterinin anlattığı hikâyeyi görsel üretim promptuna dönüştürür.
+      <br>
+      <strong>Önce müşteri, sonra yapay zekâ.</strong>
+    </div>
+
+  </header>
+
+
+  <section class="card">
+
+    <h2>❤️ Müşteri İsteği</h2>
+
+    <div class="grid">
+
+      <div>
+        <label for="recipient">Şarkı kimin için?</label>
+        <input
+          id="recipient"
+          placeholder="Örn: Sevgilim, eşim, annem..."
+        >
+      </div>
+
+      <div>
+        <label for="name">İsim</label>
+        <input
+          id="name"
+          placeholder="Örn: Ayşe"
+        >
+      </div>
+
+    </div>
+
+
+    <label for="story">Müşterinin hikâyesi</label>
+
+    <textarea
+      id="story"
+      placeholder="Müşterinin anlattığı hikâyeyi buraya yaz..."
+    ></textarea>
+
+
+    <div class="grid">
+
+      <div>
+
+        <label for="emotion">Duygu</label>
+
+        <select id="emotion">
+
+          <option value="">Belirtilmedi</option>
+          <option>Aşk ve romantik</option>
+          <option>Hüzünlü</option>
+          <option>Özlem</option>
+          <option>Mutlu</option>
+          <option>Enerjik</option>
+          <option>Duygusal</option>
+          <option>Neşeli</option>
+
+        </select>
+
+      </div>
+
+
+      <div>
+
+        <label for="style">Müzik tarzı</label>
+
+        <select id="style">
+
+          <option value="">Belirtilmedi</option>
+          <option>Pop</option>
+          <option>Slow</option>
+          <option>Arabesk</option>
+          <option>Türkçe Rock</option>
+          <option>Akustik</option>
+          <option>Rap</option>
+          <option>Fantezi</option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <label for="lyrics">Özel sözler</label>
+
+    <textarea
+      id="lyrics"
+      placeholder="Müşterinin şarkıda özellikle kullanılmasını istediği sözler..."
+    ></textarea>
+
+
+    <label for="message">Şarkının sonunda özel mesaj</label>
+
+    <textarea
+      id="message"
+      placeholder="Varsa özel mesaj..."
+    ></textarea>
+
+
+    <div class="grid">
+
+      <div>
+
+        <label for="language">Şarkı dili</label>
+
+        <input
+          id="language"
+          value="Türkçe"
+        >
+
+      </div>
+
+      <div>
+
+        <label for="scene">Müşterinin istediği özel sahne</label>
+
+        <input
+          id="scene"
+          placeholder="Örn: El ele yürürken"
+        >
+
+      </div>
+
+    </div>
+
+
+    <button id="generatePrompt">
+      ✨ Görsel Promptu Oluştur
+    </button>
+
+    <div id="status" class="status"></div>
+
+  </section>
+
+
+  <section class="card">
+
+    <h2>🎨 Oluşturulan Görsel Promptu</h2>
+
+    <div
+      id="promptOutput"
+      class="prompt-box"
+    >
+Henüz prompt oluşturulmadı.
+    </div>
+
+    <div class="notice">
+      Bu aşamada yalnızca prompt oluşturulur.
+      BFL API bağlantısı sonraki aşamada backend üzerinden yapılacaktır.
+      API anahtarı hiçbir zaman bu sayfaya konulmayacaktır.
+    </div>
+
+  </section>
+
+</div>
+
+
+<script>
+
+(function () {
+
+  const $ = (id) => document.getElementById(id);
+
+
+  function clean(value) {
+    return String(value || "").trim();
+  }
+
+
+  function addLine(lines, label, value) {
+
+    value = clean(value);
+
+    if (value) {
+      lines.push(label + ": " + value);
+    }
+
+  }
+
+
+  function createPrompt() {
+
+    const recipient = clean($("recipient").value);
+    const name = clean($("name").value);
+    const story = clean($("story").value);
+    const emotion = clean($("emotion").value);
+    const style = clean($("style").value);
+    const lyrics = clean($("lyrics").value);
+    const message = clean($("message").value);
+    const language = clean($("language").value);
+    const scene = clean($("scene").value);
+
+
+    if (!story && !scene && !recipient && !name) {
+
+      $("status").style.display = "block";
+
+      $("status").textContent =
+        "❤️ Önce müşterinin hikâyesinden veya isteğinden en az bir bilgi girin.";
+
+      return;
+
+    }
+
+
+    const customerLines = [];
+
+    addLine(customerLines, "Şarkı kimin için", recipient);
+    addLine(customerLines, "İsim", name);
+    addLine(customerLines, "Müşterinin hikâyesi", story);
+    addLine(customerLines, "Duygu", emotion);
+    addLine(customerLines, "Müzik tarzı", style);
+    addLine(customerLines, "Özel sözler", lyrics);
+    addLine(customerLines, "Özel mesaj", message);
+    addLine(customerLines, "Şarkı dili", language);
+    addLine(customerLines, "Özel sahne isteği", scene);
+
+
+    const prompt = `BİŞARKI GÖRSEL ÜRETİM PROMPTU
+
+ANA KURAL:
+Müşterinin anlattığı hikâyeye ve açıkça belirttiği isteklere sadık kal.
+Müşterinin istemediği yeni bir olay, kişi, mekân veya önemli görsel unsur ekleme.
+Hikâyenin anlamını değiştirme.
+
+MÜŞTERİ BİLGİLERİ:
+${customerLines.join("\n")}
+
+GÖRSEL YORUMLAMA:
+Yukarıdaki müşteri bilgilerini temel alarak tek bir tutarlı görsel sahne oluştur.
+
+Müşterinin belirttiği kişi, ilişki, olay, duygu ve özel sahne önceliklidir.
+
+Görsel estetik sinematik, doğal, duygusal ve kaliteli olabilir; ancak estetik tercihler müşterinin hikâyesinin önüne geçmemelidir.
+
+Görselde gereksiz yazılar, rastgele nesneler veya hikâyede bulunmayan karakterler kullanma.
+
+Sonuç, müşterinin kendi hikâyesini görsel olarak anlatıyormuş hissi vermelidir.
+
+BFL için hazırlanmış nihai görsel promptunu oluştur.`;
+
+
+    $("promptOutput").textContent = prompt;
+
+
+    $("status").style.display = "block";
+
+    $("status").textContent =
+      "✅ Müşteri bilgileri okundu ve görsel promptu oluşturuldu.";
+
+
+    console.log(
+      "BİŞARKI Görsel Motoru prompt:",
+      prompt
+    );
+
+  }
+
+
+  $("generatePrompt").addEventListener(
+    "click",
+    createPrompt
+  );
+
+
+})();
+
+</script>
+
+</body>
+</html>
