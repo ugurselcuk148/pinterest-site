@@ -3973,3 +3973,127 @@ no.addEventListener("click",function(){
 
 })();
 </script>
+
+
+<script id="bisarki-unified-mp3-record-v1">
+(function () {
+
+  const form = document.querySelector(
+    'form.order-form[data-type="MP3 Şarkı"]'
+  );
+
+  if (!form) {
+    console.warn("BİŞARKI birleşik MP3 kayıt sistemi: form bulunamadı.");
+    return;
+  }
+
+  const STORAGE_KEY = "bisarki_current_record_v1";
+
+  function value(name) {
+    const el = form.querySelector('[name="' + name + '"]');
+    return el ? String(el.value || "").trim() : "";
+  }
+
+  function checked(name) {
+    const el = form.querySelector('[name="' + name + '"]');
+    return !!(el && el.checked);
+  }
+
+  function createId() {
+    return Math.random().toString(36).slice(2, 8);
+  }
+
+  form.addEventListener("submit", function (event) {
+
+    /*
+     * Radyo popup'i henuz karar verilmeden
+     * formu durdurduysa kayit olusturma.
+     *
+     * Evet/Hayir sonrasinda requestSubmit()
+     * tekrar calisir ve kayit burada olusur.
+     */
+    if (event.defaultPrevented) {
+      return;
+    }
+
+    const now = new Date().toISOString();
+
+    const languageEl = document.getElementById(
+      "bisarki-song-language-top"
+    );
+
+    console.log("========== BİŞARKI FORM DEĞERLERİ ==========");
+    console.log("duygu:", value("duygu"));
+    console.log("tarz:", value("tarz"));
+    console.log("ozel_sozler:", value("ozel_sozler"));
+    console.log("son_mesaj:", value("son_mesaj"));
+    console.log("hikaye:", value("hikaye"));
+    console.log("isim:", value("isim"));
+    console.log("sarki_kimin_icin:", value("sarki_kimin_icin"));
+    console.log("============================================");
+
+    const record = {
+      id: createId(),
+      createdAt: now,
+      updatedAt: now,
+
+      status: "mp3_requested",
+
+      customer: {
+        recipient: value("sarki_kimin_icin"),
+        name: value("isim"),
+        email: value("email"),
+        whatsapp: value("whatsapp")
+      },
+
+      song: {
+        story: value("hikaye"),
+        duration: Number(value("duration")) || 15,
+        emotion: value("duygu"),
+        style: value("tarz"),
+        customLyrics: value("ozel_sozler"),
+        endingMessage: value("son_mesaj"),
+        language: languageEl ? String(languageEl.value || "") : ""
+      },
+
+      consent: {
+        kvkkAcknowledged: checked("kvkkAcknowledged"),
+        marketingConsent: checked("marketingConsent"),
+        radioPermission: checked("radioPermission")
+      },
+
+      mp3: {
+        status: "requested",
+        url: null
+      },
+
+      reels: {
+        requested: false,
+        images: [],
+        duration: null,
+        status: "not_requested",
+        url: null
+      },
+
+      specialDays: []
+    };
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(record)
+    );
+
+    console.log(
+      "BİŞARKI birleşik kayıt oluşturuldu:",
+      record
+    );
+
+  });
+
+  console.log(
+    "BİŞARKI birleşik MP3 kayıt sistemi hazır."
+  );
+
+})();
+</script>
+
