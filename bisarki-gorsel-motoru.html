@@ -427,6 +427,60 @@ BFL için hazırlanmış nihai görsel promptunu oluştur.`;
   }
 
 
+  function loadBisarkiRecord() {
+
+    const STORAGE_KEY = "bisarki_current_record_v1";
+    const raw = localStorage.getItem(STORAGE_KEY);
+
+    if (!raw) {
+      $("status").style.display = "block";
+      $("status").textContent =
+        "ℹ️ Henüz BİŞARKI müşteri kaydı bulunamadı. Önce BİŞARKI formunu doldurup kaydı oluşturun.";
+      return;
+    }
+
+    try {
+
+      const record = JSON.parse(raw);
+      const customer = record.customer || {};
+      const song = record.song || {};
+
+      $("recipient").value = customer.recipient || "";
+      $("name").value = customer.name || "";
+      $("story").value = song.story || "";
+      $("emotion").value = song.emotion || "";
+      $("style").value = song.style || "";
+      $("lyrics").value = song.customLyrics || "";
+      $("message").value = song.endingMessage || "";
+      $("language").value = song.language || "";
+
+      $("status").style.display = "block";
+      $("status").textContent =
+        "✅ BİŞARKI müşteri kaydı otomatik okundu.";
+
+      console.log(
+        "BİŞARKI Görsel Motoru müşteri kaydı okundu:",
+        record
+      );
+
+    } catch (error) {
+
+      console.error(
+        "BİŞARKI müşteri kaydı okunamadı:",
+        error
+      );
+
+      $("status").style.display = "block";
+      $("status").textContent =
+        "⚠️ BİŞARKI müşteri kaydı okunamadı.";
+    }
+
+  }
+
+
+  loadBisarkiRecord();
+
+
   $("generatePrompt").addEventListener(
     "click",
     createPrompt
