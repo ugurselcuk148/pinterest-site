@@ -4083,6 +4083,30 @@ no.addEventListener("click",function(){
       JSON.stringify(record)
     );
 
+    // BİŞARKI geçici form teşhis paneli
+    let debugBox = document.getElementById("bisarki-form-debug");
+
+    if (!debugBox) {
+      debugBox = document.createElement("div");
+      debugBox.id = "bisarki-form-debug";
+      debugBox.style.cssText =
+        "position:fixed;left:10px;right:10px;bottom:10px;z-index:99999;" +
+        "background:#071a35;color:white;padding:16px;border-radius:12px;" +
+        "font-size:14px;line-height:1.6;box-shadow:0 4px 20px rgba(0,0,0,.4);";
+
+      document.body.appendChild(debugBox);
+    }
+
+    debugBox.innerHTML = `
+      <strong>🔎 BİŞARKI FORM TEŞHİSİ</strong><br>
+      Duygu: ${record.song.emotion || "BOŞ"}<br>
+      Tarz: ${record.song.style || "BOŞ"}<br>
+      Özel sözler: ${record.song.customLyrics || "BOŞ"}<br>
+      Son mesaj: ${record.song.endingMessage || "BOŞ"}<br>
+      Hikâye: ${record.song.story ? "DOLU" : "BOŞ"}<br>
+      İsim: ${record.customer.name || "BOŞ"}
+    `;
+
     console.log(
       "BİŞARKI birleşik kayıt oluşturuldu:",
       record
