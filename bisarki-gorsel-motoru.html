@@ -147,6 +147,18 @@ button:hover {
     font-size: 25px;
   }
 }
+
+.visual-card{overflow:hidden}
+.visual-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.backend-box{margin-top:12px;padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07)}
+.backend-box summary{cursor:pointer;font-weight:700}
+.visual-status{margin-top:14px;padding:13px;border-radius:11px;background:rgba(255,255,255,.06);line-height:1.55}
+.visual-preview{margin-top:18px;display:none}
+.visual-preview img{display:block;width:100%;max-height:720px;object-fit:contain;border-radius:16px;background:#061120;border:1px solid rgba(255,255,255,.09)}
+.visual-meta{margin-top:12px;padding:12px;border-radius:10px;background:rgba(255,255,255,.04);font-size:13px;line-height:1.55;word-break:break-word}
+.visual-link{display:inline-block;margin-top:12px;color:#b9d5ff;font-weight:700}
+@media(max-width:650px){.visual-actions{grid-template-columns:1fr}}
+
 </style>
 </head>
 
@@ -318,6 +330,71 @@ Henüz prompt oluşturulmadı.
       Bu aşamada yalnızca prompt oluşturulur.
       BFL API bağlantısı sonraki aşamada backend üzerinden yapılacaktır.
       API anahtarı hiçbir zaman bu sayfaya konulmayacaktır.
+    </div>
+
+  </section>
+
+
+  <section class="card visual-card">
+
+    <h2>🎨 Gerçek Görsel Üretimi</h2>
+
+    <div class="notice">
+      Prompt hazırlandıktan sonra gerçek görsel üretimini başlatır.
+      Yeni görsel gerekiyorsa üretim backend üzerinden yapılır;
+      arşivden seçilmiş gerçek görsel varsa BFL tekrar çağrılmaz.
+    </div>
+
+    <div class="backend-box">
+      <details>
+        <summary>⚙️ Test bağlantısı</summary>
+
+        <label for="backendUrl">BİŞARKI backend adresi</label>
+
+        <input id="backendUrl" value="">
+
+        <div class="notice">
+          API anahtarı buraya yazılmaz.
+          Bu alan yalnızca backend adresini belirtir.
+        </div>
+      </details>
+    </div>
+
+    <div class="visual-actions">
+
+      <button id="generateVisual" type="button">
+        🎨 Gerçek Görseli Oluştur
+      </button>
+
+      <button id="reloadVisual" type="button">
+        🔄 Görsel Durumunu Yenile
+      </button>
+
+    </div>
+
+    <div id="visualStatus" class="visual-status">
+      Henüz gerçek görsel üretimi başlatılmadı.
+    </div>
+
+    <div id="visualPreview" class="visual-preview">
+
+      <img
+        id="generatedImage"
+        alt="BİŞARKI tarafından oluşturulan görsel"
+      >
+
+      <div id="visualMeta" class="visual-meta"></div>
+
+      <a
+        id="visualLink"
+        class="visual-link"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        🔗 Görseli ayrı aç
+      </a>
+
     </div>
 
   </section>
@@ -680,8 +757,697 @@ Henüz prompt oluşturulmadı.
   }
 
 
+  function getBackendBase() {
+    const saved = clean(
+      localStorage.getItem("bisarki_backend_url_v1")
+    );
+
+    if (saved) {
+      const normalized = saved.replace(/\/+$/, "");
+
+      if (/^https?:\/\/(127\.0\.0\.1|localhost):8080$/i.test(normalized)) {
+        return "http://127.0.0.1:3000";
+      }
+
+      return normalized;
+    }
+
+    const host = String(location.hostname || "").toLowerCase();
+
+    if (
+      host === "127.0.0.1" ||
+      host === "localhost" ||
+      /github.io$/i.test(host)
+    ) {
+      return "http://127.0.0.1:3000";
+    }
+
+    return location.origin;
+  }
+
+  function saveBackendBase() {
+
+    const value = clean($("backendUrl").value);
+
+    if (!value) {
+      localStorage.removeItem("bisarki_backend_url_v1");
+      $("backendUrl").value = getBackendBase();
+      return getBackendBase();
+    }
+
+    const normalized = value.replace(/\/+$/, "");
+
+    localStorage.setItem(
+      "bisarki_backend_url_v1",
+      normalized
+    );
+
+    $("backendUrl").value = normalized;
+
+    return normalized;
+  }
+
+
+  function getCurrentBisarkiRecord() {
+
+    try {
+
+      return JSON.parse(
+        localStorage.getItem(
+          "bisarki_current_record_v1"
+        ) || "null"
+      );
+
+    } catch (error) {
+
+      console.warn(
+        "BİŞARKI kayıt JSON'u okunamadı:",
+        error
+      );
+
+      return null;
+    }
+  }
+
+
+  function extractVisualUrl(payload) {
+
+    const candidates = [
+
+      payload &&
+      payload.visual &&
+      payload.visual.imageUrl,
+
+      payload &&
+      payload.visual &&
+      payload.visual.url,
+
+      payload &&
+      payload.visual &&
+      payload.visual.image_url,
+
+      payload &&
+      payload.imageUrl,
+
+      payload &&
+      payload.image_url,
+
+      payload &&
+      payload.visualUrl,
+
+      payload &&
+      payload.order &&
+      payload.order.visual &&
+      payload.order.visual.imageUrl,
+
+      payload &&
+      payload.order &&
+      payload.order.visual &&
+      payload.order.visual.url,
+
+      payload &&
+      payload.order &&
+      payload.order.visual &&
+      payload.order.visual.image_url,
+
+      payload &&
+      payload.order &&
+      payload.order.imageUrl,
+
+      payload &&
+      payload.order &&
+      payload.order.visualUrl,
+
+      payload &&
+      payload.reels &&
+      Array.isArray(payload.reels.images) &&
+      payload.reels.images[0],
+
+      payload &&
+      Array.isArray(payload.images) &&
+      payload.images[0]
+    ];
+
+
+    for (const candidate of candidates) {
+
+      if (
+        typeof candidate === "string" &&
+        /^https?:\/\//i.test(candidate)
+      ) {
+        return candidate;
+      }
+
+
+      if (
+        candidate &&
+        typeof candidate === "object" &&
+        typeof candidate.url === "string" &&
+        /^https?:\/\//i.test(candidate.url)
+      ) {
+        return candidate.url;
+      }
+
+    }
+
+
+    return "";
+  }
+
+
+  function extractOrderPayload(payload) {
+
+    if (!payload) return null;
+
+    return (
+      payload.order ||
+      payload.data ||
+      payload
+    );
+  }
+
+
+  function getVisualState(payload) {
+
+    const order =
+      extractOrderPayload(payload);
+
+    const visual =
+      order && order.visual
+        ? order.visual
+        : {};
+
+
+    return {
+
+      order,
+
+      visual,
+
+      status: String(
+        visual.status ||
+        (order && order.status) ||
+        payload.status ||
+        ""
+      ).toLowerCase(),
+
+      url:
+        extractVisualUrl(payload)
+    };
+  }
+
+
+  function setVisualStatus(message) {
+
+    const box =
+      $("visualStatus");
+
+    box.style.display = "block";
+
+    box.innerHTML = message;
+  }
+
+
+  function showGeneratedVisual(url, payload) {
+
+    if (!url) return false;
+
+    const image =
+      $("generatedImage");
+
+    const preview =
+      $("visualPreview");
+
+    const link =
+      $("visualLink");
+
+    const meta =
+      $("visualMeta");
+
+
+    image.onload = function () {
+
+      preview.style.display =
+        "block";
+
+      link.href = url;
+
+
+      const state =
+        getVisualState(
+          payload || {}
+        );
+
+      const order =
+        state.order || {};
+
+      const visual =
+        state.visual || {};
+
+
+      meta.innerHTML =
+        "<strong>✅ Gerçek görsel doğrulandı.</strong><br>" +
+        "Durum: " +
+        (visual.status ||
+         order.status ||
+         "visual_completed") +
+        "<br>" +
+        "Görsel kaynağı: " +
+        url;
+    };
+
+
+    image.onerror = function () {
+
+      preview.style.display =
+        "none";
+
+      setVisualStatus(
+        "⚠️ Görsel URL'si geldi ancak tarayıcı resmi yükleyemedi. " +
+        "Kayıt korunuyor; üretimi yeniden deneyebilirsiniz."
+      );
+    };
+
+
+    image.src = url;
+
+    preview.style.display =
+      "block";
+
+    link.href = url;
+
+    return true;
+  }
+
+
+  async function requestJson(
+    url,
+    options
+  ) {
+
+    const response =
+      await fetch(
+        url,
+        options
+      );
+
+    const text =
+      await response.text();
+
+
+    let data = {};
+
+    try {
+
+      data =
+        text
+          ? JSON.parse(text)
+          : {};
+
+    } catch (error) {
+
+      throw new Error(
+        "Backend JSON yerine beklenmeyen bir yanıt döndürdü. HTTP " +
+        response.status
+      );
+    }
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.message ||
+        data.error ||
+        "Backend isteği başarısız oldu. HTTP " +
+        response.status
+      );
+    }
+
+
+    return data;
+  }
+
+
+  async function loadVisualStatus(
+    showMessage
+  ) {
+
+    const record =
+      getCurrentBisarkiRecord();
+
+
+    if (
+      !record ||
+      !record.id
+    ) {
+
+      setVisualStatus(
+        "❌ BİŞARKI müşteri kaydının ID'si bulunamadı."
+      );
+
+      return null;
+    }
+
+
+    const backend =
+      saveBackendBase();
+
+
+    if (showMessage) {
+
+      setVisualStatus(
+        "🔎 Görsel durumu backend'den okunuyor..."
+      );
+    }
+
+
+    const payload =
+      await requestJson(
+        backend +
+        "/api/orders/" +
+        encodeURIComponent(record.id)
+      );
+
+
+    const state =
+      getVisualState(payload);
+
+
+    if (state.url) {
+
+      showGeneratedVisual(
+        state.url,
+        payload
+      );
+
+      setVisualStatus(
+        "✅ Gerçek görsel hazır ve ekranda gösteriliyor."
+      );
+
+      return state;
+    }
+
+
+    if (
+      state.status.includes("failed") ||
+      state.status.includes("error")
+    ) {
+
+      setVisualStatus(
+        "❌ Görsel üretimi başarısız görünüyor. " +
+        "Kayıt korunuyor; yeniden deneyebilirsiniz."
+      );
+
+      return state;
+    }
+
+
+    setVisualStatus(
+      "⏳ Görsel henüz hazır değil. Mevcut durum: " +
+      (state.status || "işleniyor") +
+      "."
+    );
+
+
+    return state;
+  }
+
+
+  async function generateRealVisual() {
+
+    const record =
+      getCurrentBisarkiRecord();
+
+
+    if (
+      !record ||
+      !record.id
+    ) {
+
+      setVisualStatus(
+        "❌ Müşteri kaydı bulunamadı. Önce BİŞARKI sipariş kaydını oluşturun."
+      );
+
+      return;
+    }
+
+
+    let finalPrompt =
+      clean(
+        $("promptOutput").textContent
+      );
+
+
+    if (
+      !finalPrompt ||
+      finalPrompt ===
+      "Henüz prompt oluşturulmadı."
+    ) {
+
+      createPrompt();
+
+      finalPrompt =
+        clean(
+          $("promptOutput").textContent
+        );
+    }
+
+
+    if (
+      !finalPrompt ||
+      finalPrompt ===
+      "Henüz prompt oluşturulmadı."
+    ) {
+
+      setVisualStatus(
+        "❌ Önce geçerli bir görsel promptu oluşturmalıyız."
+      );
+
+      return;
+    }
+
+
+    const backend =
+      saveBackendBase();
+
+
+    const button =
+      $("generateVisual");
+
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "⏳ Görsel hazırlanıyor...";
+
+
+    setVisualStatus(
+      "🚀 BİŞARKI görsel üretimi başlatılıyor...<br>" +
+      "API anahtarı frontend'e gönderilmez; istek backend üzerinden yürür."
+    );
+
+
+    try {
+
+      const payload =
+        await requestJson(
+
+          backend +
+          "/api/orders/" +
+          encodeURIComponent(record.id) +
+          "/generate-visual",
+
+          {
+
+            method:
+              "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body:
+              JSON.stringify({
+                prompt:
+                  finalPrompt
+              })
+          }
+        );
+
+
+      let state =
+        getVisualState(
+          payload
+        );
+
+
+      if (state.url) {
+
+        showGeneratedVisual(
+          state.url,
+          payload
+        );
+
+        setVisualStatus(
+          "✅ Görsel hazır. Gerçek görsel ekranda gösteriliyor."
+        );
+
+        return;
+      }
+
+
+      if (
+        state.status.includes("failed") ||
+        state.status.includes("error")
+      ) {
+
+        throw new Error(
+          "Backend görsel üretimini başarısız olarak bildirdi."
+        );
+      }
+
+
+      setVisualStatus(
+        "⏳ Görsel üretimi kabul edildi. Gerçek görsel bekleniyor..."
+      );
+
+
+      for (
+        let attempt = 1;
+        attempt <= 40;
+        attempt++
+      ) {
+
+        await new Promise(
+          resolve =>
+            setTimeout(
+              resolve,
+              3000
+            )
+        );
+
+
+        state =
+          await loadVisualStatus(
+            false
+          );
+
+
+        if (
+          state &&
+          state.url
+        ) {
+
+          setVisualStatus(
+            "✅ Gerçek görsel hazır. Görsel doğrulandı ve ekranda gösteriliyor."
+          );
+
+          return;
+        }
+
+
+        if (
+          state &&
+          (
+            state.status.includes("failed") ||
+            state.status.includes("error")
+          )
+        ) {
+
+          throw new Error(
+            "Görsel üretimi başarısız oldu. Kayıt korunuyor."
+          );
+        }
+
+
+        setVisualStatus(
+          "⏳ Görsel hazırlanıyor... (" +
+          attempt +
+          "/40)"
+        );
+      }
+
+
+      setVisualStatus(
+        "⚠️ Üretim hâlâ işleniyor. " +
+        "Biraz sonra “Görsel Durumunu Yenile” düğmesine basabilirsiniz."
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        "BİŞARKI gerçek görsel üretim hatası:",
+        error
+      );
+
+
+      setVisualStatus(
+        "❌ Görsel üretimi başlatılamadı.<br>" +
+        "<small>" +
+        clean(error.message) +
+        "</small><br><br>" +
+        "Kayıt korunuyor. BFL anahtarı frontend'e taşınmadı."
+      );
+
+
+    } finally {
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "🎨 Gerçek Görseli Oluştur";
+    }
+  }
+
+
   loadBisarkiRecord();
   diagnoseBisarkiRecord();
+
+
+  $("backendUrl").value =
+    getBackendBase();
+
+  $("backendUrl").addEventListener(
+    "change",
+    saveBackendBase
+  );
+
+
+  $("generateVisual").addEventListener(
+    "click",
+    generateRealVisual
+  );
+
+
+  $("reloadVisual").addEventListener(
+    "click",
+    async function () {
+
+      try {
+
+        await loadVisualStatus(
+          true
+        );
+
+      } catch (error) {
+
+        console.error(
+          "BİŞARKI görsel durum yenileme hatası:",
+          error
+        );
+
+        setVisualStatus(
+          "❌ Görsel durumu okunamadı.<br><small>" +
+          clean(error.message) +
+          "</small>"
+        );
+      }
+    }
+  );
 
 
   $("generatePrompt").addEventListener(

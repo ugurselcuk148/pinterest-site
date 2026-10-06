@@ -922,7 +922,78 @@ footer {
     ></textarea>
 
 
-          <label>E-posta adresiniz</label>
+          
+<!-- BİŞARKI GÖRSEL SEÇİMİ BAŞLANGIÇ -->
+<section
+  id="bisarki-visual-choice"
+  style="margin:24px 0;padding:18px;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:rgba(7,26,53,.72);"
+>
+  <div style="font-size:20px;font-weight:700;margin-bottom:8px;">
+    🖼️ Şarkınız için görsel
+  </div>
+
+  <p style="margin:0 0 16px;opacity:.85;line-height:1.6;">
+    Şarkınızla birlikte kullanılacak görseli doğrudan BİŞARKI içinde seçebilirsiniz.
+    Başka bir platforma gitmenize veya görsel bağlantısı kopyalamanıza gerek yoktur.
+  </p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+    <button
+      type="button"
+      id="bisarki-visual-new-btn"
+      style="padding:13px;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:#102d59;color:#fff;font-weight:700;cursor:pointer;"
+    >
+      ✨ Yeni Görsel Oluştur
+    </button>
+
+    <button
+      type="button"
+      id="bisarki-visual-archive-btn"
+      style="padding:13px;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:#102d59;color:#fff;font-weight:700;cursor:pointer;"
+    >
+      🗂️ Arşivden Seç
+    </button>
+  </div>
+
+  <input type="hidden" name="visualMode" id="bisarki-visual-mode" value="new">
+  <input type="hidden" name="visualArchiveId" id="bisarki-visual-archive-id" value="">
+  <input type="hidden" name="visualImageUrl" id="bisarki-visual-image-url" value="">
+
+  <div
+    id="bisarki-visual-choice-status"
+    style="padding:12px;border-radius:12px;background:rgba(255,255,255,.06);line-height:1.5;"
+  >
+    ✨ <strong>Yeni Görsel Oluştur</strong> seçildi.
+    Görsel, BİŞARKI'nın görsel motoruna gönderilecek.
+  </div>
+
+  <div
+    id="bisarki-visual-archive-panel"
+    style="display:none;margin-top:14px;"
+  >
+    <div style="font-weight:700;margin-bottom:10px;">
+      🗂️ BİŞARKI Görsel Arşivi
+    </div>
+
+    <div
+      id="bisarki-visual-archive-list"
+      style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;"
+    ></div>
+
+    <div
+      id="bisarki-visual-archive-message"
+      style="margin-top:10px;opacity:.8;"
+    ></div>
+  </div>
+
+  <div
+    id="bisarki-visual-selected-preview"
+    style="display:none;margin-top:14px;"
+  ></div>
+</section>
+<!-- BİŞARKI GÖRSEL SEÇİMİ BİTİŞ -->
+
+<label>E-posta adresiniz</label>
           <input type="email" name="email" required
                  placeholder="ornek@email.com">
 
@@ -4014,7 +4085,39 @@ no.addEventListener("click",function(){
     return Math.random().toString(36).slice(2, 8);
   }
 
-  form.addEventListener("submit", function (event) {
+
+  function backendBase() {
+    let base = "";
+
+    if (window.BISARKI_BACKEND_URL) {
+      base = String(window.BISARKI_BACKEND_URL).trim();
+    }
+
+    if (!base) {
+      try {
+        const saved = localStorage.getItem("bisarki_backend_url_v1");
+        if (saved && saved.trim()) {
+          base = saved.trim();
+        }
+      } catch (error) {
+        console.warn("BİŞARKI backend adresi okunamadı:", error);
+      }
+    }
+
+    if (!base) {
+      base = "http://127.0.0.1:3000";
+    }
+
+    while (base.endsWith("/")) {
+      base = base.slice(0, -1);
+    }
+
+    return base;
+  }
+
+  let backendSubmitting = false;
+
+  form.addEventListener("submit", async function (event) {
 
     /*
      * Radyo popup'i henuz karar verilmeden
@@ -4026,6 +4129,13 @@ no.addEventListener("click",function(){
     if (event.defaultPrevented) {
       return;
     }
+
+    if (backendSubmitting) {
+      return;
+    }
+
+    event.preventDefault();
+    backendSubmitting = true;
 
     const now = new Date().toISOString();
 
@@ -4043,6 +4153,27 @@ no.addEventListener("click",function(){
     console.log("isim:", value("isim"));
     console.log("sarki_kimin_icin:", value("sarki_kimin_icin"));
     console.log("============================================");
+
+    const kvkkCheckbox =
+      form.querySelector('[name="kvkkAcknowledged"]');
+
+    const kvkkCheckbox =
+      form.querySelector('[name="kvkkAcknowledged"]');
+
+    const kvkkAcknowledged =
+      !!(kvkkCheckbox && kvkkCheckbox.checked);
+
+    console.log("===== BİŞARKI KVKK KONTROLÜ =====");
+    console.log("KVKK checkbox bulundu:", !!kvkkCheckbox);
+    console.log(
+      "KVKK checkbox.checked:",
+      kvkkCheckbox ? kvkkCheckbox.checked : null
+    );
+    console.log("KVKK sonucu:", kvkkAcknowledged);
+    console.log("FORM TİPİ:", form.dataset.type);
+    console.log("CHECKBOX ELEMENT:", kvkkCheckbox);
+    console.log("CHECKBOX VALUE:", kvkkCheckbox ? kvkkCheckbox.value : null);
+    console.log("=================================");
 
     const record = {
       id: createId(),
@@ -4069,8 +4200,18 @@ no.addEventListener("click",function(){
         language: languageEl ? String(languageEl.value || "") : ""
       },
 
-      consent: {
-        kvkkAcknowledged: checked("kvkkAcknowledged"),
+    
+  visual: {
+    mode: value("visualMode") || "new",
+    archiveVisualId: value("visualArchiveId") || null,
+    imageUrl: value("visualImageUrl") || null,
+    status: value("visualMode") === "archive"
+      ? (value("visualArchiveId") ? "archive_selected" : "archive_pending")
+      : "new_requested"
+  },
+
+  consent: {
+        kvkkAcknowledged: kvkkAcknowledged,
         marketingConsent: checked("marketingConsent"),
         radioPermission: checked("radioPermission")
       },
@@ -4095,6 +4236,187 @@ no.addEventListener("click",function(){
       STORAGE_KEY,
       JSON.stringify(record)
     );
+
+    /*
+     * BİŞARKI GERÇEK SİPARİŞ KÖPRÜSÜ
+     *
+     * Local kayıt korunur.
+     * Backend başarılı olursa gerçek BS-... sipariş ID'si
+     * local kayda eklenir.
+     */
+    const backendPayload = {
+      product: form.dataset.type || "MP3 Şarkı",
+
+      story: record.song.story,
+      recipient: record.customer.recipient,
+      name: record.customer.name,
+
+      emotion: record.song.emotion,
+      style: record.song.style,
+      specialWords: record.song.customLyrics,
+      endingMessage: record.song.endingMessage,
+
+      email: record.customer.email,
+      whatsapp: record.customer.whatsapp,
+
+      duration: record.song.duration,
+
+      visualType:
+        record.visual.mode === "archive"
+          ? "archive"
+          : "customer",
+
+      specialScene: record.song.specialScene,
+
+      selectedArchivedVisualId:
+        record.visual.archiveVisualId || null,
+
+      radioPermission:
+        record.consent.radioPermission === true,
+
+      kvkkAcknowledged:
+        kvkkAcknowledged === true,
+
+      marketingConsent:
+        record.consent.marketingConsent === true
+    };
+
+    console.log("===== BİŞARKI BACKEND KVKK =====");
+    console.log(
+      "record.consent.kvkkAcknowledged:",
+      record.consent.kvkkAcknowledged
+    );
+    console.log(
+      "backendPayload.kvkkAcknowledged:",
+      backendPayload.kvkkAcknowledged
+    );
+    console.log("================================");
+
+    console.log("===== TÜM CHECKBOX DURUMLARI =====");
+    [...form.querySelectorAll('input[type="checkbox"]')].forEach((cb)=>{
+      console.log(
+        cb.name,
+        "checked:",
+        cb.checked,
+        "value:",
+        cb.value
+      );
+    });
+    console.log("================================");
+
+    try {
+      const backendResponse = await fetch(
+        backendBase() + "/api/orders",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify(backendPayload)
+        }
+      );
+
+      const backendData = await backendResponse.json();
+
+      if (!backendResponse.ok || !backendData.ok) {
+        throw new Error(
+          backendData && backendData.message
+            ? backendData.message
+            : "HTTP " + backendResponse.status
+        );
+      }
+
+      const backendOrder =
+        backendData.order || {};
+
+      const backendOrderId =
+        backendOrder.id ||
+        backendData.id ||
+        "";
+
+      if (!backendOrderId) {
+        throw new Error(
+          "Backend siparişi oluşturdu fakat sipariş ID'si dönmedi."
+        );
+      }
+
+      record.orderId = backendOrderId;
+      record.backendOrderId = backendOrderId;
+
+      record.order = {
+        id: backendOrderId
+      };
+
+      record.backend = {
+        ok: true,
+        orderId: backendOrderId,
+        status: backendOrder.status || "received"
+      };
+
+      record.status = "order_created";
+      record.updatedAt = new Date().toISOString();
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(record)
+      );
+
+      console.log(
+        "✅ BİŞARKI GERÇEK BACKEND SİPARİŞİ OLUŞTURULDU:",
+        backendOrderId
+      );
+
+    } catch (error) {
+
+      /*
+       * Backend başarısız olsa bile müşteri kaydı silinmez.
+       * Böylece form verisi korunur ve tekrar denenebilir.
+       */
+      record.backend = {
+        ok: false,
+        error: String(error && error.message || error)
+      };
+
+      record.status = "order_backend_failed";
+      record.updatedAt = new Date().toISOString();
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(record)
+      );
+
+      console.error(
+        "❌ BİŞARKI backend sipariş oluşturma hatası:",
+        error
+      );
+
+      let backendErrorBox =
+        document.getElementById("bisarki-backend-order-error");
+
+      if (!backendErrorBox) {
+        backendErrorBox = document.createElement("div");
+        backendErrorBox.id = "bisarki-backend-order-error";
+
+        backendErrorBox.style.cssText =
+          "position:fixed;left:10px;right:10px;bottom:10px;" +
+          "z-index:100000;background:#4a1020;color:white;" +
+          "padding:16px;border-radius:12px;" +
+          "font-size:14px;line-height:1.6;" +
+          "box-shadow:0 4px 20px rgba(0,0,0,.45);";
+
+        document.body.appendChild(backendErrorBox);
+      }
+
+      backendErrorBox.innerHTML =
+        "<strong>❌ BİŞARKI sipariş sunucusuna bağlanılamadı.</strong><br>" +
+        "Müşteri kaydı korunuyor.<br>" +
+        "Hata: " +
+        String(error && error.message || error);
+
+      backendSubmitting = false;
+      return;
+    }
 
     // BİŞARKI geçici form teşhis paneli
     let debugBox = document.getElementById("bisarki-form-debug");
@@ -4135,3 +4457,222 @@ no.addEventListener("click",function(){
 })();
 </script>
 
+<script id="bisarki-customer-visual-choice-v1">
+(function () {
+  "use strict";
+
+  const form = document.querySelector('form.order-form[data-type="MP3 Şarkı"]');
+  if (!form) return;
+
+  const newBtn = document.getElementById("bisarki-visual-new-btn");
+  const archiveBtn = document.getElementById("bisarki-visual-archive-btn");
+  const modeEl = document.getElementById("bisarki-visual-mode");
+  const archiveIdEl = document.getElementById("bisarki-visual-archive-id");
+  const imageUrlEl = document.getElementById("bisarki-visual-image-url");
+  const statusEl = document.getElementById("bisarki-visual-choice-status");
+  const archivePanel = document.getElementById("bisarki-visual-archive-panel");
+  const archiveList = document.getElementById("bisarki-visual-archive-list");
+  const archiveMessage = document.getElementById("bisarki-visual-archive-message");
+  const previewEl = document.getElementById("bisarki-visual-selected-preview");
+
+  function backendBase() {
+    let base = "";
+
+    if (window.BISARKI_BACKEND_URL) {
+      base = String(window.BISARKI_BACKEND_URL).trim();
+    }
+
+    if (!base) {
+      try {
+        const saved = localStorage.getItem("bisarki_backend_url_v1");
+
+        if (saved && saved.trim()) {
+          base = saved.trim();
+        }
+      } catch (error) {
+        console.warn("BİŞARKI backend adresi okunamadı:", error);
+      }
+    }
+
+    if (!base) {
+      base = "http://127.0.0.1:3000";
+    }
+
+    while (base.endsWith("/")) {
+      base = base.slice(0, -1);
+    }
+
+    return base;
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function setNewVisual() {
+    modeEl.value = "new";
+    archiveIdEl.value = "";
+    imageUrlEl.value = "";
+
+    archivePanel.style.display = "none";
+    previewEl.style.display = "none";
+    previewEl.innerHTML = "";
+
+    statusEl.innerHTML =
+      "✨ <strong>Yeni Görsel Oluştur</strong> seçildi. " +
+      "Görsel, BİŞARKI'nın görsel motoruna gönderilecek.";
+
+    newBtn.setAttribute("aria-pressed", "true");
+    archiveBtn.setAttribute("aria-pressed", "false");
+  }
+
+  function selectArchiveVisual(item) {
+    if (!item || !item.id || !item.imageUrl) return;
+
+    modeEl.value = "archive";
+    archiveIdEl.value = item.id;
+    imageUrlEl.value = item.imageUrl;
+
+    statusEl.innerHTML =
+      "🗂️ <strong>Arşiv görseli seçildi.</strong> " +
+      "Bu görsel yeniden üretilmeyecek; doğrudan BİŞARKI görsel akışına aktarılacak.";
+
+    previewEl.style.display = "block";
+
+    previewEl.innerHTML =
+      '<div style="padding:12px;border-radius:14px;background:rgba(255,255,255,.06);">' +
+      '<div style="font-weight:700;margin-bottom:8px;">Seçilen görsel</div>' +
+      '<img src="' + escapeHtml(item.imageUrl) + '"' +
+      ' alt="Seçilen BİŞARKI görseli"' +
+      ' style="display:block;width:100%;max-width:320px;border-radius:14px;">' +
+      '</div>';
+
+    newBtn.setAttribute("aria-pressed", "false");
+    archiveBtn.setAttribute("aria-pressed", "true");
+  }
+
+  async function loadArchive() {
+    archivePanel.style.display = "block";
+    archiveList.innerHTML = "";
+    archiveMessage.textContent = "Görsel arşivi yükleniyor...";
+
+    try {
+      const response = await fetch(
+        backendBase() + "/api/visual-archive",
+        {
+          method: "GET",
+          headers: {
+            "Accept": "application/json"
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("HTTP " + response.status);
+      }
+
+      const data = await response.json();
+
+      if (!data.ok || !Array.isArray(data.visuals)) {
+        throw new Error("Geçersiz görsel arşivi cevabı.");
+      }
+
+      if (!data.visuals.length) {
+        archiveMessage.textContent =
+          "BİŞARKI arşivinde henüz kullanılabilir görsel bulunmuyor.";
+        return;
+      }
+
+      archiveMessage.textContent =
+        data.visuals.length + " görsel bulundu.";
+
+      data.visuals.forEach(function (item) {
+        const card = document.createElement("button");
+
+        card.type = "button";
+
+        card.style.cssText =
+          "display:block;padding:8px;" +
+          "border:1px solid rgba(255,255,255,.14);" +
+          "border-radius:14px;" +
+          "background:rgba(255,255,255,.05);" +
+          "color:inherit;cursor:pointer;text-align:left;";
+
+        card.innerHTML =
+          '<img src="' + escapeHtml(item.imageUrl) + '"' +
+          ' alt="BİŞARKI arşiv görseli"' +
+          ' style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;">' +
+          '<div style="margin-top:7px;font-size:12px;opacity:.8;">' +
+          escapeHtml(item.id) +
+          "</div>";
+
+        card.addEventListener("click", function () {
+          selectArchiveVisual(item);
+        });
+
+        archiveList.appendChild(card);
+      });
+
+    } catch (error) {
+      console.error("BİŞARKI görsel arşivi hatası:", error);
+
+      archiveMessage.textContent =
+        "Görsel arşivi şu anda yüklenemedi. BİŞARKI bağlantısını kontrol edin.";
+    }
+  }
+
+  newBtn.addEventListener("click", function () {
+    setNewVisual();
+  });
+
+  archiveBtn.addEventListener("click", function () {
+    modeEl.value = "archive";
+    archiveIdEl.value = "";
+    imageUrlEl.value = "";
+
+    statusEl.innerHTML =
+      "🗂️ <strong>Arşivden görsel seçin.</strong> " +
+      "Aşağıdaki görsellerden birini seçtiğinizde seçim kayda alınacak.";
+
+    archivePanel.style.display = "block";
+    previewEl.style.display = "none";
+    previewEl.innerHTML = "";
+
+    archiveBtn.setAttribute("aria-pressed", "true");
+    newBtn.setAttribute("aria-pressed", "false");
+
+    loadArchive();
+  });
+
+  form.addEventListener("submit", function (event) {
+    if (
+      modeEl.value === "archive" &&
+      !archiveIdEl.value
+    ) {
+      event.preventDefault();
+
+      statusEl.innerHTML =
+        "⚠️ <strong>Lütfen arşivden bir görsel seçin</strong> " +
+        "veya <strong>Yeni Görsel Oluştur</strong> seçeneğine geçin.";
+
+      archivePanel.style.display = "block";
+      return;
+    }
+
+    console.log("BİŞARKI görsel seçimi:", {
+      mode: modeEl.value,
+      archiveVisualId: archiveIdEl.value || null,
+      imageUrl: imageUrlEl.value || null
+    });
+  });
+
+  setNewVisual();
+
+  console.log("BİŞARKI müşteri görsel seçim sistemi hazır.");
+})();
+</script>
