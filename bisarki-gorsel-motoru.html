@@ -358,8 +358,24 @@ Henüz prompt oluşturulmadı.
     const lyrics = clean($("lyrics").value);
     const message = clean($("message").value);
     const language = clean($("language").value);
-    const scene = clean($("scene").value);
+    const sceneField = $("scene");
+    let storedSpecialScene = "";
 
+    try {
+      const storedRecord = JSON.parse(
+        localStorage.getItem("bisarki_current_record_v1") || "null"
+      );
+
+      storedSpecialScene = clean(
+        storedRecord &&
+        storedRecord.song &&
+        storedRecord.song.specialScene
+      );
+    } catch (error) {
+      console.warn("BİŞARKI özel sahne kaydı okunamadı:", error);
+    }
+
+    const scene = storedSpecialScene || clean(sceneField ? sceneField.value : "");
 
     if (!story && !scene && !recipient && !name) {
 
@@ -369,9 +385,7 @@ Henüz prompt oluşturulmadı.
         "❤️ Önce müşterinin hikâyesinden veya isteğinden en az bir bilgi girin.";
 
       return;
-
     }
-
 
     const customerLines = [];
 
@@ -385,47 +399,138 @@ Henüz prompt oluşturulmadı.
     addLine(customerLines, "Şarkı dili", language);
     addLine(customerLines, "Özel sahne isteği", scene);
 
+    const promptParts = [];
 
-    const prompt = `BİŞARKI GÖRSEL ÜRETİM PROMPTU
+    promptParts.push(
+      "Create a single coherent, emotionally powerful cinematic image for BİŞARKI."
+    );
 
-ANA KURAL:
-Müşterinin anlattığı hikâyeye ve açıkça belirttiği isteklere sadık kal.
-Müşterinin istemediği yeni bir olay, kişi, mekân veya önemli görsel unsur ekleme.
-Hikâyenin anlamını değiştirme.
+    promptParts.push(
+      "The image must visually communicate the customer's own story."
+    );
 
-MÜŞTERİ BİLGİLERİ:
-${customerLines.join("\n")}
+    promptParts.push(
+      "CUSTOMER STORY AND EXPLICIT REQUESTS HAVE THE HIGHEST PRIORITY."
+    );
 
-GÖRSEL YORUMLAMA:
-Yukarıdaki müşteri bilgilerini temel alarak tek bir tutarlı görsel sahne oluştur.
+    if (story) {
+      promptParts.push(
+        "CUSTOMER STORY:\n" + story
+      );
+    }
 
-Müşterinin belirttiği kişi, ilişki, olay, duygu ve özel sahne önceliklidir.
+    if (scene) {
+      promptParts.push(
+        "EXPLICIT SPECIAL SCENE REQUEST:\n" + scene
+      );
+    }
 
-Görsel estetik sinematik, doğal, duygusal ve kaliteli olabilir; ancak estetik tercihler müşterinin hikâyesinin önüne geçmemelidir.
+    if (recipient || name) {
+      promptParts.push(
+        "PEOPLE / RELATIONSHIP CONTEXT:\n" +
+        [recipient, name].filter(Boolean).join(" / ")
+      );
+    }
 
-Görselde gereksiz yazılar, rastgele nesneler veya hikâyede bulunmayan karakterler kullanma.
+    if (emotion) {
+      promptParts.push(
+        "EMOTIONAL ATMOSPHERE:\n" +
+        emotion +
+        ". Use this emotion to shape facial expression, body language, lighting, atmosphere and overall visual mood."
+      );
+    }
 
-Sonuç, müşterinin kendi hikâyesini görsel olarak anlatıyormuş hissi vermelidir.
+    if (style) {
+      promptParts.push(
+        "MUSIC STYLE VISUAL INFLUENCE:\n" +
+        style +
+        ". Use this only as a subtle visual-esthetic influence. Never allow music style to contradict the customer's story."
+      );
+    }
 
-BFL için hazırlanmış nihai görsel promptunu oluştur.`;
+    if (language) {
+      promptParts.push(
+        "SONG LANGUAGE:\n" +
+        language +
+        ". Language does not require visible text in the image."
+      );
+    }
 
+    if (lyrics) {
+      promptParts.push(
+        "CUSTOM LYRICAL IDEA:\n" +
+        lyrics +
+        ". Treat this as emotional context unless the customer explicitly requests visible text."
+      );
+    }
+
+    if (message) {
+      promptParts.push(
+        "ENDING MESSAGE / EMOTIONAL CONTEXT:\n" +
+        message +
+        ". Use it only to strengthen the emotional atmosphere; do not automatically place the sentence as visible text."
+      );
+    }
+
+    promptParts.push(
+      "VISUAL INTERPRETATION RULES:\n" +
+      "1. Preserve the meaning of the customer's story.\n" +
+      "2. If the customer explicitly describes people, preserve those people and their relationship.\n" +
+      "3. If the customer explicitly requests a scene, make that scene central to the composition when it is compatible with the story.\n" +
+      "4. Emotion controls atmosphere, lighting, expressions and body language.\n" +
+      "5. Music style may influence cinematography, color mood, wardrobe or visual texture only when appropriate.\n" +
+      "6. Missing minor visual details may be completed naturally.\n" +
+      "7. Never invent a major event, important character, relationship, location or story element that the customer did not provide.\n" +
+      "8. Never contradict an explicit customer request.\n" +
+      "9. Do not add random objects, random people, logos, watermarks or unrelated scenery.\n" +
+      "10. Do not automatically add written words, captions, lyrics or typography to the image.\n" +
+      "11. Keep the composition natural, realistic, cinematic and emotionally believable.\n" +
+      "12. The final image should feel personal and specific rather than generic."
+    );
+
+    promptParts.push(
+      "CINEMATIC QUALITY:\n" +
+      "highly detailed cinematic photography, natural human expressions, realistic anatomy, authentic body language, believable environment, soft cinematic lighting, carefully composed framing, emotional depth, professional music-cover quality, subtle depth of field, realistic textures, polished visual storytelling"
+    );
+
+    promptParts.push(
+      "NEGATIVE GUIDANCE:\n" +
+      "no unrelated characters, no invented major events, no distorted anatomy, no extra fingers, no duplicate people, no random text, no subtitles, no logos, no watermark, no generic stock-photo feeling, no visual elements that contradict the customer's story"
+    );
+
+    promptParts.push(
+      "FINAL INSTRUCTION:\n" +
+      "Generate one unified image concept that tells the customer's story visually. Prioritize emotional authenticity and fidelity to the customer's request over decorative effects."
+    );
+
+    const prompt = promptParts.join("\n\n");
 
     $("promptOutput").textContent = prompt;
-
 
     $("status").style.display = "block";
 
     $("status").textContent =
-      "✅ Müşteri bilgileri okundu ve görsel promptu oluşturuldu.";
-
+      "✅ BİŞARKI görsel promptu oluşturuldu. Müşteri hikâyesi ana kaynak olarak korundu.";
 
     console.log(
-      "BİŞARKI Görsel Motoru prompt:",
-      prompt
+      "========== BİŞARKI GÖRSEL PROMPT MOTORU =========="
     );
-
+    console.log("Customer:", {
+      recipient,
+      name,
+      story,
+      emotion,
+      style,
+      lyrics,
+      message,
+      language,
+      scene
+    });
+    console.log("Prompt:", prompt);
+    console.log(
+      "==================================================="
+    );
   }
-
 
 
   function diagnoseBisarkiRecord() {
@@ -587,6 +692,36 @@ BFL için hazırlanmış nihai görsel promptunu oluştur.`;
 
 })();
 
+</script>
+
+
+<script id="bisarki-load-special-scene">
+(function () {
+  try {
+    const record = JSON.parse(
+      localStorage.getItem("bisarki_current_record_v1") || "null"
+    );
+
+    const sceneField = document.getElementById("scene");
+    const specialScene =
+      record &&
+      record.song &&
+      String(record.song.specialScene || "").trim();
+
+    if (sceneField && specialScene) {
+      sceneField.value = specialScene;
+      sceneField.readOnly = true;
+      sceneField.title = "Bu sahne MP3 formundaki müşteri kaydından otomatik alınmıştır.";
+
+      const label = document.querySelector('label[for="scene"]');
+      if (label) {
+        label.textContent = "Müşterinin istediği özel sahne · MP3 kaydından";
+      }
+    }
+  } catch (error) {
+    console.warn("BİŞARKI özel sahne otomatik yüklenemedi:", error);
+  }
+})();
 </script>
 
 </body>

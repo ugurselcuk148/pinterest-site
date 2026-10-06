@@ -911,6 +911,17 @@ footer {
           <textarea name="son_mesaj"
                     placeholder="Örn: Seni her zaman seveceğim..."></textarea>
 
+    <label for="bisarki-special-scene">
+      Müşterinin istediği özel sahne
+    </label>
+
+    <textarea
+      id="bisarki-special-scene"
+      name="specialScene"
+      placeholder="Örn: El ele yürürken, yağmur altında sarılırken, gün batımında birlikte otururken..."
+    ></textarea>
+
+
           <label>E-posta adresiniz</label>
           <input type="email" name="email" required
                  placeholder="ornek@email.com">
@@ -4027,6 +4038,7 @@ no.addEventListener("click",function(){
     console.log("tarz:", value("tarz"));
     console.log("ozel_sozler:", value("ozel_sozler"));
     console.log("son_mesaj:", value("son_mesaj"));
+    console.log("specialScene:", value("specialScene"));
     console.log("hikaye:", value("hikaye"));
     console.log("isim:", value("isim"));
     console.log("sarki_kimin_icin:", value("sarki_kimin_icin"));
@@ -4053,6 +4065,7 @@ no.addEventListener("click",function(){
         style: value("tarz"),
         customLyrics: value("ozel_sozler"),
         endingMessage: value("son_mesaj"),
+        specialScene: value("specialScene"),
         language: languageEl ? String(languageEl.value || "") : ""
       },
 
@@ -4103,6 +4116,7 @@ no.addEventListener("click",function(){
       Tarz: ${record.song.style || "BOŞ"}<br>
       Özel sözler: ${record.song.customLyrics || "BOŞ"}<br>
       Son mesaj: ${record.song.endingMessage || "BOŞ"}<br>
+      Özel sahne: ${record.song.specialScene || "BOŞ"}<br>
       Hikâye: ${record.song.story ? "DOLU" : "BOŞ"}<br>
       İsim: ${record.customer.name || "BOŞ"}
     `;
